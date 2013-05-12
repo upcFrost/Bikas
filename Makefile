@@ -1,36 +1,54 @@
 CPP=g++
-CFLAGS=-c -Wall -Wno-deprecated -march=amdfam10 -O2
-LDLIBS=-L./triangulate-1.4 -ltriangulate -L/usr/lib -lz -lvte -lvtkCommon -lvtkGraphics \
+CFLAGS=-c -Wall -Wno-deprecated -Wno-unused-but-set-variable -march=amdfam10 -O2
+LDLIBS=-L. -L./lib -L/usr/lib -lvtkCommon -lvtkGraphics \
 	-lvtkIO -lvtkFiltering -lvtkRendering -lvtkImaging
-INCLUDES=-I/usr/include/vtk-5.10
+
+INCLUDES=-I. -I./include 
+ifeq ($(OS),Windows_NT)
+	INCLUDES+=-I"C:\Program Files (x86)\VTK\include\vtk-5.10" 
+	LDLIBS+=-L"C:\Program Files (x86)\VTK\lib\vtk-5.10"
+else
+	INCLUDES+=-I/usr/include/vtk-5.10
+	LDLIBS+=-L./usr/lib 
+endif
+
+ifeq ($(OS),Windows_NT)
+	TARGET=main.exe
+else
+	TARGET=main 
+endif
+
 OPENMP=-fopenmp
 
 OBJECTS=main.o functions.o globals.o interp.o border.o \
 		debug.o output.o
+		
+all : $(TARGET)
 
-main : $(OBJECTS)
-	$(CPP) -o main $(OBJECTS) $(LDLIBS) $(OPENMP)
+$(TARGET) : $(OBJECTS)
+	$(CPP) -o bin/$(TARGET) $(OBJECTS) $(LDLIBS) $(OPENMP)
 
-main.o : main.cpp globals.cpp main.h
+
+main.o : main.cpp globals.cpp
 	$(CPP) $(CFLAGS) $(INCLUDES) $(OPENMP) main.cpp
 
-functions.o : functions.cpp main.h
-	$(CPP) $(CFLAGS) functions.cpp
+functions.o : functions.cpp
+	$(CPP) $(CFLAGS) $(INCLUDES) functions.cpp
 
-globals.o : globals.cpp main.h
-	$(CPP) $(CFLAGS) globals.cpp
+globals.o : globals.cpp
+	$(CPP) $(CFLAGS) $(INCLUDES) globals.cpp
 
-interp.o : interp.c interp.h
-	$(CPP) $(CFLAGS) interp.c
+interp.o : interp.c
+	$(CPP) $(CFLAGS) $(INCLUDES) interp.c
 
-debug.o : debug.c debug.h
-	$(CPP) $(CFLAGS) debug.c
+debug.o : debug.c
+	$(CPP) $(CFLAGS) $(INCLUDES) debug.c
 
-border.o : border.c border.h
-	$(CPP) $(CFLAGS) border.c
+border.o : border.c
+	$(CPP) $(CFLAGS) $(INCLUDES) border.c
 
-output.o : output.c output.h
+output.o : output.c
 	$(CPP) $(CFLAGS) $(INCLUDES) output.c
 
 clean:
-	rm -rf *o main
+	rm -rf *o $(TARGET)

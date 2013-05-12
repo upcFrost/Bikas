@@ -12,16 +12,6 @@ double pre_alpha(gasCell cell, int i, int i_p, double delta_0, double delta) {
 		return 1;
 }
 
-//~ double polygonArea(double *X, double *Y, int points) {
-//~ 
-  //~ double  area=0. ;
-  //~ int     i, j=points-1  ;
-//~ 
-  //~ for (i=0; i<points; i++) {
-    //~ area+=(X[j]+X[i])*(Y[j]-Y[i]); j=i; }
-//~ 
-//~ return area*.5; }
-
 /* Cell geometry parameter calculation
  * 
  * TODO: Fix full[0], [1] and [2] EVERYWHERE
@@ -236,442 +226,6 @@ void pre_cell_geometry(double array[5], gasCell cell, int i, int j) {
 	}
 }
 
-//~ WeightVector wightVectorsCalc(cell2d cell, int i, int j, int n) {
-	//~ Point2D vertices[4];
-	//~ Int2D vertices_ij[4];
-	//~ WeightVector result;
-	//~ /** 
-	 //~ * Transform points from center of the cell
-	 //~ * 
-	 //~ * 	[3]	+---+ [2]
-	 //~ * 		|	|
-	 //~ * 	[0]	+---+ [1]
-	 //~ * 
-	 //~ * 			|  cos(a)  -sin(a)	|
-	 //~ * R(-a) = 	|					|
-	 //~ * 			|  sin(a)  cos(a)	|
-	 //~ * 
-	 //~ * weightCell[0] is i+1 cell (X), [1] is j+1 (Y)
-	 //~ * 
-	 //~ **/
-	//~ int curI = i;
-	//~ int curJ = j;
-	//~ double ybegin = j+1;
-	//~ double yend = j;
-	//~ double xbegin = i;
-	//~ double xend = i+1;
-	//~ double cos_a;
-	//~ double sin_a;
-	//~ double cos_2a;
-	//~ double sin_2a;
-	//~ printf("\n\n**************************************************\n\n");
-	//~ for (unsigned int weightCell = 0; weightCell < 2; weightCell++) {
-		//~ if (weightCell == 0) {
-			//~ curI = i+1; 
-			//~ curJ = j;
-		//~ } else if (weightCell == 1) {
-			//~ curI = i; 
-			//~ curJ = j+1;
-		//~ }
-		//~ 
-		//~ /* TODO: here i assume we have angle from left top to right bottom */
-		//~ switch (cell.at(n).at(i).at(j).type) {
-			//~ case 1:
-			//~ xbegin = i*dx;
-			//~ xend = (i+1)*dx;
-			//~ ybegin = j*dr + cell.at(n).at(i).at(j).r_1*dr;
-			//~ yend = j*dr + cell.at(n).at(i).at(j).r_2*dr;
-			//~ break;
-			//~ 
-			//~ case 3:
-			//~ xbegin = i*dx + cell.at(n).at(i).at(j).x_2*dx;
-			//~ xend = i*dx + cell.at(n).at(i).at(j).x_1*dx;
-			//~ ybegin = (j+1)*dr;
-			//~ yend = j*dr;
-			//~ break;
-			//~ 
-			//~ case 8:
-			//~ xbegin = i*dx + cell.at(n).at(i).at(j).x_2*dx;
-			//~ xend = (i+1)*dx;
-			//~ ybegin = (j+1)*dr;
-			//~ yend = j*dr + cell.at(n).at(i).at(j).r_2*dr;
-			//~ break;
-			//~ 
-			//~ case 10:
-			//~ xbegin = i*dx;
-			//~ xend = i*dx + cell.at(n).at(i).at(j).x_1*dx;
-			//~ ybegin = j*dr + cell.at(n).at(i).at(j).r_1*dr;
-			//~ yend = j*dr;
-			//~ break;
-			//~ 
-			//~ default:
-			//~ break;
-		//~ }
-		//~ cos_a = (xend - xbegin) / sqrt(pow(yend-ybegin,2)+pow(xend-xbegin,2));
-		//~ sin_a = (yend - ybegin) / sqrt(pow(yend-ybegin,2)+pow(xend-xbegin,2));
-		//~ cos_2a = pow(cos_a,2) - pow(sin_a,2);
-		//~ sin_2a = 2*cos_a*sin_a;
-		//~ 
-		//~ // (curI+0.5)*dx returns us to the center of the cell
-		//~ vertices[0].x = (curI)*dx; 
-		//~ vertices[1].x = (curI+1)*dx; 
-		//~ vertices[2].x = (curI+1)*dx; 
-		//~ vertices[3].x = (curI)*dx; 
-		//~ vertices[0].y = (curJ)*dr;
-		//~ vertices[1].y = (curJ)*dr;
-		//~ vertices[2].y = (curJ+1)*dr;
-		//~ vertices[3].y = (curJ+1)*dr;
-		//~ 
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ cout << "x_1 = " << cell.at(n).at(i).at(j).x_1 << ", r_1 = " << cell.at(n).at(i).at(j).r_1 << ", x_2 = " << cell.at(n).at(i).at(j).x_2 << ", r_2 = " << cell.at(n).at(i).at(j).r_2 << endl; 
-		//~ cout << "Line begin = " << xbegin << ":" << ybegin << ", line end = " << xend << ":" << yend << endl;
-		//~ cout << "Line angle = " << asin(sin_a)*180/M_PI << endl;
-		//~ cout << "Orig Vertices at i = " << i << ", j = " << j << ", weightCell = " << weightCell << endl;
-		//~ cout << "0: " << vertices[0].x << ":" << vertices[0].y << endl;
-		//~ cout << "1: " << vertices[1].x << ":" << vertices[1].y << endl;
-		//~ cout << "2: " << vertices[2].x << ":" << vertices[2].y << endl;
-		//~ cout << "3: " << vertices[3].x << ":" << vertices[3].y << endl;
-		//~ getchar();
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ 
-		//~ // Get distance from each point to line
-		//~ for (unsigned int idx = 0; idx < 4; idx++) {
-			//~ double dist = (
-				//~ (xend - xbegin) * (ybegin - vertices[idx].y) - 
-				//~ (xbegin - vertices[idx].x) * (yend - ybegin)
-			    //~ ) / sqrt(pow(xend-xbegin,2)+pow(yend-ybegin,2));
-			//~ double diffX = 2 * dist * sin_a;
-			//~ double diffY = 2 * dist * cos_a;
-			//~ vertices[idx].x -= diffX;
-			//~ vertices[idx].y += diffY;
-			//~ vertices_ij[idx].i = floor(vertices[idx].x/dx); 
-			//~ vertices_ij[idx].j = floor(vertices[idx].y/dr);
-			//~ printf("Point %u, distance total: %4.4f, x: %4.4f, y: %4.4f\n", idx,dist,diffX,diffY);
-		//~ }
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ cout << "Vertices at i = " << i << ", j = " << j << ", weightCell = " << weightCell << endl;
-		//~ cout << "0: " << vertices[0].x << ":" << vertices[0].y << endl;
-		//~ cout << "1: " << vertices[1].x << ":" << vertices[1].y << endl;
-		//~ cout << "2: " << vertices[2].x << ":" << vertices[2].y << endl;
-		//~ cout << "3: " << vertices[3].x << ":" << vertices[3].y << endl;
-		//~ cout << "Vertices_ij at i = " << i << ", j = " << j << ", weightCell = " << weightCell << endl;
-		//~ cout << "0: " << vertices_ij[0].i << ":" << vertices_ij[0].j << endl;
-		//~ cout << "1: " << vertices_ij[1].i << ":" << vertices_ij[1].j << endl;
-		//~ cout << "2: " << vertices_ij[2].i << ":" << vertices_ij[2].j << endl;
-		//~ cout << "3: " << vertices_ij[3].i << ":" << vertices_ij[3].j << endl;
-		//~ getchar();
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /**
-		 //~ * Axis intersections and point types
-		 //~ * 
-		 //~ * Point types:
-		 //~ * 0 - vertex
-		 //~ * 1 - axis intersection
-		 //~ * 2 - internal point 
-		 //~ * 
-		 //~ **/
-		//~ Point2D point;
-		//~ vector <Point2D> points;
-		//~ vector <int> pointType;
-		//~ for (int idx1 = 0; idx1 < 4; idx1++) {
-			//~ point.x = vertices[idx1].x; point.y = vertices[idx1].y;
-			//~ points.push_back(point);
-			//~ pointType.push_back(0);
-			//~ if (fabs(fmod(point.x, dx)) < pow(10,-6) && fabs(fmod(point.y, dr)) < pow(10,-6)) continue;
-			//~ int idx2 = idx1 != 3 ? idx1 + 1 : 0;
-			//~ // One intersection point on Y axis
-			//~ if (vertices_ij[idx1].i != vertices_ij[idx2].i && vertices_ij[idx1].j == vertices_ij[idx2].j) {
-				//~ double interX = floor(fmax(vertices[idx1].x,vertices[idx2].x)/dx)*dx;
-				//~ double interY = vertices[idx2].y + (interX - vertices[idx2].x) * (vertices[idx2].y - vertices[idx1].y) / (vertices[idx2].x - vertices[idx1].x);
-				//~ point.x = interX; point.y = interY;
-				//~ points.push_back(point);
-				//~ pointType.push_back(1);
-			//~ } else
-			//~ // One intersection point on X axis
-			//~ if (vertices_ij[idx1].i == vertices_ij[idx2].i && vertices_ij[idx1].j != vertices_ij[idx2].j) {
-				//~ u_int idx_max = vertices[idx1].y > vertices[idx2].y ? idx1 : idx2;
-				//~ double interY = floor(vertices[idx_max].y/dr)*dr;
-				//~ double interX = vertices[idx2].x + (interY - vertices[idx2].y) * (vertices[idx2].x - vertices[idx1].x) / (vertices[idx2].y - vertices[idx1].y);
-				//~ point.x = interX; point.y = interY;
-				//~ points.push_back(point);
-				//~ pointType.push_back(1);
-			//~ } else
-			//~ // If has 2 intersection points - first serve closest (because triangle gen is buggy)
-			//~ if (vertices_ij[idx1].i != vertices_ij[idx2].i && vertices_ij[idx1].j != vertices_ij[idx2].j) {
-				//~ double interX1 = floor(fmax(vertices[idx1].x,vertices[idx2].x)/dx)*dx;
-				//~ double interY1 = vertices[idx2].y + (interX1 - vertices[idx2].x) * (vertices[idx2].y - vertices[idx1].y) / (vertices[idx2].x - vertices[idx1].x);
-				//~ double interY2 = floor(fmax(vertices[idx1].y,vertices[idx2].y)/dr)*dr;
-				//~ double interX2 = vertices[idx2].x + (interY2 - vertices[idx2].y) * (vertices[idx2].x - vertices[idx1].x) / (vertices[idx2].y - vertices[idx1].y);
-				//~ if (pow(vertices[idx1].x-interX1,2) + pow(vertices[idx1].y-interY1,2) < pow(vertices[idx1].x-interX2,2) + pow(vertices[idx1].y-interY2,2)) {
-					//~ point.x = interX1; point.y = interY1;
-					//~ points.push_back(point);
-					//~ pointType.push_back(1);
-					//~ point.x = interX2; point.y = interY2 ;
-					//~ points.push_back(point);
-					//~ pointType.push_back(1);
-				//~ } else {
-					//~ point.x = interX2; point.y = interY2;
-					//~ points.push_back(point);
-					//~ pointType.push_back(1);
-					//~ point.x = interX1; point.y = interY1;
-					//~ points.push_back(point);
-					//~ pointType.push_back(1);
-				//~ }
-			//~ }
-		//~ }
-		//~ // Internal points and global type calculation
-		//~ int globalType = -1;
-		//~ int max_i_diff = 0;
-		//~ int max_j_diff = 0;
-		//~ unsigned int max_i_point[2] = {0};
-		//~ unsigned int max_j_point[2] = {0};
-		//~ for (unsigned int idx2 = 0; idx2 < 4; idx2++) {
-			//~ for (unsigned int idx3 = 0; idx3 < 4; idx3++) {
-				//~ if (vertices_ij[idx2].i - vertices_ij[idx3].i > max_i_diff) {
-					//~ max_i_diff = vertices_ij[idx2].i - vertices_ij[idx3].i;
-					//~ max_i_point[0] = idx2;
-					//~ max_i_point[1] = idx3;
-				//~ }
-				//~ if (vertices_ij[idx2].j - vertices_ij[idx3].j > max_j_diff) {
-					//~ max_j_diff = vertices_ij[idx2].j - vertices_ij[idx3].j;
-					//~ max_j_point[0] = idx2;
-					//~ max_j_point[1] = idx3;
-				//~ }
-			//~ }
-		//~ }
-		//~ 
-		//~ // Cleaning points
-		//~ bool changed = true;
-		//~ while (changed) {
-			//~ changed = false;
-			//~ for (unsigned int idx = 0; idx < points.size(); idx++) {
-				//~ for (unsigned int idx2 = 0; idx2 < points.size(); idx2++) {
-					//~ if (fabs(points.at(idx2).x - points.at(idx).x) < pow(10,-6) && 
-					    //~ fabs(points.at(idx2).y - points.at(idx).y) < pow(10,-6) && 
-					    //~ pointType.at(idx) != 2 &&
-					    //~ idx2 != idx) {
-						//~ points.erase(points.begin()+idx2);
-						//~ pointType.erase(pointType.begin()+idx2);
-						//~ changed = true;
-					//~ }
-				//~ }
-			//~ }
-		//~ }
-//~ 
-		//~ cout << "Cell : " << i << ":" << j << endl;
-		//~ cout << "max_i_diff = " << max_i_diff << ", max_i_points : " << max_i_point[0] << " : " << max_i_point[1] << endl;
-		//~ cout << "max_j_diff = " << max_j_diff << ", max_j_points : " << max_j_point[0] << " : " << max_j_point[1] <<  endl;
-		//~ if (max_i_diff == 1 && max_j_diff == 1) {
-			//~ double internalX = floor(fmax(fmax(vertices[0].x,vertices[1].x),fmax(vertices[2].x,vertices[3].x))/dx)*dx;
-			//~ double internalY = floor(fmax(fmax(vertices[0].y,vertices[1].y),fmax(vertices[2].y,vertices[3].y))/dr)*dr;
-			//~ point.x = internalX; point.y = internalY;
-			//~ points.push_back(point);
-			//~ pointType.push_back(2);
-			//~ globalType = 0;
-		//~ } else {
-			//~ unsigned int prevPointI[2] = {0};
-			//~ unsigned int nextPointI[2] = {0};
-			//~ unsigned int prevPointJ[2] = {0};
-			//~ unsigned int nextPointJ[2] = {0};
-			//~ prevPointI[0] = max_i_point[0] == 0 ? points.size()-1 : max_i_point[0]-1;
-			//~ prevPointI[1] = max_i_point[1] == 0 ? points.size()-1 : max_i_point[1]-1;
-			//~ nextPointI[0] = max_i_point[0] == points.size()-1 ? 0 : max_i_point[0]+1;
-			//~ nextPointI[1] = max_i_point[1] == points.size()-1 ? 0 : max_i_point[1]+1;
-			//~ prevPointJ[0] = max_j_point[0] == 0 ? points.size()-1 : max_j_point[0]-1;
-			//~ prevPointJ[1] = max_j_point[1] == 0 ? points.size()-1 : max_j_point[1]-1;
-			//~ nextPointJ[0] = max_j_point[0] == points.size()-1 ? 0 : max_j_point[0]+1;
-			//~ nextPointJ[1] = max_j_point[1] == points.size()-1 ? 0 : max_j_point[1]+1;
-			//~ 
-			//~ unsigned int max_i_difference = 0;
-			//~ unsigned int max_j_difference = 0;
-			//~ if (fabs(floor(points.at(nextPointI[0]).x/dx) - floor(points.at(max_i_point[1]).x/dx)) > max_i_difference) max_i_difference = fabs(floor(points.at(nextPointI[0]).x/dx) - floor(points.at(max_i_point[1]).x/dx));
-			//~ if (fabs(floor(points.at(prevPointI[0]).x/dx) - floor(points.at(max_i_point[1]).x/dx)) > max_i_difference) max_i_difference = fabs(floor(points.at(prevPointI[0]).x/dx) - floor(points.at(max_i_point[1]).x/dx));
-			//~ if (fabs(floor(points.at(nextPointJ[0]).y/dr) - floor(points.at(max_j_point[1]).y/dr)) > max_j_difference) max_j_difference = fabs(floor(points.at(nextPointJ[0]).y/dr) - floor(points.at(max_j_point[1]).y/dr));
-			//~ if (fabs(floor(points.at(prevPointJ[0]).y/dr) - floor(points.at(max_j_point[1]).y/dr)) > max_j_difference) max_j_difference = fabs(floor(points.at(prevPointJ[0]).y/dr) - floor(points.at(max_j_point[1]).y/dr));
-			//~ 
-			//~ //if (max_i_difference == 1 && max_j_difference == 1) {
-				//~ double internalX = floor(fmax(fmax(vertices[0].x,vertices[1].x),fmax(vertices[2].x,vertices[3].x))/dx)*dx;
-				//~ double internalY = floor(fmax(fmax(vertices[0].y,vertices[1].y),fmax(vertices[2].y,vertices[3].y))/dr)*dr;
-				//~ point.x = internalX; point.y = internalY;
-				//~ points.push_back(point);
-				//~ pointType.push_back(2);
-				//~ globalType = 1;
-			//~ //}
-		//~ }
-		//~ /** TODO: other types of internal points **/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ for (unsigned int pointNum = 0; pointNum < points.size(); pointNum++) {
-			//~ cout << "Point " << pointNum << " at i = " << i << ", j = " << j << " : " << points.at(pointNum).x << "::" << points.at(pointNum).y << ", type = " << pointType.at(pointNum) << endl;
-		//~ }
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ /******************************************************************************************/
-		//~ // Triangles and weights
-		//~ std::vector < Triangle2D > triangleVector;
-		//~ std::vector < Trapezoid2D > trapezoidVector;
-		//~ double origArea = dx*dr;
-		//~ double area;
-		//~ 
-		//~ 
-		//~ // We'll now make a vector of all cells where our polygon is
-		//~ vector <Int2D> cells; 
-		//~ Int2D newCell;
-		//~ unsigned int i_left, i_right, j_top, j_bottom = 0;
-		//~ // Left and right
-		//~ i_left = vertices_ij[max_i_point[0]].i;
-		//~ i_right = vertices_ij[max_i_point[1]].i;
-		//~ if (i_left > i_right) {
-			//~ unsigned int tmp = i_left;
-			//~ i_left = i_right;
-			//~ i_right = tmp;
-		//~ }
-		//~ // Top and bottom
-		//~ j_bottom = vertices_ij[max_j_point[0]].j;
-		//~ j_top = vertices_ij[max_j_point[1]].j;
-		//~ if (j_bottom > j_top) {
-			//~ unsigned int tmp = j_bottom;
-			//~ j_bottom = j_top;
-			//~ j_top = tmp;
-		//~ }
-		//~ printf("\nWe have the following cells: \n");
-		//~ // Make cells
-		//~ for (unsigned int idx2 = i_left; idx2 <= i_right; idx2++) {
-			//~ for (unsigned int idx3 = j_bottom; idx3 <= j_top; idx3++) {
-				//~ newCell.i = idx2; newCell.j = idx3;
-				//~ cells.push_back(newCell);
-				//~ printf("Cell %u: %d:%d\n", (unsigned int)(cells.size()-1), idx2, idx3);
-			//~ }
-		//~ }
-		//~ printf("\nNow will arrange points in those cells\n");
-		//~ // We'll use center of each of those cells to determine how much points we have in each cell
-		//~ 
-		//~ for (unsigned int idx = 0; idx < cells.size(); idx++) {
-			//~ vector <Point2D> pointsInCell;
-			//~ vector <int> pointsInCellTypes;
-			//~ // If vertex - check for outer triangle or trapezoid
-			//~ double delta = pow(10,-10);
-			//~ for (unsigned int idx2 = 0; idx2 < points.size(); idx2++) {
-				//~ bool rule[4];
-				//~ rule[0] = points.at(idx2).x > cells.at(idx).i*dx - delta;
-				//~ rule[1] = points.at(idx2).x < (cells.at(idx).i+1)*dx + delta;
-				//~ rule[2] = points.at(idx2).y > cells.at(idx).j*dr - delta;
-				//~ rule[3] = points.at(idx2).y < (cells.at(idx).j+1)*dr + delta;
-				//~ if (rule[0] && rule[1] && rule[2] && rule[3]) {
-					//~ pointsInCell.push_back(points.at(idx2));
-					//~ pointsInCellTypes.push_back(pointType.at(idx2));
-					//~ printf("Cell %u: %4.4f:%4.4f, type %d \n", 
-					    //~ idx,points.at(idx2).x,points.at(idx2).y,pointType.at(idx2));
-				//~ }
-			//~ }
-			//~ // If we have internal point - fix ID
-			//~ if(std::find(pointsInCellTypes.begin(), pointsInCellTypes.end(), 2) != pointsInCellTypes.end()) {
-				//~ printf("We have an internal point!\n");
-				//~ unsigned int intIdx = 0;
-				//~ Point2D intPoint;
-				//~ for (unsigned int idx2 = 0; idx2 < pointsInCellTypes.size(); idx2++) {
-					//~ if (pointsInCellTypes.at(idx2) == 2) {
-						//~ intIdx = idx2;
-						//~ intPoint = pointsInCell.at(idx2);
-						//~ break;
-					//~ }
-				//~ }
-				//~ double minHor = 1000, minVer = 1000;
-				//~ int minHorIdx = 0, minVerIdx = 0;
-				//~ for (unsigned int idx2 = 0; idx2 < pointsInCell.size(); idx2++) {
-					//~ if (idx2 != intIdx) {
-						//~ Point2D point = pointsInCell.at(idx2);
-						//~ printf("Testing point %u\n", idx2);
-						//~ 
-						//~ if (fabs(point.x - intPoint.x) < minHor && fabs(point.y - intPoint.y) < pow(10,-6)
-						    //~ && pointsInCellTypes.at(idx2) == 1) {
-							//~ printf("hor = %4.4f\n", point.x - intPoint.x);
-							//~ minHor = point.x - intPoint.x;
-							//~ minHorIdx = idx2;
-						//~ }
-						//~ 
-						//~ if (fabs(point.y - intPoint.y) < minVer && fabs(point.x - intPoint.x) < pow(10,-6)
-						    //~ && pointsInCellTypes.at(idx2) == 1) {
-							//~ printf("ver = %4.4f\n", point.x - intPoint.x);
-							//~ minVer = point.y - intPoint.y;
-							//~ minVerIdx = idx2;
-						//~ }
-					//~ }
-				//~ }
-				//~ printf("Closest points to internal: hor %4.4f:%4.4f, ver %4.4f:%4.4f\n\n", 
-				    //~ pointsInCell.at(minHorIdx).x,pointsInCell.at(minHorIdx).y,pointsInCell.at(minVerIdx).x,pointsInCell.at(minVerIdx).y);
-				//~ 
-				//~ if (minVerIdx != 0 && minHorIdx != 0) {
-				//~ std::vector<Point2D>::iterator it = pointsInCell.begin();
-				//~ pointsInCell.erase(it+intIdx);
-					//~ if (minVerIdx > minHorIdx) {
-						//~ pointsInCell.insert(it+minVerIdx, intPoint);
-					//~ } else {
-						//~ pointsInCell.insert(it+minHorIdx, intPoint);
-					//~ }
-				//~ }
-				//~ 
-				//~ printf("Points in current cell in order: ");
-				//~ for (unsigned int idx2 = 0; idx2 < pointsInCell.size(); idx2++) {
-					//~ printf("%4.4f:%4.4f, ",pointsInCell.at(idx2).x, pointsInCell.at(idx2).y);
-				//~ }
-				//~ printf("\n");
-			//~ }
-			//~ printf("PointsArray size: %u\n", (unsigned int)pointsInCell.size());
-			//~ double XPointsArray[pointsInCell.size()];
-			//~ double YPointsArray[pointsInCell.size()];
-			//~ for (unsigned int idx2 = 0; idx2 < pointsInCell.size(); idx2++) {
-				//~ XPointsArray[idx2] = pointsInCell.at(idx2).x;
-				//~ YPointsArray[idx2] = pointsInCell.at(idx2).y;
-				//~ printf("Point %4.4f:%4.4f;  ",XPointsArray[idx2],YPointsArray[idx2]);
-			//~ }
-			//~ area = fabs(polygonArea(XPointsArray, YPointsArray, pointsInCell.size()));
-			//~ printf("Polygon area: %8.8f\n", area);
-			//~ WeightPart weightPart;
-			//~ weightPart.weight = area / origArea;
-			//~ weightPart.i = cells.at(idx).i;
-			//~ weightPart.j = cells.at(idx).j;
-			//~ printf("Weight of this cell: %4.4f\n\n\n", weightPart.weight);
-			//~ if (weightCell == 0) {
-				//~ cell.at(n).at(i).at(j).weightVector.x.push_back(weightPart);
-			//~ } else if (weightCell == 1) {
-				//~ cell.at(n).at(i).at(j).weightVector.y.push_back(weightPart);
-			//~ }
-		//~ }
-	//~ }
-	//~ printf("Total weight parts at %d in cell %d:%d\nby x: %u\nby y: %u\n", n,i,j,
-		//~ (unsigned int) cell.at(n).at(i).at(j).weightVector.x.size(),
-		//~ (unsigned int) cell.at(n).at(i).at(j).weightVector.y.size());
-	//~ result = cell.at(n).at(i).at(j).weightVector;
-	//~ return result;
-//~ }
 
 /* Euler stage U_sn calculation */
 double euler_Usn(double P_sn, double S, double F, double dt, double U_prev) {
@@ -754,6 +308,8 @@ double euler_bar_Vx(cell2d * cell, int n, int i, int j, double dt, double dx, do
 			P_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].P[0];
 			Vx_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].Vx[0];
 	    }
+	    printf("\nP_i1 in cell %d:%d = %16.16f\n", i,j,P_i1);
+	    printf("(P_i1 + P)/2 - (P_i_1 + P)/2 = %16.16f\n\n",(P_i1 + P)/2 - (P_i_1 + P)/2);
 	    break;
 	
 	// Partial cell, only for first-order calc
@@ -836,6 +392,12 @@ double euler_bar_Vx(cell2d * cell, int n, int i, int j, double dt, double dx, do
 	//~ double P_i_12 = (P_i_1 + P)/2 * (1 - (k-1)*(Vx - Vx_i_1)*dt/dx);
 	double P_i12 = (P_i1 + P)/2;
 	double P_i_12 = (P_i_1 + P)/2;
+	if ((*cell)[n][i][j].type == 1) {
+		printf("P = %16.16f\n",P);
+		printf("P_i1 = %16.16f\n",P_i1);
+		printf("P_i_1 = %16.16f\n",P_i_1);
+		printf("(P_i1 + P)/2 - (P_i_1 + P)/2 = %16.16f\n\n",P_i12 - P_i_12);
+	}
 	double result = (*cell)[n][i][j].Vx[0] - (P_i12 - P_i_12) / dx * fmax((*cell)[n][i][j].A[1],(*cell)[n][i][j].A[2]) * dt / ((*cell)[n][i][j].rho * (*cell)[n][i][j].A[0]);
 	if (fabs(result-(*cell)[n][i][j].Vx[0]) < pow(10,-15)) result = (*cell)[n][i][j].Vx[0];
 	
@@ -916,8 +478,8 @@ double euler_bar_Vr(cell2d * cell, int n, int i, int j, double dt, double dx, do
 			Vr_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].Vr[0];
 			printf("Getting weight = %10.10f from cell %d:%d\n", weight, weightCell.i, weightCell.j);
 	    }
-	    printf("\nP_j1 in cell %d:%d = %10.10f\n", i,j,P_j1);
-	    printf("(P_j1 + P)/2 - (P_j_1 + P)/2 = %10.10f\n\n",(P_j1 + P)/2 - (P_j_1 + P)/2);
+	    printf("\nP_j1 in cell %d:%d = %16.16f\n", i,j,P_j1);
+	    printf("(P_j1 + P)/2 - (P_j_1 + P)/2 = %16.16f\n\n",(P_j1 + P)/2 - (P_j_1 + P)/2);
 	    
 	    break;
 	
@@ -1545,7 +1107,7 @@ double lagrange_rho(gasCell * cell, gasCell * prevCell, int i, int j, double dt,
         (cell->A[0] * dx * fabs(j-axis_j-0.5) * pow(dr,2))
         ;
     } else {
-	result = cell->rho;
+    	result = cell->rho;
     }
         //~ if (j == 6 && prevCell->A[0]/cell->A[0] > 1) {
 			//~ cout << "K > 1" << endl
@@ -1576,8 +1138,6 @@ double lagrange_rho(gasCell * cell, gasCell * prevCell, int i, int j, double dt,
 				<< "dt = " << dt << endl << endl;
 			getchar();
 		}
-        //+
-        //cell->m*dt/(cell->A[0]);
     return result;
 }
 

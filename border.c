@@ -164,7 +164,7 @@ std::vector <TPoint2D> getExtPoints(Point2D vertices[4], Int2D vertices_ij[4]) {
 		} else
 		// One intersection point on X axis
 		if (vertices_ij[idx1].i == vertices_ij[idx2].i && vertices_ij[idx1].j != vertices_ij[idx2].j) {
-			u_int idx_max = vertices[idx1].y > vertices[idx2].y ? idx1 : idx2;
+			unsigned int idx_max = vertices[idx1].y > vertices[idx2].y ? idx1 : idx2;
 			double interY = floor(vertices[idx_max].y/dr)*dr;
 			double interX = vertices[idx2].x + (interY - vertices[idx2].y) * (vertices[idx2].x - vertices[idx1].x) / (vertices[idx2].y - vertices[idx1].y);
 			point.x = interX; point.y = interY; point.type = 1;
@@ -504,6 +504,7 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 		if (debug) printf("\nNow will arrange points in those cells\n");
 		
 		// Main loop where each cell's weight is calculated
+		double totalWeight = 0;
 		for (unsigned int idx = 0; idx < cells.size(); idx++) {
 			// We'll use center of each of those cells to determine how much points we have in each cell
 			std::vector <TPoint2D> pointsInCell = getPointsInCell(idx, 
@@ -536,15 +537,28 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 			if (debug) printf("Weight of this cell: %4.4f\n\n\n", 
 				weightPart.weight);
 			if (weightCell == 0) {
-				cell.at(n).at(i).at(j).weightVector.x.push_back(weightPart);
+				result.x.push_back(weightPart);
 			} else if (weightCell == 1) {
-				cell.at(n).at(i).at(j).weightVector.y.push_back(weightPart);
+				result.y.push_back(weightPart);
+			}
+			totalWeight += weightPart.weight;
+		}
+		// Scaling to 1
+		double scale = 1.0/totalWeight;
+		if (weightCell == 0) {
+			for (unsigned int idx = 0; idx < result.x.size(); idx++) {
+				result.x.at(idx).weight *= scale;
+			}
+		} else {
+			for (unsigned int idx = 0; idx < result.y.size(); idx++) {
+				result.y.at(idx).weight *= scale;
 			}
 		}
 	}
+
 	if (debug) printf("Total weight parts at %d in cell %d:%d\nby x: %u\nby y: %u\n", n,i,j,
-		(unsigned int) cell.at(n).at(i).at(j).weightVector.x.size(),
-		(unsigned int) cell.at(n).at(i).at(j).weightVector.y.size());
-	result = cell.at(n).at(i).at(j).weightVector;
+		(unsigned int) result.x.size(),
+		(unsigned int) result.y.size());
+
 	return result;
 }

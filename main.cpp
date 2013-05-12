@@ -161,7 +161,16 @@ int main(int argc, char** argv) {
 					    j = atoi(tmpLine.c_str());
 					    break;
 					case 2:
-					    cell.at(n).at(i).at(j).type = atof(tmpLine.c_str());
+					    cell.at(n).at(i).at(j).type = atoi(tmpLine.c_str());
+					    if (cell.at(n).at(i).at(j).type != 0 &&
+					    		cell.at(n).at(i).at(j).type != 18 &&
+					    		cell.at(n).at(i).at(j).type != 14 &&
+					    		cell.at(n).at(i).at(j).type != 17 &&
+					    		cell.at(n).at(i).at(j).type != 13 &&
+					    		cell.at(n).at(i).at(j).type != 15) {
+					    	printf("i = %d, j = %d, String is %s, type is %d\n",
+					    			i,j,tmpLine.c_str(), cell.at(n).at(i).at(j).type);
+					    }
 					    break;
 					case 3:
 					    cell.at(n).at(i).at(j).r_1 = atof(tmpLine.c_str());
@@ -478,13 +487,13 @@ int main(int argc, char** argv) {
 						cell.at(n).at(i).at(j).bar_Vx[0] = euler_bar_Vx(&cell,n,i,j,dt,dx,dr);
 						cell.at(n).at(i).at(j).bar_Vr[0] = euler_bar_Vr(&cell,n,i,j,dt,dx,dr);
 						//~ if (cell.at(n).at(i).at(j).type == 1 || cell.at(n).at(i).at(j).type == 3 ||
-								//~ cell.at(n).at(i).at(j).type == 8 || cell.at(n).at(i).at(j).type == 10 )	{
-							//~ printf("Before rotation: %10.10f:%10.10f\n",
-								//~ cell.at(n).at(i).at(j).bar_Vx[0], cell.at(n).at(i).at(j).bar_Vr[0]);
-							//~ rotateVectors(cell.at(n).at(i).at(j).bar_Vx[0], 
-								//~ cell.at(n).at(i).at(j).bar_Vr[0], cell.at(n).at(i).at(j).angle);
-							//~ printf("After rotation: %10.10f:%10.10f\n",
-								//~ cell.at(n).at(i).at(j).bar_Vx[0], cell.at(n).at(i).at(j).bar_Vr[0]);
+						//~ 		cell.at(n).at(i).at(j).type == 8 || cell.at(n).at(i).at(j).type == 10 )	{
+						//~ 	printf("Before rotation: %10.10f:%10.10f\n",
+						//~ 		cell.at(n).at(i).at(j).bar_Vx[0], cell.at(n).at(i).at(j).bar_Vr[0]);
+						//~ 	rotateVectors(cell.at(n).at(i).at(j).bar_Vx[0],
+						//~ 		cell.at(n).at(i).at(j).bar_Vr[0], cell.at(n).at(i).at(j).angle);
+						//~ 	printf("After rotation: %10.10f:%10.10f\n",
+						//~ 		cell.at(n).at(i).at(j).bar_Vx[0], cell.at(n).at(i).at(j).bar_Vr[0]);
 						//~ }
 						cell.at(n).at(i).at(j).bar_e = euler_bar_e(&cell,n,i,j,dt,dx,dr);
 					}
@@ -785,35 +794,6 @@ int main(int argc, char** argv) {
 				//~ }
 			//~ }
 			
-			/** Clear noise **/
-			//~ for (i = 0; i < i_sn; i++) {
-				//~ for (j = 1; j < max_j-1; j++) {
-					//~ if (cell.at(n+1).at(i).at(j).type != 18 && cell.at(n+1).at(i).at(j).type != 13) {
-						//~ if (((fabs(cell.at(n+1).at(i).at(j).Vx[0] - cell.at(n+1).at(i).at(j+1).Vx[0]) > 0) && (fabs(cell.at(n+1).at(i).at(j).Vx[0] - cell.at(n+1).at(i).at(j+1).Vx[0]) < 0.001*cell.at(n+1).at(i).at(j).Vx[0])) ||
-								//~ ((fabs(cell.at(n+1).at(i).at(j).Vr[0] - cell.at(n+1).at(i).at(j+1).Vr[0]) > 0) && (fabs(cell.at(n+1).at(i).at(j).Vr[0] - cell.at(n+1).at(i).at(j+1).Vr[0]) < pow(10,-2))) ||
-								//~ ((fabs(cell.at(n+1).at(i).at(j).P[0] - cell.at(n+1).at(i).at(j+1).P[0]) > 0) && (fabs(cell.at(n+1).at(i).at(j).P[0] - cell.at(n+1).at(i).at(j+1).P[0]) < 10)) ||
-								//~ ((fabs(cell.at(n+1).at(i).at(j).e - cell.at(n+1).at(i).at(j+1).e) > 0) && (fabs(cell.at(n+1).at(i).at(j).e - cell.at(n+1).at(i).at(j+1).e) < 10))) {
-							//~ cell.at(n+1).at(i).at(j).Vx[0] = cell.at(n+1).at(i).at(j+1).Vx[0];
-							//~ cell.at(n+1).at(i).at(j).Vr[0] = cell.at(n+1).at(i).at(j+1).Vr[0];
-							//~ cell.at(n+1).at(i).at(j).P[0] = cell.at(n+1).at(i).at(j+1).P[0];
-							//~ cell.at(n+1).at(i).at(j).e = cell.at(n+1).at(i).at(j+1).e;
-							//~ cout << endl << "Cleared" << endl << endl;
-						//~ }
-					//~ } else if (cell.at(n+1).at(i).at(j).type == 13) {
-						//~ if (((fabs(cell.at(n+1).at(i).at(j).Vx[0] - cell.at(n+1).at(i).at(j-1).Vx[0]) > 0) && (fabs(cell.at(n+1).at(i).at(j).Vx[0] - cell.at(n+1).at(i).at(j-1).Vx[0]) < 0.001*cell.at(n+1).at(i).at(j).Vx[0])) ||
-								//~ ((fabs(cell.at(n+1).at(i).at(j).Vr[0] - cell.at(n+1).at(i).at(j-1).Vr[0]) > 0) && (fabs(cell.at(n+1).at(i).at(j).Vr[0] - cell.at(n+1).at(i).at(j-1).Vr[0]) < pow(10,-2))) ||
-								//~ ((fabs(cell.at(n+1).at(i).at(j).P[0] - cell.at(n+1).at(i).at(j-1).P[0]) > 0) && (fabs(cell.at(n+1).at(i).at(j).P[0] - cell.at(n+1).at(i).at(j-1).P[0]) < 10)) ||
-								//~ ((fabs(cell.at(n+1).at(i).at(j).e - cell.at(n+1).at(i).at(j-1).e) > 0) && (fabs(cell.at(n+1).at(i).at(j).e - cell.at(n+1).at(i).at(j-1).e) < 10))) {
-							//~ cell.at(n+1).at(i).at(j).Vx[0] = cell.at(n+1).at(i).at(j-1).Vx[0];
-							//~ cell.at(n+1).at(i).at(j).Vr[0] = cell.at(n+1).at(i).at(j-1).Vr[0];
-							//~ cell.at(n+1).at(i).at(j).P[0] = cell.at(n+1).at(i).at(j-1).P[0];
-							//~ cell.at(n+1).at(i).at(j).e = cell.at(n+1).at(i).at(j-1).e;
-							//~ cout << endl << "Cleared" << endl << endl;
-						//~ }
-					//~ }
-				//~ }
-			//~ }
-			
 			/*****************
 			 * DEBUG: Vx and E test *
 			 *****************/
@@ -838,6 +818,37 @@ int main(int argc, char** argv) {
 				minimum.push_back(*min_element(array.begin(), array.end()));
 			}
 			
+			for (i = 1; i < i_sn; i++) {
+				for (j = 1; j < max_j-1; j++) {
+					if (cell[n][i][j].type == 1) {
+						printf("E at %d:%d = %16.16f\nE at %d:%d = %16.16f\n",
+							i,j,cell[n+1][i][j].e,
+							i-5,j-3,cell[n+1][i-5][j-3].e);
+						printf("rho at %d:%d = %16.16f\nrho at %d:%d = %16.16f\n",
+							i,j,cell[n+1][i][j].rho,
+							i-5,j-3,cell[n+1][i-5][j-3].rho);
+						printf("dM[1] at %d:%d = %16.16f\ndM[1] at %d:%d = %16.16f\n",
+							i,j,cell[n][i][j].dM[1],
+							i-5,j-3,cell[n][i-5][j-3].dM[1]);
+						printf("dM[2] at %d:%d = %16.16f\ndM[2] at %d:%d = %16.16f\n",
+							i,j,cell[n][i][j].dM[2],
+							i-5,j-3,cell[n][i-5][j-3].dM[2]);
+						printf("dM[3] at %d:%d = %16.16f\ndM[3] at %d:%d = %16.16f\n",
+							i,j,cell[n][i][j].dM[3],
+							i-5,j-3,cell[n][i-5][j-3].dM[3]);
+						printf("dM[4] at %d:%d = %16.16f\ndM[4] at %d:%d = %16.16f\n",
+							i,j,cell[n][i][j].dM[4],
+							i-5,j-3,cell[n][i-5][j-3].dM[4]);
+						printf("barVx at %d:%d = %16.16f\nbarVx at %d:%d = %16.16f\n",
+							i,j,cell[n][i][j].bar_Vx[0],
+							i-5,j-3,cell[n][i-5][j-3].bar_Vx[0]);
+						printf("barVr at %d:%d = %16.16f\nbarVr at %d:%d = %16.16f\n",
+							i,j,cell[n][i][j].bar_Vr[0],
+							i-5,j-3,cell[n][i-5][j-3].bar_Vr[0]);
+					}
+				}
+			}
+
 			double next = Ku * *min_element(minimum.begin(), minimum.end());
 			if (next > 1.1*dt) {
 				dt = 1.1*dt;
@@ -924,48 +935,6 @@ unsigned int factorial(unsigned int n) {
   return table[n];
 }
 
-
-/** Compress a STL string using zlib with given compression level and return
-  * the binary data. */
-std::string compress_string(const std::string& str, int compressionlevel)
-{
-    z_stream zs;                        // z_stream is zlib's control structure
-    memset(&zs, 0, sizeof(zs));
-
-    if (deflateInit(&zs, compressionlevel) != Z_OK)
-        throw(std::runtime_error("deflateInit failed while compressing."));
-
-    zs.next_in = (Bytef*)str.data();
-    zs.avail_in = str.size();           // set the z_stream's input
-
-    int ret;
-    char outbuffer[32768];
-    std::string outstring;
-
-    // retrieve the compressed bytes blockwise
-    do {
-        zs.next_out = reinterpret_cast<Bytef*>(outbuffer);
-        zs.avail_out = sizeof(outbuffer);
-
-        ret = deflate(&zs, Z_FINISH);
-
-        if (outstring.size() < zs.total_out) {
-            // append the block to the output string
-            outstring.append(outbuffer,
-                             zs.total_out - outstring.size());
-        }
-    } while (ret == Z_OK);
-
-    deflateEnd(&zs);
-
-    if (ret != Z_STREAM_END) {          // an error occurred that was not EOF
-        std::ostringstream oss;
-        oss << "Exception during zlib compression: (" << ret << ") " << zs.msg;
-        throw(std::runtime_error(oss.str()));
-    }
-
-    return outstring;
-}
 
 std::string base64_encode(unsigned char const* bytes_to_encode, unsigned int in_len) {
   std::string ret;

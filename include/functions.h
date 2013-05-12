@@ -5,7 +5,6 @@
 
 #include "types.h"
 #include <set>
-#include "triangulate-1.4/earclip.h"
 
 double pre_alpha(gasCell cell, int i, int i_p, double delta_0, double delta);
 //~ double polygonArea(double *X, double *Y, int points);

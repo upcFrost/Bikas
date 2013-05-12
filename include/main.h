@@ -8,7 +8,6 @@
 #include "functions.h"
 #include "output.h"
 #include "border.h"
-#include <zlib.h>
 #include <cstring> 
 #include <stdexcept>
 #include <stdint.h>
@@ -36,7 +35,6 @@ double Bi(unsigned int n, int i, double x);
 double Bj(unsigned int m, int j, double y);
 double splineEval(double x, double y, int n, int m, double ** k);
 unsigned int factorial(unsigned int n);
-std::string compress_string(const std::string&, int compressionlevel = Z_DEFAULT_COMPRESSION);
 std::string base64_encode(unsigned char const* , unsigned int len);
 
 

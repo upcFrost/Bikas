@@ -1,6 +1,7 @@
 #include "types.h"
 #include "globals.h"
 #include <vector>
+#include "stdbool.h"
 
 typedef struct TPoint2D { double x; double y; int type; } TPoint2D;
 
