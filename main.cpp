@@ -162,15 +162,6 @@ int main(int argc, char** argv) {
 					    break;
 					case 2:
 					    cell.at(n).at(i).at(j).type = atoi(tmpLine.c_str());
-					    if (cell.at(n).at(i).at(j).type != 0 &&
-					    		cell.at(n).at(i).at(j).type != 18 &&
-					    		cell.at(n).at(i).at(j).type != 14 &&
-					    		cell.at(n).at(i).at(j).type != 17 &&
-					    		cell.at(n).at(i).at(j).type != 13 &&
-					    		cell.at(n).at(i).at(j).type != 15) {
-					    	printf("i = %d, j = %d, String is %s, type is %d\n",
-					    			i,j,tmpLine.c_str(), cell.at(n).at(i).at(j).type);
-					    }
 					    break;
 					case 3:
 					    cell.at(n).at(i).at(j).r_1 = atof(tmpLine.c_str());
@@ -266,7 +257,8 @@ int main(int argc, char** argv) {
 		/* Add one more position as as ending */
 		printf("weightVector size on %d for 99:13 = %u\n", 
 			n, (unsigned int)cell.at(n).at(99).at(13).weightVector.y.size());
-		cell.push_back(cell.at(cell.size()-1));
+		cell2dStatic currentCell = cell.back();
+		cell.push_back(currentCell);
 		printf("weightVector size on %d for 99:13 = %u\n", 
 			n+1, (unsigned int)cell.at(n+1).at(99).at(13).weightVector.y.size());
 
@@ -326,7 +318,8 @@ int main(int argc, char** argv) {
 				start = clock();
 			}
 
-			cell.push_back(cell.at(cell.size()-1));
+			cell2dStatic currentCell = cell.back();
+			cell.push_back(currentCell);
 			n = cell.size() - 2;
 			
 			/* Projectile position calculation */
@@ -502,13 +495,8 @@ int main(int argc, char** argv) {
 			
 			/** DEBUG **/
 			if (true) {
-				int nArray = 6; int *iArray = new int[nArray]; int *jArray = new int[nArray];
-				iArray[0] = 98; jArray[0] = 12;
-				iArray[1] = 98; jArray[1] = 13;
-				iArray[2] = 99; jArray[2] = 11;
-				iArray[3] = 99; jArray[3] = 12;
-				iArray[4] = 99; jArray[4] = 13;
-				iArray[5] = 98; jArray[5] = 14;
+				int nArray = 1; int *iArray = new int[nArray]; int *jArray = new int[nArray];
+				iArray[0] = 101; jArray[0] = 31;
 				debug_Vx_Vr_P_A_barVx_output(n, nArray, iArray, jArray, cell);
 			}
 
@@ -542,13 +530,8 @@ int main(int argc, char** argv) {
 			
 			/** DEBUG **/
 			if (true) {
-				int nArray = 6; int *iArray = new int[nArray]; int *jArray = new int[nArray];
-				iArray[0] = 98; jArray[0] = 12;
-				iArray[1] = 98; jArray[1] = 13;
-				iArray[2] = 99; jArray[2] = 11;
-				iArray[3] = 99; jArray[3] = 12;
-				iArray[4] = 99; jArray[4] = 13;
-				iArray[5] = 98; jArray[5] = 14;
+				int nArray = 1; int *iArray = new int[nArray]; int *jArray = new int[nArray];
+				iArray[0] = 101; jArray[0] = 31;
 				debug_dM_rho_output(n, nArray, iArray, jArray, cell);			
 			}
 			
@@ -696,13 +679,8 @@ int main(int argc, char** argv) {
 			
 			/** DEBUG **/
 			if (true) {
-			int nArray = 6; int *iArray = new int[nArray]; int *jArray = new int[nArray];
-				iArray[0] = 98; jArray[0] = 12;
-				iArray[1] = 98; jArray[1] = 13;
-				iArray[2] = 99; jArray[2] = 11;
-				iArray[3] = 99; jArray[3] = 12;
-				iArray[4] = 99; jArray[4] = 13;
-				iArray[5] = 98; jArray[5] = 14;
+				int nArray = 1; int *iArray = new int[nArray]; int *jArray = new int[nArray];
+				iArray[0] = 101; jArray[0] = 31;
 				debug_p_output(n, nArray, iArray, jArray, cell);
 			}
 					
@@ -818,34 +796,32 @@ int main(int argc, char** argv) {
 				minimum.push_back(*min_element(array.begin(), array.end()));
 			}
 			
-			for (i = 1; i < i_sn; i++) {
-				for (j = 1; j < max_j-1; j++) {
-					if (cell[n][i][j].type == 1) {
-						printf("E at %d:%d = %16.16f\nE at %d:%d = %16.16f\n",
-							i,j,cell[n+1][i][j].e,
-							i-5,j-3,cell[n+1][i-5][j-3].e);
-						printf("rho at %d:%d = %16.16f\nrho at %d:%d = %16.16f\n",
-							i,j,cell[n+1][i][j].rho,
-							i-5,j-3,cell[n+1][i-5][j-3].rho);
-						printf("dM[1] at %d:%d = %16.16f\ndM[1] at %d:%d = %16.16f\n",
-							i,j,cell[n][i][j].dM[1],
-							i-5,j-3,cell[n][i-5][j-3].dM[1]);
-						printf("dM[2] at %d:%d = %16.16f\ndM[2] at %d:%d = %16.16f\n",
-							i,j,cell[n][i][j].dM[2],
-							i-5,j-3,cell[n][i-5][j-3].dM[2]);
-						printf("dM[3] at %d:%d = %16.16f\ndM[3] at %d:%d = %16.16f\n",
-							i,j,cell[n][i][j].dM[3],
-							i-5,j-3,cell[n][i-5][j-3].dM[3]);
-						printf("dM[4] at %d:%d = %16.16f\ndM[4] at %d:%d = %16.16f\n",
-							i,j,cell[n][i][j].dM[4],
-							i-5,j-3,cell[n][i-5][j-3].dM[4]);
-						printf("barVx at %d:%d = %16.16f\nbarVx at %d:%d = %16.16f\n",
-							i,j,cell[n][i][j].bar_Vx[0],
-							i-5,j-3,cell[n][i-5][j-3].bar_Vx[0]);
-						printf("barVr at %d:%d = %16.16f\nbarVr at %d:%d = %16.16f\n",
-							i,j,cell[n][i][j].bar_Vr[0],
-							i-5,j-3,cell[n][i-5][j-3].bar_Vr[0]);
-					}
+			for (i = 101; i < 102; i++) {
+				for (j = 31; j < 32; j++) {
+					printf("E at %d:%d = %16.16f\nE at %d:%d = %16.16f\n",
+						i,j,cell[n+1][i][j].e,
+						i-5,j-3,cell[n+1][i-5][j-3].e);
+					printf("rho at %d:%d = %16.16f\nrho at %d:%d = %16.16f\n",
+						i,j,cell[n+1][i][j].rho,
+						i-5,j-3,cell[n+1][i-5][j-3].rho);
+					printf("dM[1] at %d:%d = %16.16f\ndM[1] at %d:%d = %16.16f\n",
+						i,j,cell[n][i][j].dM[1],
+						i-5,j-3,cell[n][i-5][j-3].dM[1]);
+					printf("dM[2] at %d:%d = %16.16f\ndM[2] at %d:%d = %16.16f\n",
+						i,j,cell[n][i][j].dM[2],
+						i-5,j-3,cell[n][i-5][j-3].dM[2]);
+					printf("dM[3] at %d:%d = %16.16f\ndM[3] at %d:%d = %16.16f\n",
+						i,j,cell[n][i][j].dM[3],
+						i-5,j-3,cell[n][i-5][j-3].dM[3]);
+					printf("dM[4] at %d:%d = %16.16f\ndM[4] at %d:%d = %16.16f\n",
+						i,j,cell[n][i][j].dM[4],
+						i-5,j-3,cell[n][i-5][j-3].dM[4]);
+					printf("barVx at %d:%d = %16.16f\nbarVx at %d:%d = %16.16f\n",
+						i,j,cell[n][i][j].bar_Vx[0],
+						i-5,j-3,cell[n][i-5][j-3].bar_Vx[0]);
+					printf("barVr at %d:%d = %16.16f\nbarVr at %d:%d = %16.16f\n",
+						i,j,cell[n][i][j].bar_Vr[0],
+						i-5,j-3,cell[n][i-5][j-3].bar_Vr[0]);
 				}
 			}
 

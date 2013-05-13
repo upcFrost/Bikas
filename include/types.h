@@ -57,7 +57,8 @@ struct gasCell {
     double final_psi;
 };
 
-typedef std::vector < std::vector < std::vector < gasCell > > > cell2d;
+typedef std::vector < std::vector < gasCell > > cell2dStatic;
+typedef std::vector < cell2dStatic > cell2d;
 typedef struct Point2D { double x; double y; } Point2D;
 typedef struct Int2D { int i; int j; } Int2D;
 typedef struct Triangle2D { Point2D point[3]; } Triangle2D;

@@ -129,7 +129,7 @@ void pre_cell_geometry(double array[5], gasCell cell, int i, int j) {
 	    array[2] = 0;
 	    array[3] = cell.x_1;
 	    array[4] = 0;
-	    printf("Cell at (%d, %d) with type 3; A[1] = %4.4f, A[2] = %4.4f, A[3] = %4.4f, A[4] = %4.4f\n", i,j,array[1],array[2],array[3],array[4]);
+	    printf("Cell at (%d, %d) with type 10; A[1] = %4.4f, A[2] = %4.4f, A[3] = %4.4f, A[4] = %4.4f\n", i,j,array[1],array[2],array[3],array[4]);
 	    break;
 	    
 	case 11:
@@ -263,7 +263,7 @@ void euler_proj_broder(double array[5], int j, double Xsn, double dx, double dr)
 	if (j == axis_j) array[3] = 0;
 }
 
-/* Vx calculation on euler stage */
+ /* Vx calculation on euler stage */
 double euler_bar_Vx(cell2d * cell, int n, int i, int j, double dt, double dx, double dr) {
 	/* Dummy cells calc */
     int type = (*cell)[n][i][j].type;
@@ -306,10 +306,12 @@ double euler_bar_Vx(cell2d * cell, int n, int i, int j, double dt, double dx, do
 			weightCell.i = (*cell)[n][i][j].weightVector.x.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.x.at(idx).j;
 			P_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].P[0];
-			Vx_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].Vx[0];
+			Vx_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].Vx[0];
 	    }
-	    printf("\nP_i1 in cell %d:%d = %16.16f\n", i,j,P_i1);
-	    printf("(P_i1 + P)/2 - (P_i_1 + P)/2 = %16.16f\n\n",(P_i1 + P)/2 - (P_i_1 + P)/2);
+	    if (i == 101 && j == 31) {
+	    	printf("\nP_i1 in cell %d:%d = %16.16f\n", i,j,P_i1);
+	    	printf("(P_i1 + P)/2 - (P_i_1 + P)/2 = %16.16f\n\n",(P_i1 + P)/2 - (P_i_1 + P)/2);
+	    }
 	    break;
 	
 	// Partial cell, only for first-order calc
@@ -331,8 +333,12 @@ double euler_bar_Vx(cell2d * cell, int n, int i, int j, double dt, double dx, do
 			weightCell.i = (*cell)[n][i][j].weightVector.x.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.x.at(idx).j;
 			P_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].P[0];
-			Vx_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].Vx[0];
+			Vx_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].Vx[0];
 	    }
+	    if (i == 101 && j == 31) {
+			printf("\nP_i1 in cell %d:%d = %16.16f\n", i,j,P_i1);
+			printf("(P_i1 + P)/2 - (P_i_1 + P)/2 = %16.16f\n\n",(P_i1 + P)/2 - (P_i_1 + P)/2);
+		}
 	    break;
 	
 	// Top and left borders closed
@@ -388,13 +394,13 @@ double euler_bar_Vx(cell2d * cell, int n, int i, int j, double dt, double dx, do
     }
 	
 	/** First order **/
-	//~ double P_i12 = (P_i1 + P)/2 * (1 - (k-1)*(Vx_i1 - Vx)*dt/dx);
+    //~ double P_i12 = (P_i1 + P)/2 * (1 - (k-1)*(Vx_i1 - Vx)*dt/dx);
 	//~ double P_i_12 = (P_i_1 + P)/2 * (1 - (k-1)*(Vx - Vx_i_1)*dt/dx);
 	double P_i12 = (P_i1 + P)/2;
 	double P_i_12 = (P_i_1 + P)/2;
-	if ((*cell)[n][i][j].type == 1) {
-		printf("P = %16.16f\n",P);
-		printf("P_i1 = %16.16f\n",P_i1);
+	if (i == 101 && j == 31) {
+		printf("P     = %16.16f\n",P);
+		printf("P_i1  = %16.16f\n",P_i1);
 		printf("P_i_1 = %16.16f\n",P_i_1);
 		printf("(P_i1 + P)/2 - (P_i_1 + P)/2 = %16.16f\n\n",P_i12 - P_i_12);
 	}
@@ -422,17 +428,7 @@ double euler_bar_Vx(cell2d * cell, int n, int i, int j, double dt, double dx, do
 				//~ )
 			//~ )
         //~ );
-    //~ 
-    /** DEBUG **/
-    if (i == 248 && j == 5) {
-	cout << "i = 248, j = 5, P{1,2} = {" << (*cell)[n][i][j].P[1] << ", " << (*cell)[n][i][j].P[2] << "}, Vx{i-1,i,i+1} = " << (*cell)[n][i-1][j].Vx[0] << ", " << (*cell)[n][i][j].Vx[0] << ", " << (*cell)[n][i+1][j].Vx[0] << "}" << endl;
-    cout << "result = " << result << endl;
-    }
-    if (i == 249 && j == 5) {
-	cout << "i = 250, j = 5, P{1,2} = {" << (*cell)[n][i][j].P[1] << ", " << (*cell)[n][i][j].P[2] << "}, Vx{i-1,i,i+1} = " << (*cell)[n][i-1][j].Vx[0] << ", " << (*cell)[n][i][j].Vx[0] << ", " << (*cell)[n][i+1][j].Vx[0] << "}" << endl;
-	cout << "result = " << result << endl;
-    }
-    
+    //~
 	return result;
 }
 
@@ -464,23 +460,18 @@ double euler_bar_Vr(cell2d * cell, int n, int i, int j, double dt, double dx, do
 	case 1:
 	    P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j].P[0]; P_j2 = (*cell)[n][i][j-1].P[0]; 
 	    Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j].Vr[0]; Vr_j2 = (*cell)[n][i][j-1].Vr[0]; 
-	    
+
 	    P_j1 = 0;
 	    Vr_j1 = 0;
-	    printf("Total weightVector size at cell %d:%d by y: %u\n",i,j,
-			(unsigned int) (*cell)[n][i][j].weightVector.y.size());
 	    for (unsigned int idx = 0; idx < (*cell)[n][i][j].weightVector.y.size(); idx++) {
 			Int2D weightCell;
 			double weight = (*cell)[n][i][j].weightVector.y.at(idx).weight;
 			weightCell.i = (*cell)[n][i][j].weightVector.y.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.y.at(idx).j;
 			P_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].P[0];
-			Vr_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].Vr[0];
-			printf("Getting weight = %10.10f from cell %d:%d\n", weight, weightCell.i, weightCell.j);
+			Vr_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].Vr[0];
+
 	    }
-	    printf("\nP_j1 in cell %d:%d = %16.16f\n", i,j,P_j1);
-	    printf("(P_j1 + P)/2 - (P_j_1 + P)/2 = %16.16f\n\n",(P_j1 + P)/2 - (P_j_1 + P)/2);
-	    
 	    break;
 	
 	// Partial cell, only for first-order calc
@@ -502,20 +493,14 @@ double euler_bar_Vr(cell2d * cell, int n, int i, int j, double dt, double dx, do
 	    
 	    P_j1 = 0;
 	    Vr_j1 = 0;
-	    printf("Total weightVector size at cell %d:%d by y: %u\n",i,j,
-			(unsigned int) (*cell)[n][i][j].weightVector.y.size());
 	    for (unsigned int idx = 0; idx < (*cell)[n][i][j].weightVector.y.size(); idx++) {
 			Int2D weightCell;
 			double weight = (*cell)[n][i][j].weightVector.y.at(idx).weight;
 			weightCell.i = (*cell)[n][i][j].weightVector.y.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.y.at(idx).j;
 			P_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].P[0];
-			Vr_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].Vr[0];
-			printf("Getting weight = %10.10f from cell %d:%d\n", 
-				weight, weightCell.i, weightCell.j);
+			Vr_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].Vr[0];
 	    }
-	    printf("\nP_j1 in cell %d:%d = %10.10f\n", i,j,P_j1);
-	    printf("(P_j1 + P)/2 - (P_j_1 + P)/2 = %10.10f\n\n",(P_j1 + P)/2 - (P_j_1 + P)/2);
 	    break;
 	
 	// Top and left borders closed
@@ -570,14 +555,25 @@ double euler_bar_Vr(cell2d * cell, int n, int i, int j, double dt, double dx, do
 	    break;
     }
     
-    /** First order **/
-	//~ double P_j12 = (P_j1 + P)/2 * (1 - (k-1)*(Vr_j1 - Vr)*dt/dr);
+
+    //~ double P_j12 = (P_j1 + P)/2 * (1 - (k-1)*(Vr_j1 - Vr)*dt/dr);
 	//~ double P_j_12 = (P_j_1 + P)/2 * (1 - (k-1)*(Vr - Vr_j_1)*dt/dr);
 	double P_j12 = (P_j1 + P)/2;
 	double P_j_12 = (P_j_1 + P)/2;
-	double result = (*cell)[n][i][j].Vr[0] - (P_j12 - P_j_12) / (*cell)[n][i][j].rho * dt / (*cell)[n][i][j].A[0] * fmax((*cell)[n][i][j].A[4],(*cell)[n][i][j].A[3]) / dr;
+	if (i == 101 && j == 31) {
+		printf("P     = %16.16f\n",P);
+		printf("P_j1  = %16.16f\n",P_j1);
+		printf("P_j_1 = %16.16f\n",P_j_1);
+		printf("(P_j1 + P)/2 - (P_j_1 + P)/2 = %16.16f\n\n",P_j12 - P_j_12);
+	}
+	double result = 0;
+	/** First order **/
+	result = (*cell)[n][i][j].Vr[0] - (P_j12 - P_j_12) / (*cell)[n][i][j].rho * dt / (*cell)[n][i][j].A[0] * fmax((*cell)[n][i][j].A[4],(*cell)[n][i][j].A[3]) / dr;
+	//~ /** Second order by x **/
+	//~ result = (*cell)[n][i][j].Vr[0] - (1.0/12.0*P_j_2 - 2.0/3.0*P_j_1 + 2.0/3.0*P_j1 - 1.0/12.0*P_j2) / (*cell)[n][i][j].rho * dt / (*cell)[n][i][j].A[0] * fmax((*cell)[n][i][j].A[4],(*cell)[n][i][j].A[3]) / dr;
 	if (fabs(result-(*cell)[n][i][j].Vr[0]) < pow(10,-15)) result = (*cell)[n][i][j].Vr[0];
 	
+
 	/** From my calc **/
     //~ double result = cell.Vr[0] -
         //~ cell.alpha * 
@@ -589,9 +585,7 @@ double euler_bar_Vr(cell2d * cell, int n, int i, int j, double dt, double dx, do
         //~ -
         //~ cell.alpha * cell.P[0] * dt / cell.rho;
     
-    /** Second order by x **/
-    //~ double result = (*cell)[n][i][j].Vr[0] - (1.0/12.0*P_j_2 - 2.0/3.0*P_j_1 + 2.0/3.0*P_j1 - 1.0/12.0*P_j2) / (*cell)[n][i][j].rho * dt / (*cell)[n][i][j].A[0] * fmax((*cell)[n][i][j].A[4],(*cell)[n][i][j].A[3]) / dr;
-    //~ 
+
     /** With Navier-Stocks **/
     //~ double result = (*cell)[n][i][j].Vr[0] +
         //~ dt  / ((*cell)[n][i][j].rho * (*cell)[n][i][j].A[0] * dr) * 
@@ -646,22 +640,22 @@ double euler_bar_e(cell2d * cell, int n, int i, int j, double dt, double dx, dou
     switch (type) {
 	// Free cell
 	case 0:
-		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i+1][j].P[0]; P_i2 = (*cell)[n][i+2][j].P[0]; 
-	    P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j+1].P[0]; P_j2 = (*cell)[n][i][j+1].P[0]; 
-	    Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i+1][j].Vx[0]; Vx_i2 = (*cell)[n][i+2][j].Vx[0]; 
-		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i+1][j].Vr[0]; Vr_i2 = (*cell)[n][i+2][j].Vr[0]; 
-		Vx_j_2 = (*cell)[n][i][j-2].Vx[0]; Vx_j_1 = (*cell)[n][i][j-1].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j+1].Vx[0]; Vx_j2 = (*cell)[n][i][j+2].Vx[0]; 
-		Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j+1].Vr[0]; Vr_j2 = (*cell)[n][i][j+2].Vr[0]; 
+		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i+1][j].P[0]; P_i2 = (*cell)[n][i+2][j].P[0];
+	    P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j+1].P[0]; P_j2 = (*cell)[n][i][j+1].P[0];
+	    Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i+1][j].Vx[0]; Vx_i2 = (*cell)[n][i+2][j].Vx[0];
+		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i+1][j].Vr[0]; Vr_i2 = (*cell)[n][i+2][j].Vr[0];
+		Vx_j_2 = (*cell)[n][i][j-2].Vx[0]; Vx_j_1 = (*cell)[n][i][j-1].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j+1].Vx[0]; Vx_j2 = (*cell)[n][i][j+2].Vx[0];
+		Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j+1].Vr[0]; Vr_j2 = (*cell)[n][i][j+2].Vr[0];
 	    break;
 	
 	// Partial cell, only for first-order calc
 	case 1:
-		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i+1][j].P[0]; P_i2 = (*cell)[n][i+2][j].P[0]; 
-		P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j].P[0]; P_j2 = (*cell)[n][i][j-1].P[0]; 
-		Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i+1][j].Vx[0]; Vx_i2 = (*cell)[n][i+2][j].Vx[0]; 
-		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i+1][j].Vr[0]; Vr_i2 = (*cell)[n][i+2][j].Vr[0]; 
-		Vx_j_2 = (*cell)[n][i][j-2].Vx[0]; Vx_j_1 = (*cell)[n][i][j-1].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j].Vx[0]; Vx_j2 = (*cell)[n][i][j-1].Vx[0]; 
-		Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j].Vr[0]; Vr_j2 = (*cell)[n][i][j-1].Vr[0]; 
+		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i+1][j].P[0]; P_i2 = (*cell)[n][i+2][j].P[0];
+		P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j].P[0]; P_j2 = (*cell)[n][i][j-1].P[0];
+		Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i+1][j].Vx[0]; Vx_i2 = (*cell)[n][i+2][j].Vx[0];
+		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i+1][j].Vr[0]; Vr_i2 = (*cell)[n][i+2][j].Vr[0];
+		Vx_j_2 = (*cell)[n][i][j-2].Vx[0]; Vx_j_1 = (*cell)[n][i][j-1].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j].Vx[0]; Vx_j2 = (*cell)[n][i][j-1].Vx[0];
+		Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j].Vr[0]; Vr_j2 = (*cell)[n][i][j-1].Vr[0];
 
 		P_j1 = 0;
 		Vx_j1 = 0;
@@ -672,19 +666,19 @@ double euler_bar_e(cell2d * cell, int n, int i, int j, double dt, double dx, dou
 			weightCell.i = (*cell)[n][i][j].weightVector.y.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.y.at(idx).j;
 			P_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].P[0];
-			Vx_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].Vx[0];
-			Vr_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].Vr[0];
+			Vx_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].Vx[0];
+			Vr_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].Vr[0];
 		}
 		break;
 	
 	// Partial cell, only for first-order calc
 	case 3:
-		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i][j].P[0]; P_i2 = (*cell)[n][i-1][j].P[0]; 
-		P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j+1].P[0]; P_j2 = (*cell)[n][i][j+2].P[0]; 
-		Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i][j].Vx[0]; Vx_i2 = (*cell)[n][i-1][j].Vx[0]; 
-		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i][j].Vr[0]; Vr_i2 = (*cell)[n][i-1][j].Vr[0]; 
-		Vx_j_2 = (*cell)[n][i][j-2].Vx[0]; Vx_j_1 = (*cell)[n][i][j-1].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j+1].Vx[0]; Vx_j2 = (*cell)[n][i][j+2].Vx[0]; 
-		Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j+1].Vr[0]; Vr_j2 = (*cell)[n][i][j+2].Vr[0]; 
+		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i][j].P[0]; P_i2 = (*cell)[n][i-1][j].P[0];
+		P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j+1].P[0]; P_j2 = (*cell)[n][i][j+2].P[0];
+		Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i][j].Vx[0]; Vx_i2 = (*cell)[n][i-1][j].Vx[0];
+		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i][j].Vr[0]; Vr_i2 = (*cell)[n][i-1][j].Vr[0];
+		Vx_j_2 = (*cell)[n][i][j-2].Vx[0]; Vx_j_1 = (*cell)[n][i][j-1].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j+1].Vx[0]; Vx_j2 = (*cell)[n][i][j+2].Vx[0];
+		Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j+1].Vr[0]; Vr_j2 = (*cell)[n][i][j+2].Vr[0];
 		
 		P_i1 = 0;
 		Vx_i1 = 0;
@@ -695,29 +689,29 @@ double euler_bar_e(cell2d * cell, int n, int i, int j, double dt, double dx, dou
 			weightCell.i = (*cell)[n][i][j].weightVector.x.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.x.at(idx).j;
 			P_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].P[0];
-			Vx_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].Vx[0];
-			Vr_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].Vr[0];
+			Vx_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].Vx[0];
+			Vr_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].Vr[0];
 		}
 	    break;
 	
 	// Partial cell, only for first-order calc
 	case 8:
-		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i+1][j].P[0]; P_i2 = (*cell)[n][i+2][j].P[0]; 
-		P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j+1].P[0]; P_j2 = (*cell)[n][i][j+1].P[0]; 
-		Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i+1][j].Vx[0]; Vx_i2 = (*cell)[n][i+2][j].Vx[0]; 
-		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i+1][j].Vr[0]; Vr_i2 = (*cell)[n][i+2][j].Vr[0]; 
-		Vx_j_2 = (*cell)[n][i][j-2].Vx[0]; Vx_j_1 = (*cell)[n][i][j-1].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j+1].Vx[0]; Vx_j2 = (*cell)[n][i][j+2].Vx[0]; 
-		Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j+1].Vr[0]; Vr_j2 = (*cell)[n][i][j+2].Vr[0]; 
+		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i+1][j].P[0]; P_i2 = (*cell)[n][i+2][j].P[0];
+		P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j+1].P[0]; P_j2 = (*cell)[n][i][j+1].P[0];
+		Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i+1][j].Vx[0]; Vx_i2 = (*cell)[n][i+2][j].Vx[0];
+		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i+1][j].Vr[0]; Vr_i2 = (*cell)[n][i+2][j].Vr[0];
+		Vx_j_2 = (*cell)[n][i][j-2].Vx[0]; Vx_j_1 = (*cell)[n][i][j-1].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j+1].Vx[0]; Vx_j2 = (*cell)[n][i][j+2].Vx[0];
+		Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j+1].Vr[0]; Vr_j2 = (*cell)[n][i][j+2].Vr[0];
 	    break;
 	
 	// Partial cell, only for first-order calc
 	case 10:
-		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i][j].P[0]; P_i2 = (*cell)[n][i-1][j].P[0]; 
-		P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j].P[0]; P_j2 = (*cell)[n][i][j-1].P[0]; 
-		Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i][j].Vx[0]; Vx_i2 = (*cell)[n][i-1][j].Vx[0]; 
-		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i][j].Vr[0]; Vr_i2 = (*cell)[n][i-1][j].Vr[0]; 
-		Vx_j_2 = (*cell)[n][i][j-2].Vx[0]; Vx_j_1 = (*cell)[n][i][j-1].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j].Vx[0]; Vx_j2 = (*cell)[n][i][j-1].Vx[0]; 
-		Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j].Vr[0]; Vr_j2 = (*cell)[n][i][j-1].Vr[0]; 
+		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i][j].P[0]; P_i2 = (*cell)[n][i-1][j].P[0];
+		P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j].P[0]; P_j2 = (*cell)[n][i][j-1].P[0];
+		Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i][j].Vx[0]; Vx_i2 = (*cell)[n][i-1][j].Vx[0];
+		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i][j].Vr[0]; Vr_i2 = (*cell)[n][i-1][j].Vr[0];
+		Vx_j_2 = (*cell)[n][i][j-2].Vx[0]; Vx_j_1 = (*cell)[n][i][j-1].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j].Vx[0]; Vx_j2 = (*cell)[n][i][j-1].Vx[0];
+		Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j].Vr[0]; Vr_j2 = (*cell)[n][i][j-1].Vr[0];
 		
 		P_i1 = 0;
 		Vx_i1 = 0;
@@ -728,8 +722,8 @@ double euler_bar_e(cell2d * cell, int n, int i, int j, double dt, double dx, dou
 			weightCell.i = (*cell)[n][i][j].weightVector.x.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.x.at(idx).j;
 			P_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].P[0];
-			Vx_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].Vx[0];
-			Vr_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].Vr[0];
+			Vx_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].Vx[0];
+			Vr_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].Vr[0];
 		}
 		
 		P_j1 = 0;
@@ -741,8 +735,8 @@ double euler_bar_e(cell2d * cell, int n, int i, int j, double dt, double dx, dou
 			weightCell.i = (*cell)[n][i][j].weightVector.y.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.y.at(idx).j;
 			P_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].P[0];
-			Vx_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].Vx[0];
-			Vr_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].Vr[0];
+			Vx_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].Vx[0];
+			Vr_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].Vr[0];
 		}
 	    break;
 	
@@ -751,48 +745,48 @@ double euler_bar_e(cell2d * cell, int n, int i, int j, double dt, double dx, dou
 	case 15:
 		P_i_2 = (*cell)[n][i+1][j].P[0]; P_i_1 = (*cell)[n][i][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i+1][j].P[0]; P_i2 = (*cell)[n][i+2][j].P[0]; // Mirror i-2 -> i+1, i-1 -> self
 	    P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j].P[0]; P_j2 = (*cell)[n][i][j-1].P[0]; // Mirror j+2 -> j-1, j+1 -> self
-	    Vx_i_2 = -(*cell)[n][i+1][j].Vx[0]; Vx_i_1 = -(*cell)[n][i][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i+1][j].Vx[0]; Vx_i2 = (*cell)[n][i+2][j].Vx[0]; 
-		Vr_i_2 = (*cell)[n][i+1][j].Vr[0]; Vr_i_1 = (*cell)[n][i][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i+1][j].Vr[0]; Vr_i2 = (*cell)[n][i+2][j].Vr[0]; 
+	    Vx_i_2 = -(*cell)[n][i+1][j].Vx[0]; Vx_i_1 = -(*cell)[n][i][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i+1][j].Vx[0]; Vx_i2 = (*cell)[n][i+2][j].Vx[0];
+		Vr_i_2 = (*cell)[n][i+1][j].Vr[0]; Vr_i_1 = (*cell)[n][i][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i+1][j].Vr[0]; Vr_i2 = (*cell)[n][i+2][j].Vr[0];
 	    Vx_j_2 = (*cell)[n][i][j-2].Vx[0]; Vx_j_1 = (*cell)[n][i][j-1].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j].Vx[0]; Vx_j2 = (*cell)[n][i][j-1].Vx[0];
 	    Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = -(*cell)[n][i][j].Vr[0]; Vr_j2 = -(*cell)[n][i][j-1].Vr[0];
 	    break;
 	    
 	// Left border closed
 	case 17:
-		P_i_2 = (*cell)[n][i+1][j].P[0]; P_i_1 = (*cell)[n][i][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i+1][j].P[0]; P_i2 = (*cell)[n][i+2][j].P[0]; // Mirror i-2 -> i+1, i-1 -> self 
-	    P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j+1].P[0]; P_j2 = (*cell)[n][i][j+1].P[0]; 
-	    Vx_i_2 = -(*cell)[n][i+1][j].Vx[0]; Vx_i_1 = -(*cell)[n][i][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i+1][j].Vx[0]; Vx_i2 = (*cell)[n][i+2][j].Vx[0]; 
-		Vr_i_2 = (*cell)[n][i+1][j].Vr[0]; Vr_i_1 = (*cell)[n][i][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i+1][j].Vr[0]; Vr_i2 = (*cell)[n][i+2][j].Vr[0]; 
-	    Vx_j_2 = (*cell)[n][i][j-2].Vx[0]; Vx_j_1 = (*cell)[n][i][j-1].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j+1].Vx[0]; Vx_j2 = (*cell)[n][i][j+2].Vx[0]; 
-	    Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j+1].Vr[0]; Vr_j2 = (*cell)[n][i][j+2].Vr[0]; 
+		P_i_2 = (*cell)[n][i+1][j].P[0]; P_i_1 = (*cell)[n][i][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i+1][j].P[0]; P_i2 = (*cell)[n][i+2][j].P[0]; // Mirror i-2 -> i+1, i-1 -> self
+	    P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j+1].P[0]; P_j2 = (*cell)[n][i][j+1].P[0];
+	    Vx_i_2 = -(*cell)[n][i+1][j].Vx[0]; Vx_i_1 = -(*cell)[n][i][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i+1][j].Vx[0]; Vx_i2 = (*cell)[n][i+2][j].Vx[0];
+		Vr_i_2 = (*cell)[n][i+1][j].Vr[0]; Vr_i_1 = (*cell)[n][i][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i+1][j].Vr[0]; Vr_i2 = (*cell)[n][i+2][j].Vr[0];
+	    Vx_j_2 = (*cell)[n][i][j-2].Vx[0]; Vx_j_1 = (*cell)[n][i][j-1].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j+1].Vx[0]; Vx_j2 = (*cell)[n][i][j+2].Vx[0];
+	    Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j+1].Vr[0]; Vr_j2 = (*cell)[n][i][j+2].Vr[0];
 	    break;
 	
 	// Bottom and left borders closed
 	case 16:
-		P_i_2 = (*cell)[n][i+1][j].P[0]; P_i_1 = (*cell)[n][i][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i+1][j].P[0]; P_i2 = (*cell)[n][i+2][j].P[0]; // Mirror i-2 -> i+1, i-1 -> self 
-	    P_j_2 = (*cell)[n][i][j+1].P[0]; P_j_1 = (*cell)[n][i][j].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j+1].P[0]; P_j2 = (*cell)[n][i][j+2].P[0]; // Mirror j-2 -> j+1, j-1 -> self 
-	    Vx_i_2 = -(*cell)[n][i+1][j].Vx[0]; Vx_i_1 = -(*cell)[n][i][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i+1][j].Vx[0]; Vx_i2 = (*cell)[n][i+2][j].Vx[0]; 
-		Vr_i_2 = (*cell)[n][i+1][j].Vr[0]; Vr_i_1 = (*cell)[n][i][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i+1][j].Vr[0]; Vr_i2 = (*cell)[n][i+2][j].Vr[0]; 
+		P_i_2 = (*cell)[n][i+1][j].P[0]; P_i_1 = (*cell)[n][i][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i+1][j].P[0]; P_i2 = (*cell)[n][i+2][j].P[0]; // Mirror i-2 -> i+1, i-1 -> self
+	    P_j_2 = (*cell)[n][i][j+1].P[0]; P_j_1 = (*cell)[n][i][j].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j+1].P[0]; P_j2 = (*cell)[n][i][j+2].P[0]; // Mirror j-2 -> j+1, j-1 -> self
+	    Vx_i_2 = -(*cell)[n][i+1][j].Vx[0]; Vx_i_1 = -(*cell)[n][i][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i+1][j].Vx[0]; Vx_i2 = (*cell)[n][i+2][j].Vx[0];
+		Vr_i_2 = (*cell)[n][i+1][j].Vr[0]; Vr_i_1 = (*cell)[n][i][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i+1][j].Vr[0]; Vr_i2 = (*cell)[n][i+2][j].Vr[0];
 	    Vx_j_2 = (*cell)[n][i][j+1].Vx[0]; Vx_j_1 = (*cell)[n][i][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j+1].Vx[0]; Vx_j2 = (*cell)[n][i][j+2].Vx[0];
 	    Vr_j_2 = -(*cell)[n][i][j+1].Vr[0]; Vr_j_1 = -(*cell)[n][i][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j+1].Vr[0]; Vr_j2 = (*cell)[n][i][j+2].Vr[0];
 	    break;
 	
 	// Top border closed
 	case 13:
-		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i+1][j].P[0]; P_i2 = (*cell)[n][i+2][j].P[0]; 
+		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i+1][j].P[0]; P_i2 = (*cell)[n][i+2][j].P[0];
 	    P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j].P[0]; P_j2 = (*cell)[n][i][j-1].P[0]; // Mirror j+2 -> j-1, j+1 -> self
-	    Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i+1][j].Vx[0]; Vx_i2 = (*cell)[n][i+2][j].Vx[0]; 
-		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i+1][j].Vr[0]; Vr_i2 = (*cell)[n][i+2][j].Vr[0]; 
+	    Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i+1][j].Vx[0]; Vx_i2 = (*cell)[n][i+2][j].Vx[0];
+		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i+1][j].Vr[0]; Vr_i2 = (*cell)[n][i+2][j].Vr[0];
 	    Vx_j_2 = (*cell)[n][i][j-2].Vx[0]; Vx_j_1 = (*cell)[n][i][j-1].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j].Vx[0]; Vx_j2 = (*cell)[n][i][j-1].Vx[0];
 	    Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = -(*cell)[n][i][j].Vr[0]; Vr_j2 = -(*cell)[n][i][j-1].Vr[0];
 	    break;
 	
 	// Bottom border closed
 	case 14:
-		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i+1][j].P[0]; P_i2 = (*cell)[n][i+2][j].P[0]; 
-	    P_j_2 = (*cell)[n][i][j+1].P[0]; P_j_1 = (*cell)[n][i][j].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j+1].P[0]; P_j2 = (*cell)[n][i][j+2].P[0]; // Mirror j-2 -> j+1, j-1 -> self 
-	    Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i+1][j].Vx[0]; Vx_i2 = (*cell)[n][i+2][j].Vx[0]; 
-		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i+1][j].Vr[0]; Vr_i2 = (*cell)[n][i+2][j].Vr[0]; 
+		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i+1][j].P[0]; P_i2 = (*cell)[n][i+2][j].P[0];
+	    P_j_2 = (*cell)[n][i][j+1].P[0]; P_j_1 = (*cell)[n][i][j].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j+1].P[0]; P_j2 = (*cell)[n][i][j+2].P[0]; // Mirror j-2 -> j+1, j-1 -> self
+	    Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = (*cell)[n][i+1][j].Vx[0]; Vx_i2 = (*cell)[n][i+2][j].Vx[0];
+		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i+1][j].Vr[0]; Vr_i2 = (*cell)[n][i+2][j].Vr[0];
 	    Vx_j_2 = (*cell)[n][i][j+1].Vx[0]; Vx_j_1 = (*cell)[n][i][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j+1].Vx[0]; Vx_j2 = (*cell)[n][i][j+2].Vx[0];
 	    Vr_j_2 = -(*cell)[n][i][j+1].Vr[0]; Vr_j_1 = -(*cell)[n][i][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j+1].Vr[0]; Vr_j2 = (*cell)[n][i][j+2].Vr[0];
 	    break;
@@ -800,29 +794,29 @@ double euler_bar_e(cell2d * cell, int n, int i, int j, double dt, double dx, dou
 	// Right border closed
 	case 19:
 		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i][j].P[0]; P_i2 = (*cell)[n][i-1][j].P[0]; // Mirror i+2 -> i-1, i+1 -> self
-	    P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j+1].P[0]; P_j2 = (*cell)[n][i][j+1].P[0]; 
-	    Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = -(*cell)[n][i][j].Vx[0]; Vx_i2 = -(*cell)[n][i-1][j].Vx[0]; 
-		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i][j].Vr[0]; Vr_i2 = (*cell)[n][i-1][j].Vr[0]; 
-	    Vx_j_2 = (*cell)[n][i][j-2].Vx[0]; Vx_j_1 = (*cell)[n][i][j-1].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j+1].Vx[0]; Vx_j2 = (*cell)[n][i][j+2].Vx[0]; 
-	    Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j+1].Vr[0]; Vr_j2 = (*cell)[n][i][j+2].Vr[0]; 
+	    P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j+1].P[0]; P_j2 = (*cell)[n][i][j+1].P[0];
+	    Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = -(*cell)[n][i][j].Vx[0]; Vx_i2 = -(*cell)[n][i-1][j].Vx[0];
+		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i][j].Vr[0]; Vr_i2 = (*cell)[n][i-1][j].Vr[0];
+	    Vx_j_2 = (*cell)[n][i][j-2].Vx[0]; Vx_j_1 = (*cell)[n][i][j-1].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j+1].Vx[0]; Vx_j2 = (*cell)[n][i][j+2].Vx[0];
+	    Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j+1].Vr[0]; Vr_j2 = (*cell)[n][i][j+2].Vr[0];
 	    break;
 	
 	// Top and right borders closed
 	case 20:
-		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i][j].P[0]; P_i2 = (*cell)[n][i-1][j].P[0]; // Mirror i+2 -> i-1, i+1 -> self 
+		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i][j].P[0]; P_i2 = (*cell)[n][i-1][j].P[0]; // Mirror i+2 -> i-1, i+1 -> self
 	    P_j_2 = (*cell)[n][i][j-2].P[0]; P_j_1 = (*cell)[n][i][j-1].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j].P[0]; P_j2 = (*cell)[n][i][j-1].P[0]; // Mirror j+2 -> j-1, j+1 -> self
-	    Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = -(*cell)[n][i][j].Vx[0]; Vx_i2 = -(*cell)[n][i-1][j].Vx[0]; 
-		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i][j].Vr[0]; Vr_i2 = (*cell)[n][i-1][j].Vr[0]; 
+	    Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = -(*cell)[n][i][j].Vx[0]; Vx_i2 = -(*cell)[n][i-1][j].Vx[0];
+		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i][j].Vr[0]; Vr_i2 = (*cell)[n][i-1][j].Vr[0];
 	    Vx_j_2 = (*cell)[n][i][j-2].Vx[0]; Vx_j_1 = (*cell)[n][i][j-1].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j].Vx[0]; Vx_j2 = (*cell)[n][i][j-1].Vx[0];
 	    Vr_j_2 = (*cell)[n][i][j-2].Vr[0]; Vr_j_1 = (*cell)[n][i][j-1].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = -(*cell)[n][i][j].Vr[0]; Vr_j2 = -(*cell)[n][i][j-1].Vr[0];
 	    break;
 	
 	// Bottom and right borders closed
 	case 21:
-		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i][j].P[0]; P_i2 = (*cell)[n][i-1][j].P[0]; // Mirror i+2 -> i-1, i+1 -> self 
-	    P_j_2 = (*cell)[n][i][j+1].P[0]; P_j_1 = (*cell)[n][i][j].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j+1].P[0]; P_j2 = (*cell)[n][i][j+2].P[0]; // Mirror j-2 -> j+1, j-1 -> self 
-	    Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = -(*cell)[n][i][j].Vx[0]; Vx_i2 = -(*cell)[n][i-1][j].Vx[0]; 
-		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i][j].Vr[0]; Vr_i2 = (*cell)[n][i-1][j].Vr[0]; 
+		P_i_2 = (*cell)[n][i-2][j].P[0]; P_i_1 = (*cell)[n][i-1][j].P[0]; P = (*cell)[n][i][j].P[0]; P_i1 = (*cell)[n][i][j].P[0]; P_i2 = (*cell)[n][i-1][j].P[0]; // Mirror i+2 -> i-1, i+1 -> self
+	    P_j_2 = (*cell)[n][i][j+1].P[0]; P_j_1 = (*cell)[n][i][j].P[0]; P = (*cell)[n][i][j].P[0]; P_j1 = (*cell)[n][i][j+1].P[0]; P_j2 = (*cell)[n][i][j+2].P[0]; // Mirror j-2 -> j+1, j-1 -> self
+	    Vx_i_2 = (*cell)[n][i-2][j].Vx[0]; Vx_i_1 = (*cell)[n][i-1][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_i1 = -(*cell)[n][i][j].Vx[0]; Vx_i2 = -(*cell)[n][i-1][j].Vx[0];
+		Vr_i_2 = (*cell)[n][i-2][j].Vr[0]; Vr_i_1 = (*cell)[n][i-1][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_i1 = (*cell)[n][i][j].Vr[0]; Vr_i2 = (*cell)[n][i-1][j].Vr[0];
 	    Vx_j_2 = (*cell)[n][i][j+1].Vx[0]; Vx_j_1 = (*cell)[n][i][j].Vx[0]; Vx = (*cell)[n][i][j].Vx[0]; Vx_j1 = (*cell)[n][i][j+1].Vx[0]; Vx_j2 = (*cell)[n][i][j+2].Vx[0];
 	    Vr_j_2 = -(*cell)[n][i][j+1].Vr[0]; Vr_j_1 = -(*cell)[n][i][j].Vr[0]; Vr = (*cell)[n][i][j].Vr[0]; Vr_j1 = (*cell)[n][i][j+1].Vr[0]; Vr_j2 = (*cell)[n][i][j+2].Vr[0];
 	    break;
@@ -836,7 +830,7 @@ double euler_bar_e(cell2d * cell, int n, int i, int j, double dt, double dx, dou
 	double P_i_12 = (P_i_1 + P)/2;
 	double P_j12 = (P_j1 + P)/2;
 	double P_j_12 = (P_j_1 + P)/2;
-	double result = (*cell)[n][i][j].e - 
+	double result = (*cell)[n][i][j].e -
 		(
 			(P_i12*(Vx_i1 + Vx)/2 - P_i_12*(Vx_i_1 + Vx)/2) / dx * fmax((*cell)[n][i][j].A[1],(*cell)[n][i][j].A[2]) +
 			(fabs(j-axis_j)*P_j12*(Vr_j1 + Vr)/2 - fabs(j-axis_j-1)*P_j_12*(Vr_j_1 + Vr)/2) / ((fabs(j-axis_j-0.5))*dr) *	fmax((*cell)[n][i][j].A[3],(*cell)[n][i][j].A[4])
@@ -1029,7 +1023,7 @@ double euler_bar_e(cell2d * cell, int n, int i, int j, double dt, double dx, dou
 		//~ cout << "Viscosity part X axis sixth in brackets first = " << I3 << endl;
 		//~ cout << "Viscosity part X axis sixth in brackets second = " << I2 << endl;
 		//~ cout << "e[i-1] = " << (*cell)[n][i-1][j].e << endl;
-		//~ cout << "(Vx[0]^2 + Vr[0]^2)/2 = " << (pow((*cell)[n][i-1][j].Vx[0],2) + pow((*cell)[n][i-1][j].Vr[0],2))/2 << endl; 
+		//~ cout << "(Vx[0]^2 + Vr[0]^2)/2 = " << (pow((*cell)[n][i-1][j].Vx[0],2) + pow((*cell)[n][i-1][j].Vr[0],2))/2 << endl;
 		//~ cout << "Viscosity part X axis sixth in brackets third = " << 2*I1 << endl;
 			//~ // R axis
 			//~ cout << "Viscosity part R axis = " << gasMu * (gasA + 2) / (2 * pow(dr,2)) * (
@@ -1209,8 +1203,8 @@ void lagrange_mass(double array[21], cell2d * cell, int i, int j, int n,
 			weightCell.i = (*cell)[n][i][j].weightVector.y.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.y.at(idx).j;
 			rho_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].rho;
-			Vx_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
-			Vr_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
+			Vx_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
+			Vr_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
 	    }
 	    break;
 	
@@ -1235,8 +1229,8 @@ void lagrange_mass(double array[21], cell2d * cell, int i, int j, int n,
 			weightCell.i = (*cell)[n][i][j].weightVector.x.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.x.at(idx).j;
 			rho_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].rho;
-			Vx_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
-			Vr_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
+			Vx_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
+			Vr_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
 	    }
 	    break;
 	
@@ -1274,8 +1268,8 @@ void lagrange_mass(double array[21], cell2d * cell, int i, int j, int n,
 			weightCell.i = (*cell)[n][i][j].weightVector.x.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.x.at(idx).j;
 			rho_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].rho;
-			Vx_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
-			Vr_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
+			Vx_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
+			Vr_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
 	    }
 	
 	    rho_j1 = 0;
@@ -1287,8 +1281,8 @@ void lagrange_mass(double array[21], cell2d * cell, int i, int j, int n,
 			weightCell.i = (*cell)[n][i][j].weightVector.y.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.y.at(idx).j;
 			rho_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].rho;
-			Vx_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
-			Vr_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
+			Vx_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
+			Vr_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
 	    }
 	    break;
 	
@@ -2208,8 +2202,8 @@ double final_calc_Vx(cell2d * cell, int i, int j, int n,
 			weightCell.i = (*cell)[n][i][j].weightVector.y.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.y.at(idx).j;
 			rho_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].rho;
-			Vx_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
-			Vr_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
+			Vx_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
+			Vr_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
 	    }
 	    break;
 	
@@ -2234,8 +2228,8 @@ double final_calc_Vx(cell2d * cell, int i, int j, int n,
 			weightCell.i = (*cell)[n][i][j].weightVector.x.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.x.at(idx).j;
 			rho_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].rho;
-			Vx_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
-			Vr_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
+			Vx_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
+			Vr_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
 	    }
 	    break;
 	
@@ -2273,8 +2267,8 @@ double final_calc_Vx(cell2d * cell, int i, int j, int n,
 			weightCell.i = (*cell)[n][i][j].weightVector.x.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.x.at(idx).j;
 			rho_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].rho;
-			Vx_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
-			Vr_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
+			Vx_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
+			Vr_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
 	    }
 	
 	    rho_j1 = 0;
@@ -2286,8 +2280,8 @@ double final_calc_Vx(cell2d * cell, int i, int j, int n,
 			weightCell.i = (*cell)[n][i][j].weightVector.y.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.y.at(idx).j;
 			rho_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].rho;
-			Vx_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
-			Vr_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
+			Vx_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
+			Vr_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
 	    }
 	    break;
 	
@@ -2486,8 +2480,8 @@ double final_calc_Vr(cell2d * cell, int i, int j, int n,
 			weightCell.i = (*cell)[n][i][j].weightVector.y.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.y.at(idx).j;
 			rho_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].rho;
-			Vx_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
-			Vr_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
+			Vx_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
+			Vr_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
 	    }
 	    break;
 	
@@ -2512,8 +2506,8 @@ double final_calc_Vr(cell2d * cell, int i, int j, int n,
 			weightCell.i = (*cell)[n][i][j].weightVector.x.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.x.at(idx).j;
 			rho_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].rho;
-			Vx_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
-			Vr_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
+			Vx_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
+			Vr_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
 	    }
 	    break;
 	
@@ -2551,8 +2545,8 @@ double final_calc_Vr(cell2d * cell, int i, int j, int n,
 			weightCell.i = (*cell)[n][i][j].weightVector.x.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.x.at(idx).j;
 			rho_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].rho;
-			Vx_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
-			Vr_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
+			Vx_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
+			Vr_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
 	    }
 	
 	    rho_j1 = 0;
@@ -2564,8 +2558,8 @@ double final_calc_Vr(cell2d * cell, int i, int j, int n,
 			weightCell.i = (*cell)[n][i][j].weightVector.y.at(idx).i;
 			weightCell.j = (*cell)[n][i][j].weightVector.y.at(idx).j;
 			rho_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].rho;
-			Vx_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
-			Vr_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
+			Vx_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vx[0];
+			Vr_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
 	    }
 	    break;
 	
@@ -2764,7 +2758,7 @@ double final_calc_e(cell2d * cell, int i, int j, int n,
 			weightCell.j = (*cell)[n][i][j].weightVector.y.at(idx).j;
 			bar_e_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_e;
 			rho_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].rho;
-			Vr_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
+			Vr_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
 	    }
 	    break;
 	
@@ -2790,7 +2784,7 @@ double final_calc_e(cell2d * cell, int i, int j, int n,
 			weightCell.j = (*cell)[n][i][j].weightVector.x.at(idx).j;
 			bar_e_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_e;
 			rho_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].rho;
-			Vr_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
+			Vr_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
 	    }
 	    break;
 	
@@ -2829,7 +2823,7 @@ double final_calc_e(cell2d * cell, int i, int j, int n,
 			weightCell.j = (*cell)[n][i][j].weightVector.x.at(idx).j;
 			bar_e_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_e;
 			rho_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].rho;
-			Vr_i1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
+			Vr_i1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
 	    }
 	
 	    bar_e_j1 = 0;
@@ -2842,7 +2836,7 @@ double final_calc_e(cell2d * cell, int i, int j, int n,
 			weightCell.j = (*cell)[n][i][j].weightVector.y.at(idx).j;
 			bar_e_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_e;
 			rho_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].rho;
-			Vr_j1 += weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
+			Vr_j1 -= weight*(*cell)[n][weightCell.i][weightCell.j].bar_Vr[0];
 	    }
 	    break;
 	
