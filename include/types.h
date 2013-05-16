@@ -18,7 +18,24 @@ typedef struct LineAngle2D {
 } LineAngle2D;
 
 typedef struct WeightPart { double weight; int i; int j; } WeightPart;
-typedef struct WeightVector { std::vector < WeightPart > x; std::vector < WeightPart > y; } WeightVector;
+
+typedef struct WeightVector {
+	std::vector < WeightPart > x;
+	std::vector < WeightPart > y;
+	std::vector < WeightPart > xy;
+} WeightVector;
+
+typedef struct BorderCond {
+	double i_1j_1;
+	double ij_1;
+	double i1j_1;
+	double i_1j;
+	double ij;
+	double i1j;
+	double i_1j1;
+	double ij1;
+	double i1j1;
+} BorderCond;
 
 /* Cell parameters */
 struct gasCell {

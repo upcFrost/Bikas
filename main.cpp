@@ -495,8 +495,12 @@ int main(int argc, char** argv) {
 			
 			/** DEBUG **/
 			if (true) {
-				int nArray = 1; int *iArray = new int[nArray]; int *jArray = new int[nArray];
-				iArray[0] = 101; jArray[0] = 31;
+				int nArray = 5; int *iArray = new int[nArray]; int *jArray = new int[nArray];
+				iArray[0] = 4; jArray[0] = 21;
+				iArray[1] = 4; jArray[1] = 22;
+				iArray[2] = 4; jArray[2] = 23;
+				iArray[3] = 4; jArray[3] = 24;
+				iArray[4] = 4; jArray[4] = 25;
 				debug_Vx_Vr_P_A_barVx_output(n, nArray, iArray, jArray, cell);
 			}
 
@@ -530,8 +534,12 @@ int main(int argc, char** argv) {
 			
 			/** DEBUG **/
 			if (true) {
-				int nArray = 1; int *iArray = new int[nArray]; int *jArray = new int[nArray];
-				iArray[0] = 101; jArray[0] = 31;
+				int nArray = 5; int *iArray = new int[nArray]; int *jArray = new int[nArray];
+				iArray[0] = 4; jArray[0] = 21;
+				iArray[1] = 4; jArray[1] = 22;
+				iArray[2] = 4; jArray[2] = 23;
+				iArray[3] = 4; jArray[3] = 24;
+				iArray[4] = 4; jArray[4] = 25;
 				debug_dM_rho_output(n, nArray, iArray, jArray, cell);			
 			}
 			
@@ -679,8 +687,12 @@ int main(int argc, char** argv) {
 			
 			/** DEBUG **/
 			if (true) {
-				int nArray = 1; int *iArray = new int[nArray]; int *jArray = new int[nArray];
-				iArray[0] = 101; jArray[0] = 31;
+				int nArray = 5; int *iArray = new int[nArray]; int *jArray = new int[nArray];
+				iArray[0] = 4; jArray[0] = 21;
+				iArray[1] = 4; jArray[1] = 22;
+				iArray[2] = 4; jArray[2] = 23;
+				iArray[3] = 4; jArray[3] = 24;
+				iArray[4] = 4; jArray[4] = 25;
 				debug_p_output(n, nArray, iArray, jArray, cell);
 			}
 					
@@ -725,53 +737,52 @@ int main(int argc, char** argv) {
 						//~ case 0:
 							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] + 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
 							//~ break;
-							//~ 
+							//~
 						//~ // type 15 --> top and left borders closed
 						//~ case 15:
 							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] - 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
 							//~ break;
-						//~ 
+						//~
 						//~ // type 17 --> left border closed
 						//~ case 17:
 							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] + 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
 							//~ break;
-						//~ 
+						//~
 						//~ // type 16 --> bottom and left borders closed
 						//~ case 16:
 							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] + 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
 							//~ break;
-					//~ 
+					//~
 						//~ // type 13 --> top border closed
 						//~ case 13:
 							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] - 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
 							//~ break;
-					//~ 
+					//~
 						//~ // type 14 --> bottom border closed
 						//~ case 14:
 							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] + 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
 							//~ break;
-						//~ 
+						//~
 						//~ // type 19 --> right border closed
 						//~ case 19:
 							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] + 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
 							//~ break;
-						//~ 
+						//~
 						//~ // type 21 --> bottom and right borders closed
 						//~ case 21:
 							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] + 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
 							//~ break;
-							//~ 
+							//~
 						//~ // type 20 --> top and right borders closed
 						//~ case 20:
 							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] - 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
 							//~ break;
-							//~ 
-						//~ default:								
+							//~
+						//~ default:
 							//~ break;
 					//~ }
 				//~ }
 			//~ }
-			
 			/*****************
 			 * DEBUG: Vx and E test *
 			 *****************/
@@ -796,32 +807,32 @@ int main(int argc, char** argv) {
 				minimum.push_back(*min_element(array.begin(), array.end()));
 			}
 			
-			for (i = 101; i < 102; i++) {
-				for (j = 31; j < 32; j++) {
+			for (i = 4; i < 5; i++) {
+				for (j = 23; j < 24; j++) {
 					printf("E at %d:%d = %16.16f\nE at %d:%d = %16.16f\n",
 						i,j,cell[n+1][i][j].e,
-						i-5,j-3,cell[n+1][i-5][j-3].e);
+						i-5,j-3,cell[n+1][i-1][j-3].e);
 					printf("rho at %d:%d = %16.16f\nrho at %d:%d = %16.16f\n",
 						i,j,cell[n+1][i][j].rho,
-						i-5,j-3,cell[n+1][i-5][j-3].rho);
+						i-5,j-3,cell[n+1][i-1][j-3].rho);
 					printf("dM[1] at %d:%d = %16.16f\ndM[1] at %d:%d = %16.16f\n",
 						i,j,cell[n][i][j].dM[1],
-						i-5,j-3,cell[n][i-5][j-3].dM[1]);
+						i-5,j-3,cell[n][i-1][j-3].dM[1]);
 					printf("dM[2] at %d:%d = %16.16f\ndM[2] at %d:%d = %16.16f\n",
 						i,j,cell[n][i][j].dM[2],
-						i-5,j-3,cell[n][i-5][j-3].dM[2]);
+						i-5,j-3,cell[n][i-1][j-3].dM[2]);
 					printf("dM[3] at %d:%d = %16.16f\ndM[3] at %d:%d = %16.16f\n",
 						i,j,cell[n][i][j].dM[3],
-						i-5,j-3,cell[n][i-5][j-3].dM[3]);
+						i-5,j-3,cell[n][i-1][j-3].dM[3]);
 					printf("dM[4] at %d:%d = %16.16f\ndM[4] at %d:%d = %16.16f\n",
 						i,j,cell[n][i][j].dM[4],
-						i-5,j-3,cell[n][i-5][j-3].dM[4]);
+						i-5,j-3,cell[n][i-1][j-3].dM[4]);
 					printf("barVx at %d:%d = %16.16f\nbarVx at %d:%d = %16.16f\n",
 						i,j,cell[n][i][j].bar_Vx[0],
-						i-5,j-3,cell[n][i-5][j-3].bar_Vx[0]);
+						i-5,j-3,cell[n][i-1][j-3].bar_Vx[0]);
 					printf("barVr at %d:%d = %16.16f\nbarVr at %d:%d = %16.16f\n",
 						i,j,cell[n][i][j].bar_Vr[0],
-						i-5,j-3,cell[n][i-5][j-3].bar_Vr[0]);
+						i-5,j-3,cell[n][i-1][j-3].bar_Vr[0]);
 				}
 			}
 
@@ -871,9 +882,10 @@ int main(int argc, char** argv) {
 		}
 		
 		pvdGas << 	"	</Collection>" << endl << "</VTKFile>" << endl;
-		
+		getchar();
+		getchar();
+		getchar();
     };
-
     return 0;
 }
 

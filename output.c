@@ -30,7 +30,7 @@ void OutputPVD(cell2d cell, std::string filename) {
 	for (int i = 0; i < max_i-1; i++) {
 		for (int j = 0; j < max_j-1; j++) {
 			if (cell.at(n).at(i).at(j).type != 18) {
-				vtkIdType IDs[5];
+				vtkIdType IDs[5] = {0};
 				bool allCorners = false;
 				
 				//~ if (c_0.r_2 != 0 && c_0.x_2 != 0) {
