@@ -185,7 +185,8 @@ int main(int argc, char** argv) {
 		    double A[5];
 		    pre_cell_geometry(A, cell.at(n).at(i).at(j), i, j);
 		    if (cell.at(n).at(i).at(j).type == 1 || cell.at(n).at(i).at(j).type == 3 ||
-					cell.at(n).at(i).at(j).type == 8 || cell.at(n).at(i).at(j).type == 10 )	{
+					cell.at(n).at(i).at(j).type == 8 || cell.at(n).at(i).at(j).type == 10 ||
+					cell.at(n).at(i).at(j).type == 22 )	{
 				printf("Making weightVector for %d:%d\n",i,j);
 				cell.at(n).at(i).at(j).weightVector = wightVectorsCalc(cell, i, j, n, false);
 				printf("weightVector size on %d for %d:%d = %u\n", n,i,j,

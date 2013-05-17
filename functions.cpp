@@ -218,6 +218,14 @@ void pre_cell_geometry(double array[5], gasCell cell, int i, int j) {
 		array[3] = 0;
 		array[4] = 1;
 		break;
+
+	case 22:
+	    array[0] = ((j-1)*(cell.r_1+cell.r_2) + cell.r_1*cell.r_2 +
+			pow(cell.r_2-cell.r_1, 2)/3) / (2*j-1);
+		array[1] = cell.r_1 * (j-1+cell.r_1/2) / (j-0.5);
+		array[2] = 0;
+		array[3] = 1;
+		array[4] = 0;
 		
 	
 	default:
@@ -271,6 +279,7 @@ double euler_bar_Vx(cell2d& cell, int n, int i, int j, double dt, double dx, dou
 	NEEDED_COND += P_PAR;
 	NEEDED_COND += RHO_PAR;
 	NEEDED_COND += VX_PAR;
+	NEEDED_COND += VR_PAR;
 	BorderCond brd[8];
 	calculateBorder(n, cell[n], NEEDED_COND, brd);
 
@@ -285,31 +294,31 @@ double euler_bar_Vx(cell2d& cell, int n, int i, int j, double dt, double dx, dou
 		printf("P_i_1 = %16.16f\n", brd[P_POS].i_1j);
 		printf("(P_i1 + P)/2 - (P_i_1 + P)/2 = %16.16f\n\n",P_i12 - P_i_12);
 	}
-	double result = brd[VX_POS].ij - (P_i12 - P_i_12) / dx * fmax(curCell.A[1], curCell.A[2]) * dt / (brd[RHO_POS].ij * curCell.A[0]);
-	if (fabs(result-brd[VX_POS].ij) < pow(10,-15)) result = brd[VX_POS].ij;
+	double result = 0;
+	result = brd[VX_POS].ij - (P_i12 - P_i_12) / dx * fmax(curCell.A[1], curCell.A[2]) * dt / (curCell.rho * curCell.A[0]);
 	
     /** Second order by x **/
     //~ double result = cell[n][i][j].Vx[0] - (1.0/12.0*P_i_2 - 2.0/3.0*P_i_1 + 2.0/3.0*P_i1 - 1.0/12.0*P_i2) / dx * fmax(cell[n][i][j].A[1],cell[n][i][j].A[2]) * dt / (cell[n][i][j].rho * cell[n][i][j].A[0]);
 	//~ 
 	/** With Navier-Stocks **/
-    //~ double result = brd[VX_POS].ij +
-        //~ dt  / (brd[RHO_POS].ij * curCell.A[0] * dx) *
-        //~ (
-			//~ // Pressure
-			//~ (P_i12 - P_i_12) * fmax(curCell.A[1], curCell.A[2]) +
-			//~ // Viscosity
-			//~ gasMu * dx * (
-				//~ (gasA+2)/pow(dx,2) * (
-					//~ brd[VX_POS].i1j - 2*brd[VX_POS].ij + brd[VX_POS].i_1j
-				//~ ) + (
-					//~ brd[VX_POS].ij1 - 2*brd[VX_POS].ij + brd[VX_POS].ij_1
-				//~ ) / pow(dr,2) +
-				//~ (gasA+1)/(4*dx*dr) * (
-					//~ cell[n][i+1][j+1].Vr[0] + cell[n][i-1][j-1].Vr[0] - cell[n][i-1][j+1].Vr[0] - cell[n][i+1][j-1].Vr[0]
-				//~ )
-			//~ )
-        //~ );
-    //~
+    result = curCell.Vx[0] - dt  / (curCell.rho * curCell.A[0] * dx) *
+        (
+			// Pressure
+			(P_i12 - P_i_12) * fmax(curCell.A[1], curCell.A[2]) -
+			// Viscosity
+			gasMu * dx * (
+				(gasA+2)/pow(dx,2) * (
+					brd[VX_POS].i1j - 2*curCell.Vx[0] + brd[VX_POS].i_1j
+				) + (
+					brd[VX_POS].ij1 - 2*curCell.Vx[0] + brd[VX_POS].ij_1
+				) / pow(dr,2) +
+				(gasA+1)/(4*dx*dr) * (
+					brd[VR_POS].i1j1 + brd[VR_POS].i_1j_1 - brd[VR_POS].i_1j1 - brd[VR_POS].i1j_1
+				)
+			)
+        );
+
+    if (fabs(result-brd[VX_POS].ij) < pow(10,-15)) result = brd[VX_POS].ij;
 	return result;
 }
 
@@ -321,6 +330,7 @@ double euler_bar_Vr(cell2d& cell, int n, int i, int j, double dt, double dx, dou
 	unsigned NEEDED_COND = 0;
 	NEEDED_COND += P_PAR;
 	NEEDED_COND += RHO_PAR;
+	NEEDED_COND += VX_PAR;
 	NEEDED_COND += VR_PAR;
 	BorderCond brd[8];
 	calculateBorder(n, cell[n], NEEDED_COND, brd);
@@ -364,25 +374,23 @@ double euler_bar_Vr(cell2d& cell, int n, int i, int j, double dt, double dx, dou
     
 
     /** With Navier-Stocks **/
-//	result = curCell.Vr[0] - dt  / (curCell.rho * curCell.A[0] * dr) *
-//	    (
-//			// Pressure
-//	 	(P_j12 - P_j_12)*fmax(curCell.A[3],curCell.A[4]) -
-//			// Viscosity
-//		gasMu * dr *(
-//			(gasA+2)/pow(dr,2) * (
-//				brd[VR_POS].ij1 - 2*curCell.Vr[0] + brd[VR_POS].ij_1
-//			) + (
-//				brd[VR_POS].i1j - 2*curCell.Vr[0] + brd[VR_POS].i_1j
-//			) / pow(dx,2) +
-//			(gasA+1)/(4*dx*dr) * (
-//				brd[VX_POS].i1j1 + brd[VX_POS].i_1j_1 - brd[VX_POS].i_1j1 - brd[VX_POS].i1j_1
-//			)
-//		)
-//	) ;
+	result = curCell.Vr[0] - dt  / (curCell.rho * curCell.A[0] * dr) *
+	    (
+			// Pressure
+	 	(P_j12 - P_j_12)*fmax(curCell.A[3],curCell.A[4]) -
+			// Viscosity
+		gasMu * dr *(
+			(gasA+2)/pow(dr,2) * (
+				brd[VR_POS].ij1 - 2*curCell.Vr[0] + brd[VR_POS].ij_1
+			) + (
+				brd[VR_POS].i1j - 2*curCell.Vr[0] + brd[VR_POS].i_1j
+			) / pow(dx,2) +
+			(gasA+1)/(4*dx*dr) * (
+				brd[VX_POS].i1j1 + brd[VX_POS].i_1j_1 - brd[VX_POS].i_1j1 - brd[VX_POS].i1j_1
+			)
+		)
+	) ;
 
-	if (i == 101 && j == 31 && fabs(result) > pow(10,-15))
-		printf("123");
     /** Cleaning noise **/    
     //~ if (fabs(curCell.P[4] - curCell.P[3]) < pow(10,-5)/scaleV) result = curCell.Vr[0];
 
@@ -437,7 +445,7 @@ double euler_bar_e(cell2d& cell, int n, int i, int j, double dt, double dx, doub
 		double result = brd[E_POS].ij -
 		(
 			(P_i12*Vx_i12 - P_i_12*Vx_i_12) / dx * fmax(curCell.A[1],curCell.A[2]) +
-			(fabs(j-axis_j)*P_j12*Vr_j12 - fabs(j-axis_j-1)*P_j_12*Vr_j_12) / ((fabs(j-axis_j-0.5))*dr) * fmax(curCell.A[3],curCell.A[4])
+			(fabs(j-axis_j)*P_j12*Vr_j12 - fabs(j-axis_j-1)*P_j_12*Vr_j_12) / ((fabs(j-axis_j-0.5))*pow(dr,2)) * fmax(curCell.A[3],curCell.A[4])
 		) * dt / (curCell.A[0] * brd[RHO_POS].ij)
 	/** without fmax **/
 		//~ (
@@ -807,10 +815,10 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 	array[8] = ruleVr2 ? 0 : 1;
 	
 	/** Central **/
-//	array[1]
-//	array[2]
-//	array[3]
-//	array[4];
+//	array[1] = brd[RHO_POS].i_1j * brd[BAR_VX_POS].i_1j * (fabs(j-axis_j-0.5)) * pow(dr,2) * dt;
+//	array[2] = brd[RHO_POS].i1j * brd[BAR_VX_POS].i1j * (fabs(j-axis_j-0.5)) * pow(dr,2) * dt;
+//	array[3] = brd[RHO_POS].ij_1 * brd[BAR_VR_POS].ij_1 * j*dx*dr * dt;
+//	array[4] = brd[RHO_POS].ij1 * brd[BAR_VR_POS].ij1 * (j+1)*dx*dr * dt;
 //	array[5] = ruleVx1 ? 1 : 0;
 //	array[6] = ruleVx2 ? 0 : 1;
 //	array[7] = ruleVr1 ? 1 : 0;
