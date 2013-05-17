@@ -17,6 +17,6 @@ struct find_type : std::unary_function<TPoint2D, bool> {
 };
 
 WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug);
-BorderCond * calculateBorder(int n, cell2d& cell, unsigned long ctrl);
+void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond result[8]);
 
 #endif	/* BORDER_H */

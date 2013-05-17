@@ -42,43 +42,6 @@ void debug_type1_cell(int i, int j, double sin_a, double cos_a,
 	std::cout << std::endl;
 }
 
-/*
-{		
-	cout << "Intersections:" << endl;
-	for (u_int idx2 = 0; idx2 < points.size(); idx2++) {
-		cout << "Points["<<idx2<<"] = " << points[idx2].x << ":" << points[idx2].y << "  TYPE: " << pointType[idx2] << endl;
-	}
-	cout << endl;
-	
-	cout << "Triangles: " << endl;
-	for (u_int idx2 = 0; idx2 < triangleVector.size(); idx2++) {
-		cout << "Triangle " << idx2 << ":" << endl <<
-				triangleVector[idx2].point[0].x << ":" << triangleVector[idx2].point[0].y << endl <<
-				triangleVector[idx2].point[1].x << ":" << triangleVector[idx2].point[1].y << endl <<
-				triangleVector[idx2].point[2].x << ":" << triangleVector[idx2].point[2].y << endl;
-	}
-	cout << endl;
-	
-	cout << "Trapezoids: " << endl;
-	for (u_int idx2 = 0; idx2 < trapezoidVector.size(); idx2++) {
-		cout << "Trapezoid " << idx2 << ":" << endl <<
-				trapezoidVector[idx2].point[0].x << ":" << trapezoidVector[idx2].point[0].y << endl <<
-				trapezoidVector[idx2].point[1].x << ":" << trapezoidVector[idx2].point[1].y << endl <<
-				trapezoidVector[idx2].point[2].x << ":" << trapezoidVector[idx2].point[2].y << endl <<
-				trapezoidVector[idx2].point[3].x << ":" << trapezoidVector[idx2].point[3].y << endl;
-	}
-	cout << endl;
-	
-	cout << "Weights: " << endl;
-	for (u_int idx2 = 0; idx2 < cell.at(n).at(i).at(j+1).weightVector.size(); idx2++) {
-		cout << "Weight: i = " << cell.at(n).at(i).at(j+1).weightVector[idx2].i << ", j = " << cell.at(n).at(i).at(j+1).weightVector[idx2].j << ", weight = " << cell.at(n).at(i).at(j+1).weightVector[idx2].weight << endl;
-	}
-	cout << endl;
-	
-	getchar();
-}
-
-*/
 
 void debug_weights(int i, int j, double P, std::vector < WeightPart > weightVector)
 {
@@ -203,4 +166,29 @@ void debug_Vx_Vr_P_A_barVx_output(int n, int nArray, int *i, int *j, cell2d cell
 			"bar_Vx = " << cell.at(n).at(i[iter]).at(j[iter]).bar_Vx[0] << ", bar_Vr = " << cell.at(n).at(i[iter]).at(j[iter]).bar_Vr[0] << ", bar_e = " << cell.at(n).at(i[iter]).at(j[iter]).bar_e << std::endl << std::endl;
 	}
 	std::cout << std::endl;
+}
+
+void debug_final_output(int n, int nArray, int *i, int *j, cell2d cell) {
+	for (int iter = 0; iter < nArray; iter++) {
+		printf("E at %d:%d = %16.16f\n",
+				i[iter],j[iter],cell.at(n+1).at(i[iter]).at(j[iter]).e);
+		printf("rho at %d:%d = %16.16f\n",
+				i[iter],j[iter],cell.at(n+1).at(i[iter]).at(j[iter]).rho);
+		printf("dM[1] at %d:%d = %16.16f\n",
+				i[iter],j[iter],cell.at(n).at(i[iter]).at(j[iter]).dM[1]);
+		printf("dM[2] at %d:%d = %16.16f\n",
+				i[iter],j[iter],cell.at(n).at(i[iter]).at(j[iter]).dM[2]);
+		printf("dM[3] at %d:%d = %16.16f\n",
+				i[iter],j[iter],cell.at(n).at(i[iter]).at(j[iter]).dM[3]);
+		printf("dM[4] at %d:%d = %16.16f\n",
+				i[iter],j[iter],cell.at(n).at(i[iter]).at(j[iter]).dM[4]);
+		printf("barVx at %d:%d = %16.16f\n",
+				i[iter],j[iter],cell.at(n).at(i[iter]).at(j[iter]).bar_Vx[0]);
+		printf("barVr at %d:%d = %16.16f\n",
+				i[iter],j[iter],cell.at(n).at(i[iter]).at(j[iter]).bar_Vr[0]);
+		printf("Vx at %d:%d = %16.16f\n",
+				i[iter],j[iter],cell.at(n+1).at(i[iter]).at(j[iter]).Vx[0]);
+		printf("Vr at %d:%d = %16.16f\n",
+				i[iter],j[iter],cell.at(n+1).at(i[iter]).at(j[iter]).Vr[0]);
+	}
 }

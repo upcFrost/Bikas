@@ -228,8 +228,8 @@ int main(int argc, char** argv) {
 		}
 		
 		/** Test - Riemann problem 1 **/
-		//~ i_sn = max_i - 10;
-		//~ x_sn.back() = i_sn * dx;
+		i_sn = max_i - 10;
+		x_sn.back() = i_sn * dx;
 				
 		/* Prepare output files */
 		prepOutputDynCSV(outputDyn);
@@ -477,32 +477,36 @@ int main(int argc, char** argv) {
 					if (cell.at(n).at(i).at(j).type != 18) {
 						cell.at(n).at(i).at(j).bar_z = euler_z(&cell, &cell.at(n).at(i).at(j), n, i, j);
 						cell.at(n).at(i).at(j).bar_psi = euler_psi(&cell, &cell.at(n).at(i).at(j), n, i, j);
-						cell.at(n).at(i).at(j).bar_Vx[0] = euler_bar_Vx(&cell,n,i,j,dt,dx,dr);
-						cell.at(n).at(i).at(j).bar_Vr[0] = euler_bar_Vr(&cell,n,i,j,dt,dx,dr);
-						//~ if (cell.at(n).at(i).at(j).type == 1 || cell.at(n).at(i).at(j).type == 3 ||
-						//~ 		cell.at(n).at(i).at(j).type == 8 || cell.at(n).at(i).at(j).type == 10 )	{
-						//~ 	printf("Before rotation: %10.10f:%10.10f\n",
-						//~ 		cell.at(n).at(i).at(j).bar_Vx[0], cell.at(n).at(i).at(j).bar_Vr[0]);
-						//~ 	rotateVectors(cell.at(n).at(i).at(j).bar_Vx[0],
-						//~ 		cell.at(n).at(i).at(j).bar_Vr[0], cell.at(n).at(i).at(j).angle);
-						//~ 	printf("After rotation: %10.10f:%10.10f\n",
-						//~ 		cell.at(n).at(i).at(j).bar_Vx[0], cell.at(n).at(i).at(j).bar_Vr[0]);
-						//~ }
-						cell.at(n).at(i).at(j).bar_e = euler_bar_e(&cell,n,i,j,dt,dx,dr);
+						cell.at(n).at(i).at(j).bar_Vx[0] = euler_bar_Vx(cell,n,i,j,dt,dx,dr);
+						cell.at(n).at(i).at(j).bar_Vr[0] = euler_bar_Vr(cell,n,i,j,dt,dx,dr);
+//						if (cell.at(n).at(i).at(j).type == 1 || cell.at(n).at(i).at(j).type == 3 ||
+//								cell.at(n).at(i).at(j).type == 8 || cell.at(n).at(i).at(j).type == 10 )	{
+//						if (cell.at(n).at(i).at(j).type == 10 )	{
+//							rotateVectors(cell.at(n).at(i).at(j).bar_Vx[0],
+//								cell.at(n).at(i).at(j).bar_Vr[0], cell.at(n).at(i).at(j).angle);
+//							double Vx[3]; double Vr[3];
+//							Vx[0] = cell.at(n).at(i-1).at(j-1).bar_Vx[0]; 	Vr[0] = cell.at(n).at(i-1).at(j-1).bar_Vx[0];
+//							Vx[1] = cell.at(n).at(i).at(j).bar_Vx[0]; 		Vr[1] = cell.at(n).at(i).at(j).bar_Vx[0];
+//							Vx[2] = cell.at(n).at(i+1).at(j+1).bar_Vx[0]; 	Vr[2] = cell.at(n).at(i+1).at(j+1).bar_Vx[0];
+//							double * newSpeed = smoothSpeed(Vx, Vr, cell.at(n).at(i).at(j).angle);
+//							cell.at(n).at(i).at(j).bar_Vx[0] = newSpeed[0];
+//							cell.at(n).at(i).at(j).bar_Vr[0] = newSpeed[1];
+//						}
+						cell.at(n).at(i).at(j).bar_e = euler_bar_e(cell,n,i,j,dt,dx,dr);
 					}
 				}
 			}
 			
-			/** DEBUG **/
-			if (true) {
-				int nArray = 5; int *iArray = new int[nArray]; int *jArray = new int[nArray];
-				iArray[0] = 4; jArray[0] = 21;
-				iArray[1] = 4; jArray[1] = 22;
-				iArray[2] = 4; jArray[2] = 23;
-				iArray[3] = 4; jArray[3] = 24;
-				iArray[4] = 4; jArray[4] = 25;
-				debug_Vx_Vr_P_A_barVx_output(n, nArray, iArray, jArray, cell);
-			}
+//			/** DEBUG **/
+//			if (true) {
+//				int nArray = 5; int *iArray = new int[nArray]; int *jArray = new int[nArray];
+//				iArray[0] = 4; jArray[0] = 21;
+//				iArray[1] = 4; jArray[1] = 22;
+//				iArray[2] = 4; jArray[2] = 23;
+//				iArray[3] = 4; jArray[3] = 24;
+//				iArray[4] = 4; jArray[4] = 25;
+//				debug_Vx_Vr_P_A_barVx_output(n, nArray, iArray, jArray, cell);
+//			}
 
 			/* Lagrange stage */
 			for (i = 1; i < i_sn; i++) {
@@ -510,7 +514,7 @@ int main(int argc, char** argv) {
 					if (cell.at(n).at(i).at(j).type != 18) {
 						cell.at(n).at(i).at(j).m = lagrange_m(&cell.at(n).at(i).at(j));
 						double array[21] = {0};
-						lagrange_mass(array, &cell, i, j, n, dx, dr, dt);
+						lagrange_mass(array, cell, i, j, n, dx, dr, dt);
 						cell.at(n).at(i).at(j).dM[0] = 0;
 						cell.at(n).at(i).at(j).D[0] = 0;
 						for (int iter = 1; iter < 5; iter++) {
@@ -523,33 +527,28 @@ int main(int argc, char** argv) {
 						if (cell.at(n).at(i).at(j).A[4] == 0 && cell.at(n).at(i).at(j).dM[4] != 0) cout << "dM4 = " << cell.at(n).at(i).at(j).dM[4] << "\n";
 						
 						cell.at(n+1).at(i).at(j).rho = lagrange_rho(&cell.at(n).at(i).at(j),&cell.at(n-1).at(i).at(j),i,j,dt,dx,dr);
-						if (cell.at(n+1).at(i).at(j).rho < 0) {
-							cout << "i_sn = " << i_sn << endl
-								<< "P[0] at i_sn = " << cell.at(n).at(i_sn).at(j).P[0] << endl;
-							broken_dt = true;
-						}
 					}
 				}
 			}
 			
-			/** DEBUG **/
-			if (true) {
-				int nArray = 5; int *iArray = new int[nArray]; int *jArray = new int[nArray];
-				iArray[0] = 4; jArray[0] = 21;
-				iArray[1] = 4; jArray[1] = 22;
-				iArray[2] = 4; jArray[2] = 23;
-				iArray[3] = 4; jArray[3] = 24;
-				iArray[4] = 4; jArray[4] = 25;
-				debug_dM_rho_output(n, nArray, iArray, jArray, cell);			
-			}
+//			/** DEBUG **/
+//			if (true) {
+//				int nArray = 5; int *iArray = new int[nArray]; int *jArray = new int[nArray];
+//				iArray[0] = 4; jArray[0] = 21;
+//				iArray[1] = 4; jArray[1] = 22;
+//				iArray[2] = 4; jArray[2] = 23;
+//				iArray[3] = 4; jArray[3] = 24;
+//				iArray[4] = 4; jArray[4] = 25;
+//				debug_dM_rho_output(n, nArray, iArray, jArray, cell);
+//			}
 			
 			
 			/* Final stage */
 			for (i = 1; i < i_sn; i++) {
 				for (j = 1; j < max_j-1; j++) {
 					if (cell.at(n).at(i).at(j).type != 18) {
-						cell.at(n+1).at(i).at(j).Vx[0] = final_calc_Vx(&cell,i,j,n,dx,dr,dt);
-						cell.at(n+1).at(i).at(j).Vr[0] = final_calc_Vr(&cell,i,j,n,dx,dr,dt);
+						cell.at(n+1).at(i).at(j).Vx[0] = final_calc_Vx(cell,i,j,n,dx,dr,dt);
+						cell.at(n+1).at(i).at(j).Vr[0] = final_calc_Vr(cell,i,j,n,dx,dr,dt);
 						cell.at(n+1).at(i).at(j).e = final_calc_e(&cell,i,j,n,dx,dr,dt);
 						if (cell.at(n+1).at(i).at(j).e < 0) need_out = true;
 						
@@ -560,18 +559,6 @@ int main(int argc, char** argv) {
 						cell.at(n+1).at(i).at(j).z = final_calc_z(&cell, &cell.at(n+1).at(i).at(j), n, i, j);
 						cell.at(n+1).at(i).at(j).psi = final_calc_psi(&cell, &cell.at(n+1).at(i).at(j), n, i, j);
 						cell.at(n+1).at(i).at(j).P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j));
-							
-						//~ if (changed && i == i_sn-1 && j==6) {
-							//~ cout << "Old P[0] = " << cell.at(n).at(i-1).at(j).P[0] << endl
-								//~ << "New P[0] = " << cell.at(n+1).at(i).at(j).P[0] << endl
-								//~ << "next cell P[0] = " << cell.at(n+1).at(i+1).at(j).P[0] << endl;
-							//~ cout << "New rho = " << cell.at(n+1).at(i).at(j).rho << endl
-								//~ << "Old rho = " << cell.at(n-1).at(i-1).at(j).rho << endl
-								//~ << "New intE = " << (cell.at(n+1).at(i).at(j).e - (pow(cell.at(n+1).at(i).at(j).Vx[0],2)+pow(cell.at(n+1).at(i).at(j).Vr[0],2))/2) << endl
-								//~ << "Old intE = " << (cell.at(n-1).at(i-1).at(j).e - (pow(cell.at(n-1).at(i).at(j).Vx[0],2)+pow(cell.at(n-1).at(i).at(j).Vr[0],2))/2) << endl
-								//~ << "New final_psi = " << cell.at(n+1).at(i).at(j).final_psi << endl
-								//~ << "Old final_psi = " << cell.at(n-1).at(i-1).at(j).final_psi << endl;
-						//~ }
 					}
 				}
 			}
@@ -685,16 +672,16 @@ int main(int argc, char** argv) {
 				//~ }
 			//~ }
 			
-			/** DEBUG **/
-			if (true) {
-				int nArray = 5; int *iArray = new int[nArray]; int *jArray = new int[nArray];
-				iArray[0] = 4; jArray[0] = 21;
-				iArray[1] = 4; jArray[1] = 22;
-				iArray[2] = 4; jArray[2] = 23;
-				iArray[3] = 4; jArray[3] = 24;
-				iArray[4] = 4; jArray[4] = 25;
-				debug_p_output(n, nArray, iArray, jArray, cell);
-			}
+//			/** DEBUG **/
+//			if (true) {
+//				int nArray = 5; int *iArray = new int[nArray]; int *jArray = new int[nArray];
+//				iArray[0] = 4; jArray[0] = 21;
+//				iArray[1] = 4; jArray[1] = 22;
+//				iArray[2] = 4; jArray[2] = 23;
+//				iArray[3] = 4; jArray[3] = 24;
+//				iArray[4] = 4; jArray[4] = 25;
+//				debug_p_output(n, nArray, iArray, jArray, cell);
+//			}
 					
 			/** Smoothing **/
 			//~ /* X axis */
@@ -807,33 +794,17 @@ int main(int argc, char** argv) {
 				minimum.push_back(*min_element(array.begin(), array.end()));
 			}
 			
-			for (i = 4; i < 5; i++) {
-				for (j = 23; j < 24; j++) {
-					printf("E at %d:%d = %16.16f\nE at %d:%d = %16.16f\n",
-						i,j,cell[n+1][i][j].e,
-						i-5,j-3,cell[n+1][i-1][j-3].e);
-					printf("rho at %d:%d = %16.16f\nrho at %d:%d = %16.16f\n",
-						i,j,cell[n+1][i][j].rho,
-						i-5,j-3,cell[n+1][i-1][j-3].rho);
-					printf("dM[1] at %d:%d = %16.16f\ndM[1] at %d:%d = %16.16f\n",
-						i,j,cell[n][i][j].dM[1],
-						i-5,j-3,cell[n][i-1][j-3].dM[1]);
-					printf("dM[2] at %d:%d = %16.16f\ndM[2] at %d:%d = %16.16f\n",
-						i,j,cell[n][i][j].dM[2],
-						i-5,j-3,cell[n][i-1][j-3].dM[2]);
-					printf("dM[3] at %d:%d = %16.16f\ndM[3] at %d:%d = %16.16f\n",
-						i,j,cell[n][i][j].dM[3],
-						i-5,j-3,cell[n][i-1][j-3].dM[3]);
-					printf("dM[4] at %d:%d = %16.16f\ndM[4] at %d:%d = %16.16f\n",
-						i,j,cell[n][i][j].dM[4],
-						i-5,j-3,cell[n][i-1][j-3].dM[4]);
-					printf("barVx at %d:%d = %16.16f\nbarVx at %d:%d = %16.16f\n",
-						i,j,cell[n][i][j].bar_Vx[0],
-						i-5,j-3,cell[n][i-1][j-3].bar_Vx[0]);
-					printf("barVr at %d:%d = %16.16f\nbarVr at %d:%d = %16.16f\n",
-						i,j,cell[n][i][j].bar_Vr[0],
-						i-5,j-3,cell[n][i-1][j-3].bar_Vr[0]);
-				}
+			int debug_I = 101, debug_J = 31;
+			if (true && debug_I != 0 && debug_J != 0) {
+				int nArray = 5; int *iArray = new int[nArray]; int *jArray = new int[nArray];
+				iArray[0] = debug_I-1; jArray[0] = debug_J;
+				iArray[1] = debug_I+1; jArray[1] = debug_J;
+				iArray[2] = debug_I; jArray[2] = debug_J-1;
+				iArray[3] = debug_I; jArray[3] = debug_J+1;
+				iArray[4] = debug_I; jArray[4] = debug_J;
+				debug_Vx_Vr_P_A_barVx_output(n, nArray, iArray, jArray, cell);
+				debug_dM_rho_output(n, nArray, iArray, jArray, cell);
+				debug_final_output(n, nArray, iArray, jArray, cell);
 			}
 
 			double next = Ku * *min_element(minimum.begin(), minimum.end());

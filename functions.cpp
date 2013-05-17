@@ -263,15 +263,16 @@ void euler_proj_broder(double array[5], int j, double Xsn, double dx, double dr)
 }
 
  /* Vx calculation on euler stage */
-double euler_bar_Vx(cell2d * cell, int n, int i, int j, double dt, double dx, double dr) {
+double euler_bar_Vx(cell2d& cell, int n, int i, int j, double dt, double dx, double dr) {
 
-	gasCell curCell = (*cell)[n][i][j];
+	gasCell curCell = cell[n][i][j];
 
 	unsigned NEEDED_COND = 0;
 	NEEDED_COND += P_PAR;
 	NEEDED_COND += RHO_PAR;
 	NEEDED_COND += VX_PAR;
-	BorderCond * brd = calculateBorder(n, (*cell), NEEDED_COND);
+	BorderCond brd[8];
+	calculateBorder(n, cell[n], NEEDED_COND, brd);
 
 	/** First order **/
     //~ double P_i12 = (P_i1 + P)/2 * (1 - (k-1)*(Vx_i1 - Vx)*dt/dx);
@@ -288,7 +289,7 @@ double euler_bar_Vx(cell2d * cell, int n, int i, int j, double dt, double dx, do
 	if (fabs(result-brd[VX_POS].ij) < pow(10,-15)) result = brd[VX_POS].ij;
 	
     /** Second order by x **/
-    //~ double result = (*cell)[n][i][j].Vx[0] - (1.0/12.0*P_i_2 - 2.0/3.0*P_i_1 + 2.0/3.0*P_i1 - 1.0/12.0*P_i2) / dx * fmax((*cell)[n][i][j].A[1],(*cell)[n][i][j].A[2]) * dt / ((*cell)[n][i][j].rho * (*cell)[n][i][j].A[0]);
+    //~ double result = cell[n][i][j].Vx[0] - (1.0/12.0*P_i_2 - 2.0/3.0*P_i_1 + 2.0/3.0*P_i1 - 1.0/12.0*P_i2) / dx * fmax(cell[n][i][j].A[1],cell[n][i][j].A[2]) * dt / (cell[n][i][j].rho * cell[n][i][j].A[0]);
 	//~ 
 	/** With Navier-Stocks **/
     //~ double result = brd[VX_POS].ij +
@@ -304,7 +305,7 @@ double euler_bar_Vx(cell2d * cell, int n, int i, int j, double dt, double dx, do
 					//~ brd[VX_POS].ij1 - 2*brd[VX_POS].ij + brd[VX_POS].ij_1
 				//~ ) / pow(dr,2) +
 				//~ (gasA+1)/(4*dx*dr) * (
-					//~ (*cell)[n][i+1][j+1].Vr[0] + (*cell)[n][i-1][j-1].Vr[0] - (*cell)[n][i-1][j+1].Vr[0] - (*cell)[n][i+1][j-1].Vr[0]
+					//~ cell[n][i+1][j+1].Vr[0] + cell[n][i-1][j-1].Vr[0] - cell[n][i-1][j+1].Vr[0] - cell[n][i+1][j-1].Vr[0]
 				//~ )
 			//~ )
         //~ );
@@ -313,16 +314,16 @@ double euler_bar_Vx(cell2d * cell, int n, int i, int j, double dt, double dx, do
 }
 
 /* Vr calculation on euler stage */
-double euler_bar_Vr(cell2d * cell, int n, int i, int j, double dt, double dx, double dr) {
+double euler_bar_Vr(cell2d& cell, int n, int i, int j, double dt, double dx, double dr) {
 
-	gasCell curCell = (*cell)[n][i][j];
+	gasCell curCell = cell[n][i][j];
 
 	unsigned NEEDED_COND = 0;
 	NEEDED_COND += P_PAR;
 	NEEDED_COND += RHO_PAR;
 	NEEDED_COND += VR_PAR;
-	BorderCond * brd = new BorderCond[8];
-	brd = calculateBorder(n, (*cell), NEEDED_COND);
+	BorderCond brd[8];
+	calculateBorder(n, cell[n], NEEDED_COND, brd);
 	BorderCond borderArray[8];
 	borderArray[0] = brd[0];
 	borderArray[1] = brd[1];
@@ -347,8 +348,7 @@ double euler_bar_Vr(cell2d * cell, int n, int i, int j, double dt, double dx, do
 	/** First order **/
 	result = brd[VR_POS].ij - (P_j12 - P_j_12) / brd[RHO_POS].ij * dt / curCell.A[0] * fmax(curCell.A[4],curCell.A[3]) / dr;
 	//~ /** Second order by x **/
-	//~ result = (*cell)[n][i][j].Vr[0] - (1.0/12.0*P_j_2 - 2.0/3.0*P_j_1 + 2.0/3.0*P_j1 - 1.0/12.0*P_j2) / (*cell)[n][i][j].rho * dt / (*cell)[n][i][j].A[0] * fmax((*cell)[n][i][j].A[4],(*cell)[n][i][j].A[3]) / dr;
-	if (fabs(result-brd[VR_POS].ij) < pow(10,-15)) result = brd[VR_POS].ij;
+	//~ result = cell[n][i][j].Vr[0] - (1.0/12.0*P_j_2 - 2.0/3.0*P_j_1 + 2.0/3.0*P_j1 - 1.0/12.0*P_j2) / cell[n][i][j].rho * dt / cell[n][i][j].A[0] * fmax(cell[n][i][j].A[4],cell[n][i][j].A[3]) / dr;
 	
 
 	/** From my calc **/
@@ -364,38 +364,55 @@ double euler_bar_Vr(cell2d * cell, int n, int i, int j, double dt, double dx, do
     
 
     /** With Navier-Stocks **/
-	result = borderArray[VR_POS].ij - dt  / (borderArray[RHO_POS].ij * curCell.A[0] * dr) *
-	    (
-			// Pressure
-	 	(P_j12 - P_j_12)*fmax(curCell.A[3],curCell.A[4]) -
-			// Viscosity
-		gasMu * dr *(
-			(gasA+2)/pow(dr,2) * (
-				borderArray[VR_POS].ij1 - 2*borderArray[VR_POS].ij + borderArray[VR_POS].ij_1
-			) + (
-				borderArray[VR_POS].i1j - 2*borderArray[VR_POS].ij + borderArray[VR_POS].i_1j
-			) / pow(dx,2) +
-			(gasA+1)/(4*dx*dr) * (
-				borderArray[VX_POS].i1j1 + borderArray[VX_POS].i_1j_1 - borderArray[VX_POS].i_1j1 - brd[VX_POS].i1j_1
-			)
-		)
-	) ;
+//	result = curCell.Vr[0] - dt  / (curCell.rho * curCell.A[0] * dr) *
+//	    (
+//			// Pressure
+//	 	(P_j12 - P_j_12)*fmax(curCell.A[3],curCell.A[4]) -
+//			// Viscosity
+//		gasMu * dr *(
+//			(gasA+2)/pow(dr,2) * (
+//				brd[VR_POS].ij1 - 2*curCell.Vr[0] + brd[VR_POS].ij_1
+//			) + (
+//				brd[VR_POS].i1j - 2*curCell.Vr[0] + brd[VR_POS].i_1j
+//			) / pow(dx,2) +
+//			(gasA+1)/(4*dx*dr) * (
+//				brd[VX_POS].i1j1 + brd[VX_POS].i_1j_1 - brd[VX_POS].i_1j1 - brd[VX_POS].i1j_1
+//			)
+//		)
+//	) ;
 
+	if (i == 101 && j == 31 && fabs(result) > pow(10,-15))
+		printf("123");
     /** Cleaning noise **/    
     //~ if (fabs(curCell.P[4] - curCell.P[3]) < pow(10,-5)/scaleV) result = curCell.Vr[0];
-    
+
+	if (fabs(result-brd[VR_POS].ij) < pow(10,-15)) result = brd[VR_POS].ij;
 	return result;
 }
 
 void rotateVectors(double& Vx, double& Vr, LineAngle2D angle) {
-	Vx = Vx*angle.cos_a - Vr*angle.sin_a;
-	Vr = Vx*angle.sin_a + Vr*angle.cos_a;
+	double V = sqrt(pow(Vx,2)+pow(Vr,2));
+	Vx = V*angle.cos_a;
+	Vr = V*angle.sin_a;
+}
+
+double * smoothSpeed(double * Vx, double * Vr, LineAngle2D angle) {
+	double V[3];
+	double * result = new double[2];
+
+	for (int i = 0; i < 3; i++)
+		V[i] = sqrt(pow(Vx[i],2)+pow(Vr[i],2));
+	V[1] = 0.1*V[0] + 0.8*V[1] + 0.1*V[2];
+	result[0] = V[1]*angle.cos_a;
+	result[1] = V[1]*angle.sin_a;
+
+	return result;
 }
 
 /* Energy calculation on euler stage */
-double euler_bar_e(cell2d * cell, int n, int i, int j, double dt, double dx, double dr) {
+double euler_bar_e(cell2d& cell, int n, int i, int j, double dt, double dx, double dr) {
 
-	gasCell curCell = (*cell)[n][i][j];
+	gasCell curCell = cell[n][i][j];
 
 	unsigned NEEDED_COND = 0;
 	NEEDED_COND += P_PAR;
@@ -403,7 +420,8 @@ double euler_bar_e(cell2d * cell, int n, int i, int j, double dt, double dx, dou
 	NEEDED_COND += E_PAR;
 	NEEDED_COND += VX_PAR;
 	NEEDED_COND += VR_PAR;
-	BorderCond * brd = calculateBorder(n, (*cell), NEEDED_COND);
+	BorderCond brd[8];
+	calculateBorder(n, cell[n], NEEDED_COND, brd);
 
     /** First order **/
 	double P_i12 = (brd[P_POS].i1j + brd[P_POS].ij)/2;
@@ -427,7 +445,7 @@ double euler_bar_e(cell2d * cell, int n, int i, int j, double dt, double dx, dou
 		//~ (j*(*cell)[n][i][j].P[4]*(*cell)[n][i][j].Vr[4]*(*cell)[n][i][j].A[4] - (j-1)*(*cell)[n][i][j].P[3]*(*cell)[n][i][j].Vr[3]*(*cell)[n][i][j].A[3]) / ((j-1/2)*dr)
 		//~ ) * dt / ((*cell)[n][i][j].A[0] * (*cell)[n][i][j].rho)
 	/** If powder present **/
-		+ brd[P_POS].ij/((k-1)*I_k) * (1 + lambda*(*cell)[n][i][j].final_z) * f*kappa*dt
+		+ brd[P_POS].ij/((k-1)*I_k) * (1 + lambda * cell[n][i][j].final_z) * f*kappa*dt
 	/** End here **/
 		;
 		
@@ -656,14 +674,14 @@ double euler_bar_e(cell2d * cell, int n, int i, int j, double dt, double dx, dou
 		cout << "bar_e is NaN" << endl
 			<< "i = " << i << endl
 			<< "j = " << j << endl
-			<< "Vr[3] = " << (*cell)[n][i][j].Vr[3] << endl
-			<< "Vr[4] = " << (*cell)[n][i][j].Vr[4] << endl
-			<< "P[3] = " << (*cell)[n][i][j].P[3] << endl
-			<< "P[4] = " << (*cell)[n][i][j].P[4] << endl
-			<< "Second brackets = " <<((j-axis_j)*(*cell)[n][i][j].P[4]*(*cell)[n][i][j].Vr[4] - (j-axis_j-1)*(*cell)[n][i][j].P[3]*(*cell)[n][i][j].Vr[3]) / ((fabs(j-axis_j-0.5))*dr) *
-				fmax((*cell)[n][i][j].A[3],(*cell)[n][i][j].A[4]) << endl
+			<< "Vr[3] = " << cell[n][i][j].Vr[3] << endl
+			<< "Vr[4] = " << cell[n][i][j].Vr[4] << endl
+			<< "P[3] = " << cell[n][i][j].P[3] << endl
+			<< "P[4] = " << cell[n][i][j].P[4] << endl
+			<< "Second brackets = " <<((j-axis_j)*cell[n][i][j].P[4]*cell[n][i][j].Vr[4] - (j-axis_j-1)*cell[n][i][j].P[3]*cell[n][i][j].Vr[3]) / ((fabs(j-axis_j-0.5))*dr) *
+				fmax(cell[n][i][j].A[3],cell[n][i][j].A[4]) << endl
 			<< "(fabs(j-axis_j-0.5))*dr = " << (fabs(j-axis_j-0.5))*dr << endl
-			<< "fmax((*cell)[n][i][j].A[3],(*cell)[n][i][j].A[4]) = " << fmax((*cell)[n][i][j].A[3],(*cell)[n][i][j].A[4]) << endl << endl;
+			<< "fmax(cell[n][i][j].A[3],cell[n][i][j].A[4]) = " << fmax(cell[n][i][j].A[3],cell[n][i][j].A[4]) << endl << endl;
 		return 0;
 	}
 }
@@ -734,7 +752,7 @@ double lagrange_rho(gasCell * cell, gasCell * prevCell, int i, int j, double dt,
 }
 
 /* Lagrangian stage mass calculation */
-void lagrange_mass(double array[21], cell2d * cell, int i, int j, int n,
+void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
         double dx, double dr, double dt) {
 			
     /****************************************************************
@@ -743,18 +761,19 @@ void lagrange_mass(double array[21], cell2d * cell, int i, int j, int n,
      * **************************************************************/
     for (int iter = 0; iter < 21; iter++) array[iter] = 0;
     
-	gasCell curCell = (*cell)[n][i][j];
+	gasCell curCell = cell[n][i][j];
 
 	unsigned NEEDED_COND = 0;
 	NEEDED_COND += RHO_PAR;
-	NEEDED_COND += VX_PAR;
-	NEEDED_COND += VR_PAR;
-	BorderCond * brd = calculateBorder(n, (*cell), NEEDED_COND);
+	NEEDED_COND += BAR_VX_PAR;
+	NEEDED_COND += BAR_VR_PAR;
+	BorderCond brd[8];
+	calculateBorder(n, cell[n], NEEDED_COND, brd);
 	
-    double Vx_i12 = (brd[VX_POS].i1j + brd[VX_POS].ij)/2;
-	double Vx_i_12 = (brd[VX_POS].i_1j + brd[VX_POS].ij)/2;
-	double Vr_j12 = (brd[VR_POS].ij1 + brd[VR_POS].ij)/2;
-	double Vr_j_12 = (brd[VR_POS].ij_1 + brd[VR_POS].ij)/2;
+    double Vx_i12 = (brd[BAR_VX_POS].i1j + brd[BAR_VX_POS].ij)/2;
+	double Vx_i_12 = (brd[BAR_VX_POS].i_1j + brd[BAR_VX_POS].ij)/2;
+	double Vr_j12 = (brd[BAR_VR_POS].ij1 + brd[BAR_VR_POS].ij)/2;
+	double Vr_j_12 = (brd[BAR_VR_POS].ij_1 + brd[BAR_VR_POS].ij)/2;
 
 	/** First order **/
 	bool ruleVx1 = Vx_i_12 > 0 ? true : false;
@@ -763,30 +782,40 @@ void lagrange_mass(double array[21], cell2d * cell, int i, int j, int n,
 	bool ruleVr2 = Vr_j12 > 0 ? true : false;
 	
 	if (ruleVx1) {
-		array[1] = (fabs(j-axis_j-0.5))*(*cell)[n][i-1][j].A[2] * brd[RHO_POS].i_1j * Vx_i_12 * pow(dr,2) * dt;
+		array[1] = (fabs(j-axis_j-0.5))*cell[n][i-1][j].A[2] * brd[RHO_POS].i_1j * Vx_i_12 * pow(dr,2) * dt;
 	} else {
 		array[1] = (fabs(j-axis_j-0.5))*curCell.A[1] * brd[RHO_POS].ij * Vx_i_12 * pow(dr,2) * dt;
 	}
 	if (ruleVx2) {
 		array[2] = (fabs(j-axis_j-0.5))*curCell.A[2] * brd[RHO_POS].ij * Vx_i12 * pow(dr,2) * dt;
 	} else {
-		array[2] = (fabs(j-axis_j-0.5))*(*cell)[n][i+1][j].A[1] * brd[RHO_POS].i1j * Vx_i12 * pow(dr,2) * dt;
+		array[2] = (fabs(j-axis_j-0.5))*cell[n][i+1][j].A[1] * brd[RHO_POS].i1j * Vx_i12 * pow(dr,2) * dt;
 	}
 	if (ruleVr1) {
-		array[3] = (*cell)[n][i][j-1].A[4] * brd[RHO_POS].ij_1 * Vr_j_12 * dx * dt;
+		array[3] = cell[n][i][j-1].A[4] * brd[RHO_POS].ij_1 * Vr_j_12 * j*dx*dr * dt;
 	} else {
-		array[3] = curCell.A[3] * brd[RHO_POS].ij * Vr_j_12 * dx * dt;
+		array[3] = curCell.A[3] * brd[RHO_POS].ij * Vr_j_12 * j*dx*dr * dt;
 	}
 	if (ruleVr2) {
-		array[4] = curCell.A[4] * brd[RHO_POS].ij * Vr_j12 * dx * dt;
+		array[4] = curCell.A[4] * brd[RHO_POS].ij * Vr_j12 * (j+1)*dx*dr * dt;
 	} else {
-		array[4] = (*cell)[n][i][j+1].A[3] * brd[RHO_POS].ij1 * Vr_j12 * dx * dt;
+		array[4] = cell[n][i][j+1].A[3] * brd[RHO_POS].ij1 * Vr_j12 * (j+1)*dx*dr * dt;
 	}
 	array[5] = ruleVx1 ? 1 : 0;
 	array[6] = ruleVx2 ? 0 : 1;
 	array[7] = ruleVr1 ? 1 : 0;
 	array[8] = ruleVr2 ? 0 : 1;
 	
+	/** Central **/
+//	array[1]
+//	array[2]
+//	array[3]
+//	array[4];
+//	array[5] = ruleVx1 ? 1 : 0;
+//	array[6] = ruleVx2 ? 0 : 1;
+//	array[7] = ruleVr1 ? 1 : 0;
+//	array[8] = ruleVr2 ? 0 : 1;
+
 	/** Second order **/
     //~ bool ruleVx11 = Vx + Vx_i_1 > 0 ? true : false;
     //~ bool ruleVx12 = Vx - (Vx_i1 - Vx_i_1)/4 > 0 ? true : false;
@@ -805,47 +834,47 @@ void lagrange_mass(double array[21], cell2d * cell, int i, int j, int n,
     //~ // From right to left
     //~ if (ruleVx11 == ruleVx12 && !ruleVx11 && (fabs(Vx) > pow(10,-15) || fabs(Vx_i1) > pow(10,-15) || fabs(Vx_i_1) > pow(10,-15))) {
         //~ array[1] = (Vx - (Vx_i1 - Vx_i_1)/4) *
-            //~ (rho - (rho_i1 - rho_i_1)/4) * (*cell)[n][i-1][j].A[2] * fabs(j-axis_j-0.5)*pow(dr,2) * dt;
+            //~ (rho - (rho_i1 - rho_i_1)/4) * cell[n][i-1][j].A[2] * fabs(j-axis_j-0.5)*pow(dr,2) * dt;
     //~ } 
     //~ // From left to right
     //~ if (ruleVx11 == ruleVx13 && ruleVx11 && (fabs(Vx) > pow(10,-15) || fabs(Vx_i_2) > pow(10,-15) || fabs(Vx_i_1) > pow(10,-15))) {
 	//~ array[1] = (Vx_i_1 + (Vx - Vx_i_2)/4) *
-            //~ (rho_i_1 + (rho - rho_i_2)/4) * (*cell)[n][i][j].A[1] * fabs(j-axis_j-0.5)*pow(dr,2) * dt;
+            //~ (rho_i_1 + (rho - rho_i_2)/4) * cell[n][i][j].A[1] * fabs(j-axis_j-0.5)*pow(dr,2) * dt;
     //~ }
     //~ // dM(i+1/2,j)
     //~ // From left to right
     //~ if (ruleVx21 == ruleVx22 && ruleVx21 && (fabs(Vx) > pow(10,-15) || fabs(Vx_i1) > pow(10,-15) || fabs(Vx_i_1) > pow(10,-15))) {
         //~ array[2] = (Vx + (Vx_i1 - Vx_i_1)/4) *
-            //~ (rho + (rho_i1 - rho_i_1)/4) * (*cell)[n][i][j].A[2] * fabs(j-axis_j-0.5)*pow(dr,2) * dt;
+            //~ (rho + (rho_i1 - rho_i_1)/4) * cell[n][i][j].A[2] * fabs(j-axis_j-0.5)*pow(dr,2) * dt;
     //~ } 
     //~ // From right to left
     //~ if (ruleVx21 == ruleVx23 && !ruleVx21 && (fabs(Vx) > pow(10,-15) || fabs(Vx_i1) > pow(10,-15) || fabs(Vx_i2) > pow(10,-15))) {
         //~ array[2] = (Vx_i1 - (Vx_i2 - Vx)/4) *
-            //~ (rho_i1 - (rho_i2 - rho)/4) * (*cell)[n][i+1][j].A[1] * fabs(j-axis_j-0.5)*pow(dr,2) * dt;
+            //~ (rho_i1 - (rho_i2 - rho)/4) * cell[n][i+1][j].A[1] * fabs(j-axis_j-0.5)*pow(dr,2) * dt;
     //~ }
     //~ // dM(i,j-1/2)
     //~ if (ruleVr11 == ruleVr13 && ruleVr11 && (fabs(Vr) > pow(10,-15) || fabs(Vr_j_1) > pow(10,-15) || fabs(Vr_j_2) > pow(10,-15))) {
         //~ array[3] = (Vr_j_1 - (Vr_j_2 - Vr)/4) *
-            //~ (rho_j_1 - (rho_j_2 - rho)/4) * (*cell)[n][i][j-1].A[4] * dx * dt;
+            //~ (rho_j_1 - (rho_j_2 - rho)/4) * cell[n][i][j-1].A[4] * dx * dt;
     //~ }
     //~ if (ruleVr11 == ruleVr12 && !ruleVr11 && (fabs(Vr) > pow(10,-15) || fabs(Vr_j1) > pow(10,-15) || fabs(Vr_j_1) > pow(10,-15))) {
 	//~ array[3] = (Vr + (Vr_j_1 - Vr_j1)/4) *
-            //~ (rho + (rho_j_1 - rho_j1)/4) * (*cell)[n][i][j].A[3] * dx * dt;
+            //~ (rho + (rho_j_1 - rho_j1)/4) * cell[n][i][j].A[3] * dx * dt;
     //~ }
     //~ // dM(i,j+1/2)
     //~ if (ruleVr21 == ruleVr22 && ruleVr21 && (fabs(Vr) > pow(10,-15) || fabs(Vr_j1) > pow(10,-15) || fabs(Vr_j_1) > pow(10,-15))) {
             //~ array[4] = (Vr + (Vr_j1 - Vr_j_1)/4) *
-                    //~ (rho + (rho_j1 - rho_j_1)/4) * (*cell)[n][i][j].A[4] * dx * dt;
+                    //~ (rho + (rho_j1 - rho_j_1)/4) * cell[n][i][j].A[4] * dx * dt;
 	//~ }
     //~ if (ruleVr21 == ruleVr23 && !ruleVr21 && (fabs(Vr) > pow(10,-15) || fabs(Vr_j1) > pow(10,-15) || fabs(Vr_j2) > pow(10,-15))) {
             //~ array[4] = (Vr_j1 - (Vr_j2 - Vr)/4) *
-                    //~ (rho_j1 - (rho_j2 - rho)/4) * (*cell)[n][i][j+1].A[3] * dx * dt;
+                    //~ (rho_j1 - (rho_j2 - rho)/4) * cell[n][i][j+1].A[3] * dx * dt;
     //~ }
     //~ 
-    //~ if ((*cell)[n][i][j].A[1] == 0) array[1] = 0;
-	//~ if ((*cell)[n][i][j].A[2] == 0) array[2] = 0;
-	//~ if ((*cell)[n][i][j].A[3] == 0) array[3] = 0;
-	//~ if ((*cell)[n][i][j].A[4] == 0) array[4] = 0;
+    //~ if (cell[n][i][j].A[1] == 0) array[1] = 0;
+	//~ if (cell[n][i][j].A[2] == 0) array[2] = 0;
+	//~ if (cell[n][i][j].A[3] == 0) array[3] = 0;
+	//~ if (cell[n][i][j].A[4] == 0) array[4] = 0;
     //~ 
     //~ array[5] = array[1] > 0 ? 1 : 0;
     //~ array[6] = array[2] > 0 ? 0 : 1;
@@ -1469,11 +1498,11 @@ double new_final_psi (cell2d * cell, int i, int j, int n,
 double final_calc_p(gasCell * prevCell, gasCell * cell) {
 	double result = (cell->e - (pow(cell->Vx[0],2)+pow(cell->Vr[0],2))/2 ) * (k-1) /
 		(
-			//~ 1/cell->rho // No powder present
-			1/cell->rho - (1 - cell->final_psi)/delta - alpha_k * cell->final_psi // BMSTU var
-			//~ alpha_k // Abel (Dupre) equation
+			1/cell->rho // No powder present
+//			1/cell->rho - (1 - cell->final_psi)/delta - alpha_k * cell->final_psi // BMSTU var
+//			alpha_k // Abel (Dupre) equation
 		)
-		//~ - (pow(cell->Vx[0],2)+pow(cell->Vr[0],2))/2 // From Ershov, UDK 519.6:532.6, #775, 2007, str. 159-173
+//		- (pow(cell->Vx[0],2)+pow(cell->Vr[0],2))/2 // From Ershov, UDK 519.6:532.6, #775, 2007, str. 159-173
 		;
 	if (result < 0) {
 		broken_dt = true;
@@ -1494,70 +1523,72 @@ double final_calc_p(gasCell * prevCell, gasCell * cell) {
 }
 
 /* Final stage Vx calculation */
-double final_calc_Vx(cell2d * cell, int i, int j, int n,
+double final_calc_Vx(cell2d& cell, int i, int j, int n,
         double dx, double dr, double dt) {
 
-	gasCell curCell = (*cell)[n][i][j];
+	gasCell curCell = cell[n][i][j];
 
 	unsigned NEEDED_COND = 0;
 	NEEDED_COND += RHO_PAR;
 	NEEDED_COND += BAR_VX_PAR;
 	NEEDED_COND += BAR_VR_PAR;
-	BorderCond * brd = calculateBorder(n, (*cell), NEEDED_COND);
+	BorderCond brd[8];
+	calculateBorder(n, cell[n], NEEDED_COND, brd);
 
-    double result = brd[BAR_VX_POS].ij * brd[RHO_POS].ij / (*cell)[n+1][i][j].rho
+    double result = brd[BAR_VX_POS].ij * brd[RHO_POS].ij / cell[n+1][i][j].rho
     + 
     (
-		curCell.D[1] * brd[BAR_VX_POS].i_1j * curCell.dM[1] / ((fabs(j-axis_j-0.5)) * (*cell)[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+		curCell.D[1] * brd[BAR_VX_POS].i_1j * curCell.dM[1] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	    +
-	    curCell.D[2] * brd[BAR_VX_POS].i1j * curCell.dM[2] / ((fabs(j-axis_j-0.5)) * (*cell)[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    curCell.D[2] * brd[BAR_VX_POS].i1j * curCell.dM[2] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	    +
-	    curCell.D[3] * brd[BAR_VX_POS].i_1j_1 * curCell.dM[3] / ((fabs(j-axis_j-0.5)) * (*cell)[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    curCell.D[3] * brd[BAR_VX_POS].i_1j_1 * curCell.dM[3] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	    +
-	    curCell.D[4] * brd[BAR_VX_POS].i_1j1 * curCell.dM[4] / ((fabs(j-axis_j-0.5)) * (*cell)[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    curCell.D[4] * brd[BAR_VX_POS].i_1j1 * curCell.dM[4] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	    -
-	    (1-curCell.D[1]) * brd[BAR_VX_POS].i_1j * curCell.dM[1] / ((fabs(j-axis_j-0.5)) * (*cell)[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    (1-curCell.D[1]) * brd[BAR_VX_POS].i_1j * curCell.dM[1] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	    -
-	    (1-curCell.D[2]) * brd[BAR_VX_POS].i_1j * curCell.dM[2] / ((fabs(j-axis_j-0.5)) * (*cell)[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    (1-curCell.D[2]) * brd[BAR_VX_POS].i_1j * curCell.dM[2] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	    -
-	    (1-curCell.D[3]) * brd[BAR_VX_POS].i_1j * curCell.dM[3] / ((fabs(j-axis_j-0.5)) * (*cell)[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    (1-curCell.D[3]) * brd[BAR_VX_POS].i_1j * curCell.dM[3] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	    -
-	    (1-curCell.D[4]) * brd[BAR_VX_POS].i_1j * curCell.dM[4] / ((fabs(j-axis_j-0.5)) * (*cell)[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    (1-curCell.D[4]) * brd[BAR_VX_POS].i_1j * curCell.dM[4] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
     )
 	;
     return result;
 }
 
 /* Final stage Vr calculation */
-double final_calc_Vr(cell2d * cell, int i, int j, int n,
+double final_calc_Vr(cell2d& cell, int i, int j, int n,
         double dx, double dr, double dt) {
 
-	gasCell curCell = (*cell)[n][i][j];
+	gasCell curCell = cell[n][i][j];
 
 	unsigned NEEDED_COND = 0;
 	NEEDED_COND += RHO_PAR;
 	NEEDED_COND += BAR_VX_PAR;
 	NEEDED_COND += BAR_VR_PAR;
-	BorderCond * brd = calculateBorder(n, (*cell), NEEDED_COND);
+	BorderCond brd[8];
+	calculateBorder(n, cell[n], NEEDED_COND, brd);
 
-    double result = brd[BAR_VR_POS].ij * brd[RHO_POS].ij / (*cell)[n+1][i][j].rho
+    double result = brd[BAR_VR_POS].ij * brd[RHO_POS].ij / cell[n+1][i][j].rho
     + 
     (
-	    curCell.D[1] * brd[BAR_VR_POS].i_1j * curCell.dM[1] / ((fabs(j-axis_j-0.5)) * (*cell)[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    curCell.D[1] * brd[BAR_VR_POS].i_1j * curCell.dM[1] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	    +
-	    curCell.D[2] * brd[BAR_VR_POS].i1j * curCell.dM[2] / ((fabs(j-axis_j-0.5)) * (*cell)[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    curCell.D[2] * brd[BAR_VR_POS].i1j * curCell.dM[2] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	    +
-	    curCell.D[3] * brd[BAR_VR_POS].ij_1 * curCell.dM[3] / ((fabs(j-axis_j-0.5)) * (*cell)[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    curCell.D[3] * brd[BAR_VR_POS].ij_1 * curCell.dM[3] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	    +
-	    curCell.D[4] * brd[BAR_VR_POS].ij1 * curCell.dM[4] / ((fabs(j-axis_j-0.5)) * (*cell)[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    curCell.D[4] * brd[BAR_VR_POS].ij1 * curCell.dM[4] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	    -
-	    (1-curCell.D[1]) * brd[BAR_VR_POS].ij * curCell.dM[1] / ((fabs(j-axis_j-0.5)) * (*cell)[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    (1-curCell.D[1]) * brd[BAR_VR_POS].ij * curCell.dM[1] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	    -
-	    (1-curCell.D[2]) * brd[BAR_VR_POS].ij * curCell.dM[2] / ((fabs(j-axis_j-0.5)) * (*cell)[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    (1-curCell.D[2]) * brd[BAR_VR_POS].ij * curCell.dM[2] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	    -
-	    (1-curCell.D[3]) * brd[BAR_VR_POS].ij * curCell.dM[3] / ((fabs(j-axis_j-0.5)) * (*cell)[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    (1-curCell.D[3]) * brd[BAR_VR_POS].ij * curCell.dM[3] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	    -
-	    (1-curCell.D[4]) * brd[BAR_VR_POS].ij * curCell.dM[4] / ((fabs(j-axis_j-0.5)) * (*cell)[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    (1-curCell.D[4]) * brd[BAR_VR_POS].ij * curCell.dM[4] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	)
     ;
     return result;
@@ -1574,7 +1605,8 @@ double final_calc_e(cell2d * cell, int i, int j, int n,
 	NEEDED_COND += RHO_PAR;
 	NEEDED_COND += BAR_VX_PAR;
 	NEEDED_COND += BAR_E_PAR;
-	BorderCond * brd = calculateBorder(n, (*cell), NEEDED_COND);
+	BorderCond brd[8];
+	calculateBorder(n, (*cell)[n], NEEDED_COND, brd);
 
     double result = brd[BAR_E_POS].ij * brd[RHO_POS].ij / (*cell)[n+1][i][j].rho
     + 
@@ -1661,7 +1693,8 @@ double smooth_Vr(cell2d * cell) {
 
 	unsigned NEEDED_COND = 0;
 	NEEDED_COND += VR_PAR;
-	BorderCond * brd = calculateBorder(n+1, *cell, NEEDED_COND);
+	BorderCond brd[8];
+	calculateBorder(n, (*cell)[n], NEEDED_COND, brd);
 
 	result = 0.05 * brd[VR_POS].i_1j_1 + 0.05 * brd[VR_POS].ij_1 + 0.05 * brd[VR_POS].i1j_1 +
 			0.05 * brd[VR_POS].i_1j + 0.6 * brd[VR_POS].ij + 0.05 * brd[VR_POS].i1j +
