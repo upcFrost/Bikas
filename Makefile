@@ -4,17 +4,14 @@ LDLIBS=-L. -L./lib -L/usr/lib -lvtkCommon -lvtkGraphics \
 	-lvtkIO -lvtkFiltering -lvtkRendering -lvtkImaging
 
 INCLUDES=-I. -I./include 
+
 ifeq ($(OS),Windows_NT)
 	INCLUDES+=-I"C:\Program Files (x86)\VTK\include\vtk-5.10" 
 	LDLIBS+=-L"C:\Program Files (x86)\VTK\lib\vtk-5.10"
+	TARGET=main.exe
 else
 	INCLUDES+=-I/usr/include/vtk-5.10
 	LDLIBS+=-L./usr/lib 
-endif
-
-ifeq ($(OS),Windows_NT)
-	TARGET=main.exe
-else
 	TARGET=main 
 endif
 
