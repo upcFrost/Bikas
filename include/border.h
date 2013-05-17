@@ -1,3 +1,6 @@
+#ifndef BORDER_H
+#define	BORDER_H
+
 #include "types.h"
 #include "globals.h"
 #include <vector>
@@ -14,3 +17,6 @@ struct find_type : std::unary_function<TPoint2D, bool> {
 };
 
 WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug);
+BorderCond * calculateBorder(int n, cell2d& cell, unsigned long ctrl);
+
+#endif	/* BORDER_H */

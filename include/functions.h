@@ -4,6 +4,8 @@
 #define _USE_MATH_DEFINES
 
 #include "types.h"
+#include "border.h"
+#include "globals.h"
 #include <set>
 
 double pre_alpha(gasCell cell, int i, int i_p, double delta_0, double delta);
@@ -32,5 +34,7 @@ double euler_z (cell2d * previousCell, gasCell * cell, int n, int i, int j);
 double euler_psi (cell2d * previousCell, gasCell * cell, int n, int i, int j);
 double new_final_z(cell2d * cell, int i, int j, int n, double dx, double dr, double dt);
 double new_final_psi(cell2d * cell, int i, int j, int n, double dx, double dr, double dt);
+
+double smooth_Vr(cell2d * cell);
 
 #endif	/* FUNCTIONS_H */

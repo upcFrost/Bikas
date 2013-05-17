@@ -21,6 +21,26 @@
 #include <iomanip>
 #include "types.h"
 
+unsigned int const P_POS		= 0;
+unsigned int const VX_POS		= 1;
+unsigned int const VR_POS		= 2;
+unsigned int const E_POS		= 3;
+unsigned int const RHO_POS		= 4;
+unsigned int const BAR_VX_POS	= 5;
+unsigned int const BAR_VR_POS	= 6;
+unsigned int const BAR_E_POS	= 7;
+
+#define P_PAR		(0x1 << 0);
+#define VX_PAR		(0x1 << 1);
+#define VR_PAR		(0x1 << 2);
+#define E_PAR		(0x1 << 3);
+#define RHO_PAR		(0x1 << 4);
+#define BAR_VX_PAR	(0x1 << 5);
+#define BAR_VR_PAR	(0x1 << 6);
+#define BAR_E_PAR	(0x1 << 7);
+
+#define CHECK_BIT(var,pos) ((var) & (1<<(pos)));
+
 
 extern int n, i, j, max_i, max_j, I_k, i_v, j_v, i_sn, j_sn, i_sn_0, P_f;
 extern double delta, delta_0, dx, dr, dt, p0, lambda, kappa, k, m_sn, max_z,max_z_0, f;
