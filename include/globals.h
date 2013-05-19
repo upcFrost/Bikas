@@ -29,6 +29,8 @@ unsigned int const RHO_POS		= 4;
 unsigned int const BAR_VX_POS	= 5;
 unsigned int const BAR_VR_POS	= 6;
 unsigned int const BAR_E_POS	= 7;
+unsigned int const Z_POS		= 8;
+unsigned int const PSI_POS		= 9;
 
 #define P_PAR		(0x1 << 0);
 #define VX_PAR		(0x1 << 1);
@@ -38,6 +40,8 @@ unsigned int const BAR_E_POS	= 7;
 #define BAR_VX_PAR	(0x1 << 5);
 #define BAR_VR_PAR	(0x1 << 6);
 #define BAR_E_PAR	(0x1 << 7);
+#define Z_PAR		(0x1 << 8);
+#define PSI_PAR		(0x1 << 9);
 
 #define CHECK_BIT(var,pos) ((var) & (1<<(pos)));
 
@@ -54,28 +58,29 @@ extern std::vector <double> U_sn;
 const int axis_j = 0; 
 
 /* Scaling */
-static const double scaleD = pow(10,	-2);
-static const double scaleT = pow(10,	-5);
-static const double scaleM = pow(10,	-6);
-static const double scaleV = pow(10,	3);
-static const double scaleE = pow(10,	0);
-static const double scaleF = pow(10,	2);
-static const double scaleP = pow(10,	6);
-static const double scaleR = pow(10,	0);
-static const double scaleDM = pow(10,	1);
-static const double scaleFF = pow(10,	6);
-static const double scaleIK = pow(10,	1);
-static const double scaleGasKAPPA = pow(10, -3);
-static const double scaleGasMU = pow(10, -1);
-static const double scaleGasCP = pow(10, 6);
-static const double scaleGasALPHAK = pow(10, 0);
+static const double scaleD = pow(10.0,	-2);
+static const double scaleT = pow(10.0,	-5);
+static const double scaleM = pow(10.0,	-6);
+static const double scaleV = pow(10.0,	3);
+static const double scaleE = pow(10.0,	0);
+static const double scaleF = pow(10.0,	2);
+static const double scaleP = pow(10.0,	6);
+static const double scaleR = pow(10.0,	0);
+static const double scaleDM = pow(10.0,	1);
+static const double scaleFF = pow(10.0,	6);
+static const double scaleIK = pow(10.0,	1);
+static const double scaleGasKAPPA = pow(10.0, -3);
+static const double scaleGasMU = pow(10.0, -1);
+static const double scaleGasCP = pow(10.0, 6);
+static const double scaleGasALPHAK = pow(10.0, 0);
 
 /* Gas constants */
 static const double alpha_k = 0.001006 / scaleGasALPHAK;
 static const double gasA = -0.666667;
-static const double gasMu = 2.85*pow(10,-5) / scaleGasMU; // Решение задачи по определению эффективности многокамерного дульного тормоза
-//static const double gasLambda = pow(10,-3);
-static const double gasLambda = pow(10,-2); // Zenkin, str 44, "Dlya turbulentnih techeniy"
+//static const double gasMu = 0.001 / scaleGasMU; // Zenkin, str 44, "Dlya turbulentnih techeniy"
+static const double gasMu = 2.85*pow(10.0,-5) / scaleGasMU; // Решение задачи по определению эффективности многокамерного дульного тормоза
+static const double gasLambda = pow(10,-3);
+//static const double gasLambda = pow(10.0,-2); // Zenkin, str 44, "Dlya turbulentnih techeniy"
 static const double gasKappa = 1.21 / scaleGasKAPPA; // Решение задачи по определению эффективности многокамерного дульного тормоза
 static const double gasCp = 1650 / scaleGasCP; // Решение задачи по определению эффективности многокамерного дульного тормоза
 static const double gasPr = gasMu * gasCp / gasKappa;

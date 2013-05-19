@@ -7,33 +7,37 @@
 
 
 #include "main.h"
-#include "globals.h"
-#include "interp.h"
-#include <ctime>
 
 using namespace std;
 
 
 void finishInit(double e_0) {
+	double psi_0 = (delta/delta_0 - 1) / (f * delta / P_v + alpha_k * delta - 1);
+	double d = 2*(max_j-4)*dr;
+	double S = M_PI*pow((max_j-4)*dr,2);
+	double S_km = (i_sn_0-1)*dx * 2*M_PI*(max_j-4)*dr;
+	double V_km = (i_sn_0-1)*dx * M_PI*pow((max_j-4)*dr,2);
+	double omega = (i_sn_0-1)*dx * M_PI*pow((max_j-4)*dr,2) * delta_0;
 	printf("Pre-init complete\n\n");
-	cout << "Initial values: " << endl
-		<< "P_vsp, Pa: " << P_v << endl
-		<< "e_0, Dzh: " << e_0 << endl
-		<< "psi_0: " << (delta/delta_0 - 1) / (f * delta / P_v + alpha_k * delta - 1) << endl
-		<< "f, : " << f << endl
-		<< "I_k, : " << I_k << endl
-		<< "m_sn = " << m_sn << endl
-		<< "k = " << k << endl
-		<< "kappa = " << kappa << endl
-		<< "lambda = " << lambda << endl
-		<< "d = " << 2*(max_j-4)*dr << endl
-		<< "S = " << M_PI*pow((max_j-4)*dr,2) << endl
-		<< "S_km = " << (i_sn_0-1)*dx * 2*M_PI*(max_j-4)*dr << endl
-		<< "V_km = " << (i_sn_0-1)*dx * M_PI*pow((max_j-4)*dr,2) << endl
-		<< "omega = " << (i_sn_0-1)*dx * M_PI*pow((max_j-4)*dr,2) * delta_0 << endl
-		<< "rho_0 = " << delta_0 << endl 
-		<< "axis_j = " << axis_j << endl 
-		<< endl;
+	printf("Initial values:\n"
+			"P_vsp, Pa: %10.10f\n"
+			"e_0, Dzh: %10.10f\n"
+			"psi_0: %10.10f\n"
+			"f: %10.10f\n"
+			"I_k: %d\n"
+			"m_sn: %10.10f\n"
+			"k: %10.10f\n"
+			"kappa: %10.10f\n"
+			"lambda: %10.10f\n"
+			"d: %10.10f\n"
+			"S: %10.10f\n"
+			"S_km: %10.10f\n"
+			"V_km: %10.10f\n"
+			"omega: %10.10f\n"
+			"rho_0: %10.10f\n"
+			"axis_j: %d\n\n",
+			P_v, e_0, psi_0, f, I_k, m_sn, k, kappa,
+			lambda, d, S, S_km, V_km, omega, delta_0, axis_j);
 }
 
 
@@ -229,8 +233,8 @@ int main(int argc, char** argv) {
 		}
 		
 		/** Test - Riemann problem 1 **/
-		i_sn = max_i - 10;
-		x_sn.back() = i_sn * dx;
+//		i_sn = max_i - 10;
+//		x_sn.back() = i_sn * dx;
 				
 		/* Prepare output files */
 		prepOutputDynCSV(outputDyn);
@@ -453,270 +457,132 @@ int main(int argc, char** argv) {
 				}
 			}
 			
-			//~ for (j = 0; j < max_j; j++) {
-				//~ cell.at(n).at(i_sn).at(j).P[0] = cell.at(n).at(i_sn-1).at(j).P[0];
-				//~ cell.at(n).at(i_sn).at(j).Vr[0] = cell.at(n).at(i_sn-1).at(j).Vr[0];
-				//~ cell.at(n).at(i_sn).at(j).Vx[0] = -cell.at(n).at(i_sn-1).at(j).Vx[0];
-				//~ cell.at(n).at(i_sn).at(j).rho = cell.at(n).at(i_sn-1).at(j).rho;
-				//~ cell.at(n).at(i_sn).at(j).e = cell.at(n).at(i_sn-1).at(j).e;
-				//~ cell.at(n).at(i_sn).at(j).final_z = cell.at(n).at(i_sn-1).at(j).final_z;
-				//~ cell.at(n).at(i_sn).at(j).final_psi = cell.at(n).at(i_sn-1).at(j).final_psi;
-//~ 
-				//~ cell.at(n+1).at(i_sn).at(j).P[0] = cell.at(n+1).at(i_sn-1).at(j).P[0];
-				//~ cell.at(n+1).at(i_sn).at(j).Vr[0] = cell.at(n+1).at(i_sn-1).at(j).Vr[0];
-				//~ cell.at(n+1).at(i_sn).at(j).Vx[0] = -cell.at(n+1).at(i_sn-1).at(j).Vx[0];
-				//~ cell.at(n+1).at(i_sn).at(j).rho = cell.at(n+1).at(i_sn-1).at(j).rho;
-				//~ cell.at(n+1).at(i_sn).at(j).e = cell.at(n+1).at(i_sn-1).at(j).e;
-			//~ }			
-			
-			
 			
 			/* Euler stage */
 			/** TODO: change i_sn to max_i **/
 			for (i = 1; i < i_sn; i++) {
 				for (j = 1; j < max_j-1; j++) {
 					if (cell.at(n).at(i).at(j).type != 18) {
-						cell.at(n).at(i).at(j).bar_z = euler_z(&cell, &cell.at(n).at(i).at(j), n, i, j);
-						cell.at(n).at(i).at(j).bar_psi = euler_psi(&cell, &cell.at(n).at(i).at(j), n, i, j);
-						cell.at(n).at(i).at(j).bar_Vx[0] = euler_bar_Vx(cell,n,i,j,dt,dx,dr);
-						cell.at(n).at(i).at(j).bar_Vr[0] = euler_bar_Vr(cell,n,i,j,dt,dx,dr);
-//						if (cell.at(n).at(i).at(j).type == 1 || cell.at(n).at(i).at(j).type == 3 ||
-//								cell.at(n).at(i).at(j).type == 8 || cell.at(n).at(i).at(j).type == 10 )	{
-//						if (cell.at(n).at(i).at(j).type == 10 )	{
-//							rotateVectors(cell.at(n).at(i).at(j).bar_Vx[0],
-//								cell.at(n).at(i).at(j).bar_Vr[0], cell.at(n).at(i).at(j).angle);
-//							double Vx[3]; double Vr[3];
-//							Vx[0] = cell.at(n).at(i-1).at(j-1).bar_Vx[0]; 	Vr[0] = cell.at(n).at(i-1).at(j-1).bar_Vx[0];
-//							Vx[1] = cell.at(n).at(i).at(j).bar_Vx[0]; 		Vr[1] = cell.at(n).at(i).at(j).bar_Vx[0];
-//							Vx[2] = cell.at(n).at(i+1).at(j+1).bar_Vx[0]; 	Vr[2] = cell.at(n).at(i+1).at(j+1).bar_Vx[0];
-//							double * newSpeed = smoothSpeed(Vx, Vr, cell.at(n).at(i).at(j).angle);
-//							cell.at(n).at(i).at(j).bar_Vx[0] = newSpeed[0];
-//							cell.at(n).at(i).at(j).bar_Vr[0] = newSpeed[1];
-//						}
-						cell.at(n).at(i).at(j).bar_e = euler_bar_e(cell,n,i,j,dt,dx,dr);
+						gasCell * curCell = &cell.at(n).at(i).at(j);
+
+						curCell->bar_z = euler_z(&cell, &cell.at(n).at(i).at(j), n, i, j);
+						curCell->bar_psi = euler_psi(&cell, &cell.at(n).at(i).at(j), n, i, j);
+						curCell->bar_Vx[0] = euler_bar_Vx(cell,n,i,j,dt,dx,dr,FIRST_ORDER_NS);
+						curCell->bar_Vr[0] = euler_bar_Vr(cell,n,i,j,dt,dx,dr,FIRST_ORDER_NS);
+						curCell->bar_e = euler_bar_e(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
 					}
 				}
 			}
 			
-//			/** DEBUG **/
-//			if (true) {
-//				int nArray = 5; int *iArray = new int[nArray]; int *jArray = new int[nArray];
-//				iArray[0] = 4; jArray[0] = 21;
-//				iArray[1] = 4; jArray[1] = 22;
-//				iArray[2] = 4; jArray[2] = 23;
-//				iArray[3] = 4; jArray[3] = 24;
-//				iArray[4] = 4; jArray[4] = 25;
-//				debug_Vx_Vr_P_A_barVx_output(n, nArray, iArray, jArray, cell);
-//			}
-
 			/* Lagrange stage */
 			for (i = 1; i < i_sn; i++) {
 				for (j = 1; j < max_j-1; j++) {
 					if (cell.at(n).at(i).at(j).type != 18) {
+						gasCell * curCell = &cell.at(n).at(i).at(j);
+						gasCell * nextTCell = &cell.at(n+1).at(i).at(j);
+
 						cell.at(n).at(i).at(j).m = lagrange_m(&cell.at(n).at(i).at(j));
 						double array[21] = {0};
 						lagrange_mass(array, cell, i, j, n, dx, dr, dt);
-						cell.at(n).at(i).at(j).dM[0] = 0;
-						cell.at(n).at(i).at(j).D[0] = 0;
+						curCell->dM[0] = 0;
+						curCell->D[0] = 0;
 						for (int iter = 1; iter < 5; iter++) {
-							cell.at(n).at(i).at(j).dM[iter] = array[iter];
-							cell.at(n).at(i).at(j).D[iter] = array[4+iter];
+							curCell->dM[iter] = array[iter];
+							curCell->D[iter] = array[4+iter];
 						}
-						if (cell.at(n).at(i).at(j).A[1] == 0 && cell.at(n).at(i).at(j).dM[1] != 0) cout << "dM1 = " << cell.at(n).at(i).at(j).dM[1] << "\n";
-						if (cell.at(n).at(i).at(j).A[2] == 0 && cell.at(n).at(i).at(j).dM[2] != 0) cout << "dM2 = " << cell.at(n).at(i).at(j).dM[2] << "\n";
-						if (cell.at(n).at(i).at(j).A[3] == 0 && cell.at(n).at(i).at(j).dM[3] != 0) cout << "dM3 = " << cell.at(n).at(i).at(j).dM[3] << "\n";
-						if (cell.at(n).at(i).at(j).A[4] == 0 && cell.at(n).at(i).at(j).dM[4] != 0) cout << "dM4 = " << cell.at(n).at(i).at(j).dM[4] << "\n";
-						
-						cell.at(n+1).at(i).at(j).rho = lagrange_rho(&cell.at(n).at(i).at(j),&cell.at(n-1).at(i).at(j),i,j,dt,dx,dr);
+						nextTCell->rho = lagrange_rho(&cell.at(n).at(i).at(j),&cell.at(n-1).at(i).at(j),i,j,dt,dx,dr);
 					}
 				}
 			}
-			
-//			/** DEBUG **/
-//			if (true) {
-//				int nArray = 5; int *iArray = new int[nArray]; int *jArray = new int[nArray];
-//				iArray[0] = 4; jArray[0] = 21;
-//				iArray[1] = 4; jArray[1] = 22;
-//				iArray[2] = 4; jArray[2] = 23;
-//				iArray[3] = 4; jArray[3] = 24;
-//				iArray[4] = 4; jArray[4] = 25;
-//				debug_dM_rho_output(n, nArray, iArray, jArray, cell);
-//			}
-			
 			
 			/* Final stage */
 			for (i = 1; i < i_sn; i++) {
 				for (j = 1; j < max_j-1; j++) {
 					if (cell.at(n).at(i).at(j).type != 18) {
-						cell.at(n+1).at(i).at(j).Vx[0] = final_calc_Vx(cell,i,j,n,dx,dr,dt);
-						cell.at(n+1).at(i).at(j).Vr[0] = final_calc_Vr(cell,i,j,n,dx,dr,dt);
-						cell.at(n+1).at(i).at(j).e = final_calc_e(&cell,i,j,n,dx,dr,dt);
-						if (cell.at(n+1).at(i).at(j).e < 0) need_out = true;
+						gasCell * nextTCell = &cell.at(n+1).at(i).at(j);
 						
-						cell.at(n+1).at(i).at(j).final_z = new_final_z(&cell,i,j,n,dx,dr,dt);
-						cell.at(n+1).at(i).at(j).final_psi = new_final_psi(&cell,i,j,n,dx,dr,dt);
+						nextTCell->Vx[0] = final_calc_Vx(cell,i,j,n,dx,dr,dt);
+						nextTCell->Vr[0] = final_calc_Vr(cell,i,j,n,dx,dr,dt);
+						nextTCell->e = final_calc_e(cell,i,j,n,dx,dr,dt);
+						nextTCell->final_z = new_final_z(cell,i,j,n,dx,dr,dt);
+						nextTCell->final_psi = new_final_psi(cell,i,j,n,dx,dr,dt);
 						
 						// Post-final stage
-						cell.at(n+1).at(i).at(j).z = final_calc_z(&cell, &cell.at(n+1).at(i).at(j), n, i, j);
-						cell.at(n+1).at(i).at(j).psi = final_calc_psi(&cell, &cell.at(n+1).at(i).at(j), n, i, j);
-						cell.at(n+1).at(i).at(j).P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j));
+						nextTCell->z = final_calc_z(&cell, &cell.at(n+1).at(i).at(j), n, i, j);
+						nextTCell->psi = final_calc_psi(&cell, &cell.at(n+1).at(i).at(j), n, i, j);
+						nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j));
 					}
 				}
 			}
-			//~ /* P, Vx, Vr and E border conditions for j = 1, max_j - 2, i = 0 and i = i_sn*/
-			//~ for (i = 1; i < max_i-1; i++) {
-				//~ for (j = 1; j < max_j-1; j++) {
-					//~ switch (cell.at(n+1).at(i).at(j).type) {
-						//~ // type 1 --> top border closed, left and right partially closed
-						//~ case 1:
-							//~ cell.at(n+1).at(i).at(j+1).P[0] = 0;
-							//~ for (unsigned int idx2 = 0; idx2 < cell.at(n+1).at(i).at(j+1).weightVector.size(); idx2++) {
-								//~ cell.at(n+1).at(i).at(j+1).P[0] += cell.at(n+1).at(i).at(j+1).weightVector[idx2].weight * cell.at(n+1).at(cell.at(n+1).at(i).at(j+1).weightVector[idx2].i).at(cell.at(n+1).at(i).at(j+1).weightVector[idx2].j).P[0];
-							//~ }
-							//~ cell.at(n+1).at(i).at(j+1).Vx[0] = 0;
-							//~ for (unsigned int idx2 = 0; idx2 < cell.at(n+1).at(i).at(j+1).weightVector.size(); idx2++) {
-								//~ cell.at(n+1).at(i).at(j+1).Vx[0] += cell.at(n+1).at(i).at(j+1).weightVector[idx2].weight * cell.at(n+1).at(cell.at(n+1).at(i).at(j+1).weightVector[idx2].i).at(cell.at(n+1).at(i).at(j+1).weightVector[idx2].j).Vx[0];
-							//~ }
-							//~ cell.at(n+1).at(i).at(j+1).Vr[0] = 0;
-							//~ for (unsigned int idx2 = 0; idx2 < cell.at(n+1).at(i).at(j+1).weightVector.size(); idx2++) {
-								//~ cell.at(n+1).at(i).at(j+1).Vr[0] += cell.at(n+1).at(i).at(j+1).weightVector[idx2].weight * cell.at(n+1).at(cell.at(n+1).at(i).at(j+1).weightVector[idx2].i).at(cell.at(n+1).at(i).at(j+1).weightVector[idx2].j).Vr[0];
-							//~ }
-							//~ cell.at(n+1).at(i).at(j+1).e = 0;
-							//~ for (unsigned int idx2 = 0; idx2 < cell.at(n+1).at(i).at(j+1).weightVector.size(); idx2++) {
-								//~ cell.at(n+1).at(i).at(j+1).e += cell.at(n+1).at(i).at(j+1).weightVector[idx2].weight * cell.at(n+1).at(cell.at(n+1).at(i).at(j+1).weightVector[idx2].i).at(cell.at(n+1).at(i).at(j+1).weightVector[idx2].j).e;
-							//~ }
-							//~ break;
-						//~ 
-						//~ // type 15 --> top and left borders closed
-						//~ case 15:
-							//~ cell.at(n+1).at(i).at(j+1).P[0] = cell.at(n+1).at(i).at(j).P[0];
-							//~ cell.at(n+1).at(i-1).at(j).P[0] = cell.at(n+1).at(i).at(j).P[0];
-							//~ cell.at(n+1).at(i).at(j+1).Vx[0] = -cell.at(n+1).at(i).at(j).Vx[0];
-							//~ cell.at(n+1).at(i-1).at(j).Vx[0] = -cell.at(n+1).at(i).at(j).Vx[0];
-							//~ cell.at(n+1).at(i).at(j+1).Vr[0] = -cell.at(n+1).at(i).at(j).Vr[0];
-							//~ cell.at(n+1).at(i-1).at(j).Vr[0] = -cell.at(n+1).at(i).at(j).Vr[0];
-							//~ cell.at(n+1).at(i).at(j+1).e = cell.at(n+1).at(i).at(j).e;
-							//~ cell.at(n+1).at(i-1).at(j).e = cell.at(n+1).at(i).at(j).e;
-							//~ break;
-						//~ 
-						//~ // type 17 --> left border closed
-						//~ case 17:
-							//~ cell.at(n+1).at(i-1).at(j).P[0] = cell.at(n+1).at(i).at(j).P[0];
-							//~ cell.at(n+1).at(i-1).at(j).Vx[0] = -cell.at(n+1).at(i).at(j).Vx[0];
-							//~ cell.at(n+1).at(i-1).at(j).Vr[0] = cell.at(n+1).at(i).at(j).Vr[0];
-							//~ cell.at(n+1).at(i-1).at(j).e = cell.at(n+1).at(i).at(j).e;
-							//~ break;
-						//~ 
-						//~ // type 16 --> bottom and left borders closed
-						//~ case 16:
-							//~ cell.at(n+1).at(i).at(j-1).P[0] = cell.at(n+1).at(i).at(j).P[0];
-							//~ cell.at(n+1).at(i-1).at(j).P[0] = cell.at(n+1).at(i).at(j).P[0];
-							//~ cell.at(n+1).at(i).at(j-1).Vx[0] = -cell.at(n+1).at(i).at(j).Vx[0];
-							//~ cell.at(n+1).at(i-1).at(j).Vx[0] = -cell.at(n+1).at(i).at(j).Vx[0];
-							//~ cell.at(n+1).at(i).at(j-1).Vr[0] = cell.at(n+1).at(i).at(j).Vr[0];
-							//~ cell.at(n+1).at(i-1).at(j).Vr[0] = cell.at(n+1).at(i).at(j).Vr[0];
-							//~ cell.at(n+1).at(i).at(j-1).e = cell.at(n+1).at(i).at(j).e;
-							//~ cell.at(n+1).at(i-1).at(j).e = cell.at(n+1).at(i).at(j).e;
-							//~ break;
-					//~ 
-						//~ // type 13 --> top border closed
-						//~ case 13:
-							//~ cell.at(n+1).at(i).at(j+1).P[0] = cell.at(n+1).at(i).at(j).P[0];
-							//~ cell.at(n+1).at(i).at(j+1).Vx[0] = cell.at(n+1).at(i).at(j).Vx[0];
-							//~ cell.at(n+1).at(i).at(j+1).Vr[0] = -cell.at(n+1).at(i).at(j).Vr[0];
-							//~ cell.at(n+1).at(i).at(j+1).e = cell.at(n+1).at(i).at(j).e;
-							//~ break;
-					//~ 
-						//~ // type 14 --> bottom border closed
-						//~ case 14:
-							//~ cell.at(n+1).at(i).at(j-1).P[0] = cell.at(n+1).at(i).at(j).P[0];
-							//~ cell.at(n+1).at(i).at(j-1).Vx[0] = cell.at(n+1).at(i).at(j).Vx[0];
-							//~ cell.at(n+1).at(i).at(j-1).Vr[0] = cell.at(n+1).at(i).at(j).Vr[0];
-							//~ cell.at(n+1).at(i).at(j-1).e = cell.at(n+1).at(i).at(j).e;
-							//~ break;
-						//~ 
-						//~ // type 19 --> right border closed
-						//~ case 19:
-							//~ cell.at(n+1).at(i+1).at(j).P[0] = cell.at(n+1).at(i).at(j).P[0];
-							//~ cell.at(n+1).at(i+1).at(j).Vx[0] = -cell.at(n+1).at(i).at(j).Vx[0];
-							//~ cell.at(n+1).at(i+1).at(j).Vr[0] = cell.at(n+1).at(i).at(j).Vr[0];
-							//~ cell.at(n+1).at(i+1).at(j).e = cell.at(n+1).at(i).at(j).e;
-							//~ break;
-						//~ 
-						//~ // type 21 --> bottom and right borders closed
-						//~ case 21:
-							//~ cell.at(n+1).at(i).at(j-1).P[0] = cell.at(n+1).at(i).at(j).P[0];
-							//~ cell.at(n+1).at(i+1).at(j).P[0] = cell.at(n+1).at(i).at(j).P[0];
-							//~ cell.at(n+1).at(i).at(j-1).Vx[0] = -cell.at(n+1).at(i).at(j).Vx[0];
-							//~ cell.at(n+1).at(i+1).at(j).Vx[0] = -cell.at(n+1).at(i).at(j).Vx[0];
-							//~ cell.at(n+1).at(i).at(j-1).Vr[0] = cell.at(n+1).at(i).at(j).Vr[0];
-							//~ cell.at(n+1).at(i+1).at(j).Vr[0] = cell.at(n+1).at(i).at(j).Vr[0];
-							//~ cell.at(n+1).at(i).at(j-1).e = cell.at(n+1).at(i).at(j).e;
-							//~ cell.at(n+1).at(i+1).at(j).e = cell.at(n+1).at(i).at(j).e;
-							//~ break;
-							//~ 
-						//~ // type 20 --> top and right borders closed
-						//~ case 20:
-							//~ cell.at(n+1).at(i).at(j+1).P[0] = cell.at(n+1).at(i).at(j).P[0];
-							//~ cell.at(n+1).at(i+1).at(j).P[0] = cell.at(n+1).at(i).at(j).P[0];
-							//~ cell.at(n+1).at(i).at(j+1).Vx[0] = -cell.at(n+1).at(i).at(j).Vx[0];
-							//~ cell.at(n+1).at(i+1).at(j).Vx[0] = -cell.at(n+1).at(i).at(j).Vx[0];
-							//~ cell.at(n+1).at(i).at(j+1).Vr[0] = -cell.at(n+1).at(i).at(j).Vr[0];
-							//~ cell.at(n+1).at(i+1).at(j).Vr[0] = -cell.at(n+1).at(i).at(j).Vr[0];
-							//~ cell.at(n+1).at(i).at(j+1).e = cell.at(n+1).at(i).at(j).e;
-							//~ cell.at(n+1).at(i+1).at(j).e = cell.at(n+1).at(i).at(j).e;
-							//~ break;
-							//~ 
-						//~ default:								
-							//~ break;
-					//~ }
-				//~ }
-			//~ }
-			
-//			/** DEBUG **/
-//			if (true) {
-//				int nArray = 5; int *iArray = new int[nArray]; int *jArray = new int[nArray];
-//				iArray[0] = 4; jArray[0] = 21;
-//				iArray[1] = 4; jArray[1] = 22;
-//				iArray[2] = 4; jArray[2] = 23;
-//				iArray[3] = 4; jArray[3] = 24;
-//				iArray[4] = 4; jArray[4] = 25;
-//				debug_p_output(n, nArray, iArray, jArray, cell);
-//			}
 					
 			/** Smoothing **/
-			//~ /* X axis */
-			//~ int pointNum = 4; // Should be even, number of interpolating points
-			//~ for (j = 0; j < max_j; j++) {
-				//~ for (i = 1+pointNum/2; i < i_sn-1-pointNum/2; i++) {
-					//~ if (cell.at(n+1).at(i).at(j).type != 18 && 
-							//~ cell.at(n+1).at(i+1).at(j).type != 18 && 
-							//~ cell.at(n+1).at(i+2).at(j).type != 18) {
-						//~ double xPoints[pointNum]; 
-						//~ double VxPoints[pointNum]; double VxPointsLin[pointNum]; double VxPointsQuad[pointNum]; double VxPointsCub[pointNum];
-						//~ double VrPoints[pointNum]; double VrPointsLin[pointNum]; double VrPointsQuad[pointNum]; double VrPointsCub[pointNum]; 
-						//~ double PPoints[pointNum]; double PPointsLin[pointNum]; double PPointsQuad[pointNum]; double PPointsCub[pointNum]; 
-						//~ double ePoints[pointNum]; double ePointsLin[pointNum]; double ePointsQuad[pointNum]; double ePointsCub[pointNum]; 
-						//~ for (int iter = 0; iter < pointNum; iter++) {
-							//~ int current_i = iter < pointNum/2 ? i - pointNum/2 + iter : i - pointNum/2 + iter + 1;
-							//~ xPoints[iter] = current_i * dx;
-							//~ VxPoints[iter] = cell.at(n+1).at(current_i).at(j).Vx[0];
-							//~ VrPoints[iter] = cell.at(n+1).at(current_i).at(j).Vr[0];
-							//~ PPoints[iter] = cell.at(n+1).at(current_i).at(j).P[0];
-							//~ ePoints[iter] = cell.at(n+1).at(current_i).at(j).e;
-						//~ }
-						//~ cubic_nak ( pointNum, xPoints, VxPoints, VxPointsLin, VxPointsQuad, VxPointsCub );
-						//~ cubic_nak ( pointNum, xPoints, VrPoints, VrPointsLin, VrPointsQuad, VrPointsCub );
-						//~ cubic_nak ( pointNum, xPoints, PPoints, PPointsLin, PPointsQuad, PPointsCub );
-						//~ cubic_nak ( pointNum, xPoints, ePoints, ePointsLin, ePointsQuad, ePointsCub );
-						//~ 
-						//~ cell.at(n+1).at(i).at(j).Vx[0] = spline_eval ( pointNum, xPoints, VxPoints, VxPointsLin, VxPointsQuad, VxPointsCub, i*dx );
-						//~ cell.at(n+1).at(i).at(j).Vr[0] = spline_eval ( pointNum, xPoints, VrPoints, VrPointsLin, VrPointsQuad, VrPointsCub, i*dx );
-						//~ cell.at(n+1).at(i).at(j).P[0] = spline_eval ( pointNum, xPoints, PPoints, PPointsLin, PPointsQuad, PPointsCub, i*dx );
-						//~ cell.at(n+1).at(i).at(j).e = spline_eval ( pointNum, xPoints, ePoints, ePointsLin, ePointsQuad, ePointsCub, i*dx );
-					//~ }
-				//~ }
-			//~ }
+			/* X axis */
+//			int pointNum = 4; // Should be even, number of interpolating points
+//			for (j = 0; j < max_j; j++) {
+//				for (i = i_sn-3; i < i_sn-2; i++) {
+//					if (cell.at(n+1).at(i).at(j).type != 18 &&
+//							cell.at(n+1).at(i+1).at(j).type != 18 &&
+//							cell.at(n+1).at(i+2).at(j).type != 18 &&
+//							cell.at(n+1).at(i-1).at(j).type != 18 &&
+//							cell.at(n+1).at(i-2).at(j).type != 18) {
+//						double xPoints[pointNum];
+//						double VxPoints[pointNum]; double VxPointsLin[pointNum]; double VxPointsQuad[pointNum]; double VxPointsCub[pointNum];
+//						double VrPoints[pointNum]; double VrPointsLin[pointNum]; double VrPointsQuad[pointNum]; double VrPointsCub[pointNum];
+//						double PPoints[pointNum]; double PPointsLin[pointNum]; double PPointsQuad[pointNum]; double PPointsCub[pointNum];
+//						double ePoints[pointNum]; double ePointsLin[pointNum]; double ePointsQuad[pointNum]; double ePointsCub[pointNum];
+//						for (int iter = 0; iter < pointNum; iter++) {
+//							int current_i = iter < pointNum/2 ? i - pointNum/2 + iter : i - pointNum/2 + iter + 1;
+//							xPoints[iter] = current_i * dx;
+//							VxPoints[iter] = cell.at(n+1).at(current_i).at(j).Vx[0];
+//							VrPoints[iter] = cell.at(n+1).at(current_i).at(j).Vr[0];
+//							PPoints[iter] = cell.at(n+1).at(current_i).at(j).P[0];
+//							ePoints[iter] = cell.at(n+1).at(current_i).at(j).e;
+//						}
+//						cubic_nak ( pointNum, xPoints, VxPoints, VxPointsLin, VxPointsQuad, VxPointsCub );
+//						cubic_nak ( pointNum, xPoints, VrPoints, VrPointsLin, VrPointsQuad, VrPointsCub );
+//						cubic_nak ( pointNum, xPoints, PPoints, PPointsLin, PPointsQuad, PPointsCub );
+//						cubic_nak ( pointNum, xPoints, ePoints, ePointsLin, ePointsQuad, ePointsCub );
+//
+//						cell.at(n+1).at(i).at(j).Vx[0] = spline_eval ( pointNum, xPoints, VxPoints, VxPointsLin, VxPointsQuad, VxPointsCub, i*dx );
+//						cell.at(n+1).at(i).at(j).Vr[0] = spline_eval ( pointNum, xPoints, VrPoints, VrPointsLin, VrPointsQuad, VrPointsCub, i*dx );
+//						cell.at(n+1).at(i).at(j).P[0] = spline_eval ( pointNum, xPoints, PPoints, PPointsLin, PPointsQuad, PPointsCub, i*dx );
+//						cell.at(n+1).at(i).at(j).e = spline_eval ( pointNum, xPoints, ePoints, ePointsLin, ePointsQuad, ePointsCub, i*dx );
+//					}
+//				}
+//			}
+//			int pointNum = 4; // Should be even, number of interpolating points
+//			for (j = 0; j < max_j; j++) {
+//				for (i = 1+pointNum/2; i < i_sn-1-pointNum/2; i++) {
+//					if (cell.at(n+1).at(i).at(j).type != 18 &&
+//							cell.at(n+1).at(i+1).at(j).type != 18 &&
+//							cell.at(n+1).at(i+2).at(j).type != 18 &&
+//							cell.at(n+1).at(i-1).at(j).type != 18 &&
+//							cell.at(n+1).at(i-2).at(j).type != 18) {
+//						double xPoints[pointNum];
+//						double VxPoints[pointNum]; double VxPointsLin[pointNum]; double VxPointsQuad[pointNum]; double VxPointsCub[pointNum];
+//						double VrPoints[pointNum]; double VrPointsLin[pointNum]; double VrPointsQuad[pointNum]; double VrPointsCub[pointNum];
+//						double PPoints[pointNum]; double PPointsLin[pointNum]; double PPointsQuad[pointNum]; double PPointsCub[pointNum];
+//						double ePoints[pointNum]; double ePointsLin[pointNum]; double ePointsQuad[pointNum]; double ePointsCub[pointNum];
+//						for (int iter = 0; iter < pointNum; iter++) {
+//							int current_i = iter < pointNum/2 ? i - pointNum/2 + iter : i - pointNum/2 + iter + 1;
+//							xPoints[iter] = current_i * dx;
+//							VxPoints[iter] = cell.at(n+1).at(current_i).at(j).Vx[0];
+//							VrPoints[iter] = cell.at(n+1).at(current_i).at(j).Vr[0];
+//							PPoints[iter] = cell.at(n+1).at(current_i).at(j).P[0];
+//							ePoints[iter] = cell.at(n+1).at(current_i).at(j).e;
+//						}
+//						cubic_nak ( pointNum, xPoints, VxPoints, VxPointsLin, VxPointsQuad, VxPointsCub );
+//						cubic_nak ( pointNum, xPoints, VrPoints, VrPointsLin, VrPointsQuad, VrPointsCub );
+//						cubic_nak ( pointNum, xPoints, PPoints, PPointsLin, PPointsQuad, PPointsCub );
+//						cubic_nak ( pointNum, xPoints, ePoints, ePointsLin, ePointsQuad, ePointsCub );
+//
+//						cell.at(n+1).at(i).at(j).Vx[0] = spline_eval ( pointNum, xPoints, VxPoints, VxPointsLin, VxPointsQuad, VxPointsCub, i*dx );
+//						cell.at(n+1).at(i).at(j).Vr[0] = spline_eval ( pointNum, xPoints, VrPoints, VrPointsLin, VrPointsQuad, VrPointsCub, i*dx );
+//						cell.at(n+1).at(i).at(j).P[0] = spline_eval ( pointNum, xPoints, PPoints, PPointsLin, PPointsQuad, PPointsCub, i*dx );
+//						cell.at(n+1).at(i).at(j).e = spline_eval ( pointNum, xPoints, ePoints, ePointsLin, ePointsQuad, ePointsCub, i*dx );
+//					}
+//				}
+//			}
 			/* Y axis */
 			//~ for (i = 0; i < max_i; i++) {
 				//~ for (j = 0; j < max_j; j++) {
@@ -783,26 +649,24 @@ int main(int argc, char** argv) {
 			for (i = 0; i < max_i; i++) {
 				array.resize(max_j);
 				for (j = 0; j < max_j; j++) {
-					array[j] = fmin(dx,dr) / ( sqrt( fabs ( 
-							k * cell.at(n+1).at(i).at(j).P[0] / 
-							cell.at(n+1).at(i).at(j).rho)) 
-							+ 
+					array[j] = fmin(dx,dr) / ( sqrt( fabs (
+							k * cell.at(n+1).at(i).at(j).P[0] /
+							cell.at(n+1).at(i).at(j).rho))
+							+
 							sqrt(pow(cell.at(n+1).at(i).at(j).Vx[0],2) + pow(cell.at(n+1).at(i).at(j).Vr[0],2))
 						);
-					//~ array[j] = 5*pow(10,-1) * dx*pow(dr,2)/(cell.at(n+1).at(i).at(j).Vx[0]*dr + cell.at(n+1).at(i).at(j).Vr[0]*dx);
-					//~ if (array[j] < 0) array[j] = pow(10,-6);
+//					array[j] = fabs(dx/cell.at(n+1).at(i).at(j).Vx[0]) + fabs(dr/cell.at(n+1).at(i).at(j).Vr[0]);
+//					if (array[j] < 0) array[j] = pow(10,-6);
 				}
 				minimum.push_back(*min_element(array.begin(), array.end()));
 			}
 			
-			int debug_I = 101, debug_J = 31;
+			int debug_I = 103, debug_J = 30;
 			if (true && debug_I != 0 && debug_J != 0) {
-				int nArray = 5; int *iArray = new int[nArray]; int *jArray = new int[nArray];
+				int nArray = 3; int *iArray = new int[nArray]; int *jArray = new int[nArray];
 				iArray[0] = debug_I-1; jArray[0] = debug_J;
-				iArray[1] = debug_I+1; jArray[1] = debug_J;
-				iArray[2] = debug_I; jArray[2] = debug_J-1;
-				iArray[3] = debug_I; jArray[3] = debug_J+1;
-				iArray[4] = debug_I; jArray[4] = debug_J;
+				iArray[1] = debug_I; jArray[1] = debug_J-1;
+				iArray[2] = debug_I; jArray[2] = debug_J;
 				debug_Vx_Vr_P_A_barVx_output(n, nArray, iArray, jArray, cell);
 				debug_dM_rho_output(n, nArray, iArray, jArray, cell);
 				debug_final_output(n, nArray, iArray, jArray, cell);
@@ -815,13 +679,13 @@ int main(int argc, char** argv) {
 				dt = next;
 			}
 			
-			if (dt > 0.5*pow(10,-4)/scaleT) dt = 0.5*pow(10,-4)/scaleT;
+			if (dt > 0.5*pow(10.0,-4)/scaleT) dt = 0.5*pow(10.0,-4)/scaleT;
 			cout << "\r Num: " << iteration << ", dt: " << dt << ", speed: " << speed << " sec / 1000 iter, x_sn: " << x_sn.at(x_sn.size()-1) << ", Ak: " << cell.at(n-1).at(i_sn-1).at(4).A[0]/cell.at(n).at(i_sn-1).at(4).A[0];
 			
 			
 			
 			/* Output to file */
-			if (fabs(t.back() - timestep) > pow(10,-5) || need_out) {
+			if (fabs(t.back() - timestep) > pow(10.0,-5) || need_out) {
 				timestep = t.back();
 				
 				/* Dynamics - to csv */
@@ -862,7 +726,7 @@ int main(int argc, char** argv) {
 }
 
 double truncNdigit(double value, int N) {
-	return floor((value*pow(10,N))+0.5)/pow(10, N);
+	return floor((value*pow(10.0,N))+0.5)/pow(10.0, N);
 }
 
 double Bi(int n, int i, double x) {

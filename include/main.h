@@ -3,15 +3,18 @@
 
 #define _USE_MATH_DEFINES
 
+#include "interp.h"
 #include "globals.h"
 #include "debug.h"
 #include "functions.h"
 #include "output.h"
 #include "border.h"
+#include <ctime>
 #include <cstring> 
 #include <stdexcept>
 #include <stdint.h>
 #include <stdlib.h>
+#include <cmath>
 
 
 double P_atm = 100000;
