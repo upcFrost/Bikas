@@ -46,6 +46,11 @@ unsigned int const PSI_POS		= 9;
 #define CHECK_BIT(var,pos) ((var) & (1<<(pos)));
 
 
+#ifndef M_PI
+	#define M_PI 3.14159265358979323846
+#endif
+
+
 extern int n, i, j, max_i, max_j, I_k, i_v, j_v, i_sn, j_sn, i_sn_0, P_f;
 extern double delta, delta_0, dx, dr, dt, p0, lambda, kappa, k, m_sn, max_z,max_z_0, f;
 extern double V0;
@@ -81,8 +86,10 @@ static const double gasA = -0.666667;
 static const double gasMu = 2.85*pow(10.0,-5) / scaleGasMU; // Решение задачи по определению эффективности многокамерного дульного тормоза
 static const double gasLambda = pow(10,-3);
 //static const double gasLambda = pow(10.0,-2); // Zenkin, str 44, "Dlya turbulentnih techeniy"
-static const double gasKappa = 1.21 / scaleGasKAPPA; // Решение задачи по определению эффективности многокамерного дульного тормоза
-static const double gasCp = 1650 / scaleGasCP; // Решение задачи по определению эффективности многокамерного дульного тормоза
+//static const double gasKappa = 1.21 / scaleGasKAPPA; // Решение задачи по определению эффективности многокамерного дульного тормоза
+static const double gasKappa = 1.21; // Решение задачи по определению эффективности многокамерного дульного тормоза
+//static const double gasCp = 1650 / scaleGasCP; // Решение задачи по определению эффективности многокамерного дульного тормоза
+static const double gasCp = 1650; // Решение задачи по определению эффективности многокамерного дульного тормоза
 static const double gasPr = gasMu * gasCp / gasKappa;
 static const double gasB = gasKappa / gasPr;
 

@@ -207,6 +207,8 @@ int main(int argc, char** argv) {
 				for (int iter = 0; iter < 5; iter++) cell.at(n).at(i).at(j).P[iter] = P_v;
 				for (int iter = 0; iter < 5; iter++) cell.at(n).at(i).at(j).Vx[iter] = 0;
 				for (int iter = 0; iter < 5; iter++) cell.at(n).at(i).at(j).Vr[iter] = 0;
+				for (int iter = 0; iter < 5; iter++) cell.at(n).at(i).at(j).bar_Vx[iter] = 0;
+				for (int iter = 0; iter < 5; iter++) cell.at(n).at(i).at(j).bar_Vr[iter] = 0;
 				for (int iter = 0; iter < 5; iter++) cell.at(n).at(i).at(j).dM[iter] = 0;
 				cell.at(n).at(i).at(j).rho = delta_0;
 				cell.at(n).at(i).at(j).final_psi = (delta/delta_0 - 1) / (f * delta / P_v + alpha_k * delta - 1);
@@ -330,7 +332,14 @@ int main(int argc, char** argv) {
 			/* Projectile position calculation */
 			/** TODO: fix P_sn **/
 			int i_sn_prev = i_sn;
-			double P_sn = cell.at(n).at(i_sn-1).at(4).P[0]; // Just 4 :)
+			double P_sn = 0; double count = 0;
+			for (j = 0; j < max_j; j++) {
+				if (cell.at(n).at(i_sn-1).at(4).type != 18) {
+					count++;
+					P_sn += cell.at(n).at(i_sn-1).at(j).P[0];
+				}
+			}
+			P_sn /= count;
 			U_sn.push_back(euler_Usn(P_sn, 3.1415*pow((max_j-4)*dr,2), 0, dt, U_sn.back()));
 			x_sn.push_back(euler_Xsn(x_sn.back(), U_sn.back()));
 			i_sn = floor(x_sn.back() / dx);
@@ -378,16 +387,6 @@ int main(int argc, char** argv) {
 					cell.at(n).at(i_sn-1).at(j).final_psi = cell.at(n).at(i_sn_prev-1).at(j).final_psi;
 
 				}
-				//~ for (j = 0; j < max_j; j++) {					
-					//~ cell.at(n).at(i_sn).at(j).bar_Vx[0] = -cell.at(n).at(i_sn-1).at(j).bar_Vx[0];
-					//~ cell.at(n).at(i_sn).at(j).bar_Vr[0] = cell.at(n).at(i_sn-1).at(j).bar_Vr[0];
-					//~ cell.at(n).at(i_sn).at(j).P[0] = cell.at(n).at(i_sn-1).at(j).P[0];
-					//~ cell.at(n).at(i_sn).at(j).Vx[0] = -cell.at(n).at(i_sn-1).at(j).Vx[0];
-					//~ cell.at(n).at(i_sn).at(j).Vr[0] = cell.at(n).at(i_sn-1).at(j).Vr[0];
-					//~ cell.at(n).at(i_sn).at(j).rho = cell.at(n).at(i_sn-1).at(j).rho;
-					//~ cell.at(n).at(i_sn).at(j).e = cell.at(n).at(i_sn-1).at(j).e;
-					//~ cell.at(n).at(i_sn).at(j).bar_e = cell.at(n).at(i_sn-1).at(j).bar_e;
-				//~ }
 			}
 			
 			/* Moving projectile borders */
@@ -417,29 +416,38 @@ int main(int argc, char** argv) {
 			/** TODO: Check borderP (Qi) and newP (ceil) **/
 			for (j = 0; j < max_j; j++) {
 				if (cell.at(n).at(i_sn-1).at(j).type != 18) {
+					gasCell * curCell = &cell.at(n).at(i_sn-1).at(j);
 					double barQi;
 					double Qi;
 					
 					if (!changed) {
 						if (j == 2) cout << "A[0] = " << cell.at(n).at(i_sn-1).at(j).A[0] << endl;
 						if (j == 2) cout << "Prev A[0] = " << cell.at(n-1).at(i_sn-1).at(j).A[0] << endl;
-						barQi = (cell.at(n).at(i_sn-1).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
+						barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
 						Qi = (cell.at(n-1).at(i_sn-1).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 					} else {
-						//~ cell.at(n).at(i_sn-1).at(j).rho = (2*cell.at(n-1).at(i_sn_prev-1).at(j).rho - cell.at(n-2).at(i_sn_prev-1).at(j).rho) * cell.at(n).at(i_sn-1).at(j).A[0]/(cell.at(n-1).at(i_sn_prev-1).at(j).A[0]-1);
 						if (j == 2) cout << "A[0] = " << cell.at(n).at(i_sn-1).at(j).A[0] << endl;
 						if (j == 2) cout << "Prev A[0] = " << cell.at(n-1).at(i_sn-2).at(j).A[0] << endl;
-						barQi = (cell.at(n).at(i_sn-1).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
+						barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
 						Qi = (cell.at(n-1).at(i_sn-2).at(j).A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 					}
 					
-					double ai = sqrt(k*cell.at(n).at(i_sn-1).at(j).P[0]/cell.at(n).at(i_sn-1).at(j).rho); // Local speed of sound
-					double borderP = cell.at(n).at(i_sn-1).at(j).P[0] + ai*cell.at(n).at(i_sn-1).at(j).rho * (U_sn.back() - cell.at(n).at(i_sn-1).at(j).Vx[0]);
-					double newRho = cell.at(n).at(i_sn-1).at(j).rho * Qi / barQi;
-					double newVx = cell.at(n).at(i_sn-1).at(j).rho / newRho * Qi / barQi * cell.at(n).at(i_sn-1).at(j).Vx[0] + (borderP - cell.at(n).at(i_sn-1).at(j).P[0]) / newRho / barQi * dt * M_PI*(2*(j-axis_j)+1)*pow(dr,2);
-					double newE = cell.at(n).at(i_sn-1).at(j).e + borderP * (Qi - barQi) / newRho / barQi;
-					double newP = (k-1) * (newE - pow(newVx,2)/2 - pow(cell.at(n).at(i_sn-1).at(j).Vr[0],2)) / ( 1/newRho - (1 - cell.at(n).at(i_sn-1).at(j).final_psi)/delta - alpha_k * cell.at(n).at(i_sn-1).at(j).final_psi); // BMSTU var
-					//~ double newP = (k-1) * (newE - pow(newVx,2)/2) * newRho; // If no powder present
+					// Local speed of sound
+					double ai = sqrt(k * curCell->P[0] / curCell->rho);
+					// Pressure at the border
+					double borderP = curCell->P[0] + ai*curCell->rho *
+							(U_sn.back() - curCell->Vx[0]);
+					// Density at the center of the cell
+					double newRho = curCell->rho * Qi / barQi;
+					// Gas velocity at the center of the cell
+					double newVx = curCell->rho / newRho * Qi / barQi * curCell->Vx[0] +
+							(borderP - curCell->P[0]) / newRho / barQi * dt * M_PI*(2*(j-axis_j)+1)*pow(dr,2);
+					// Gas full energy at the center of the cell
+					double newE = curCell->e + borderP * (Qi - barQi) / newRho / Qi;
+					// Gas pressure at the center of the cell
+					double newP = (k-1) * (newE - (pow(newVx,2) - pow(curCell->Vr[0],2))/2) /
+							( 1/newRho - (1 - curCell->final_psi)/delta - alpha_k * curCell->final_psi); // BMSTU var
+//					double newP = (k-1) * (newE - pow(newVx,2)/2) * newRho; // If no powder present
 
 					/** DEBUG **/
 					if (j == 2) cout << endl << "Old rho = " << cell.at(n).at(i_sn-1).at(j).rho << endl;
@@ -447,11 +455,10 @@ int main(int argc, char** argv) {
 					if (j == 2) cout << "barQi = " << barQi << endl;
 					if (j == 2) debug_projectile_par(i_sn, j, borderP, newRho, newVx, newE, newP, cell.at(n).at(i_sn-1).at(j).final_psi, x_sn.back());
 					
-					cell.at(n).at(i_sn-1).at(j).P[0] = newP;
-					//~ cell.at(n).at(i_sn-1).at(j).P[2] = borderP;
-					cell.at(n).at(i_sn-1).at(j).e = newE;
-					cell.at(n).at(i_sn-1).at(j).Vx[0] = newVx;
-					cell.at(n).at(i_sn-1).at(j).rho = newRho;
+//					curCell->P[0] = newP;
+//					curCell->e = newE;
+//					curCell->Vx[0] = newVx;
+					curCell->rho = newRho;
 					
 
 				}
@@ -469,7 +476,7 @@ int main(int argc, char** argv) {
 						curCell->bar_psi = euler_psi(&cell, &cell.at(n).at(i).at(j), n, i, j);
 						curCell->bar_Vx[0] = euler_bar_Vx(cell,n,i,j,dt,dx,dr,FIRST_ORDER_NS);
 						curCell->bar_Vr[0] = euler_bar_Vr(cell,n,i,j,dt,dx,dr,FIRST_ORDER_NS);
-						curCell->bar_e = euler_bar_e(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
+						curCell->bar_e = euler_bar_e(cell,n,i,j,dt,dx,dr,FIRST_ORDER_NS);
 					}
 				}
 			}
@@ -661,15 +668,17 @@ int main(int argc, char** argv) {
 				minimum.push_back(*min_element(array.begin(), array.end()));
 			}
 			
-			int debug_I = 103, debug_J = 30;
+			int debug_I = 107, debug_J = 15;
 			if (true && debug_I != 0 && debug_J != 0) {
 				int nArray = 3; int *iArray = new int[nArray]; int *jArray = new int[nArray];
 				iArray[0] = debug_I-1; jArray[0] = debug_J;
-				iArray[1] = debug_I; jArray[1] = debug_J-1;
-				iArray[2] = debug_I; jArray[2] = debug_J;
+				iArray[1] = debug_I; jArray[1] = debug_J;
+				iArray[2] = debug_I+1; jArray[2] = debug_J;
 				debug_Vx_Vr_P_A_barVx_output(n, nArray, iArray, jArray, cell);
 				debug_dM_rho_output(n, nArray, iArray, jArray, cell);
+				debug_p_output(n, nArray, iArray, jArray, cell);
 				debug_final_output(n, nArray, iArray, jArray, cell);
+
 			}
 
 			double next = Ku * *min_element(minimum.begin(), minimum.end());

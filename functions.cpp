@@ -353,6 +353,13 @@ double euler_bar_Vx(cell2d& cell, int n, int i, int j,
 		break;
 	}
 
+	if (i == 107 && j == 15) {
+		gasCell cell_106 = cell[n][106][15];
+		gasCell cell_107 = cell[n][107][15];
+		gasCell cell_108 = cell[n][108][15];
+		printf("123");
+	}
+
     if (fabs(result-brd[VX_POS].ij) < pow(10.0,-15)) result = brd[VX_POS].ij;
 	return result;
 }
@@ -586,10 +593,6 @@ double euler_bar_e(cell2d& cell, int n, int i, int j,
 		/** If powder present **/
 		+ curCell.P[0]/((k-1)*I_k) * (1 + lambda*curCell.final_z) * f*kappa*dt
 		;
-
-		if (result < 0) {
-			printf("123");
-		}
 	    break;
 	}
 
@@ -635,84 +638,6 @@ double euler_bar_e(cell2d& cell, int n, int i, int j,
         //~ (
             //~ cell->A[0] * cell->rho
         //~ );
-
-	/** With Navier-Stocks OLD **/
-//	// Gas internal energy
-//	double I1 = curCell.e - (pow(curCell.Vx[0],2) + pow(curCell.Vr[0],2))/2;
-//	double I2 = brd[E_POS].i_1j - (pow(brd[VX_POS].i_1j,2) + pow(brd[VR_POS].i_1j,2))/2;
-//	double I3 = brd[E_POS].i1j - (pow(brd[VX_POS].i1j,2) + pow(brd[VR_POS].i1j,2))/2;
-//	double I4 = brd[E_POS].ij_1 - (pow(brd[VX_POS].ij_1,2) + pow(brd[VR_POS].ij_1,2))/2;
-//	double I5 = brd[E_POS].ij1 - (pow(brd[VX_POS].ij1,2) + pow(brd[VR_POS].ij1,2))/2;
-//	result = curCell.e - dt / (curCell.A[0] * curCell.rho) *
-//		(
-//			// Pressure
-//			1/(2*dx) * (
-//				curCell.Vx[0] * (
-//					cell[n][i-1][j].P[0] - cell[n][i+1][j].P[0]
-//				) + curCell.P[0] * (
-//					cell[n][i-1][j].Vx[0] - cell[n][i+1][j].Vx[0]
-//				)
-//			) + 1/(2*dr) * (
-//				curCell.Vr[0] * (
-//					cell[n][i][j-1].P[0] - cell[n][i][j+1].P[0]
-//				) + curCell.P[0] * (
-//					cell[n][i][j-1].Vr[0] - cell[n][i][j+1].Vr[0]
-//				)
-//			) -
-//			// Viscosity
-//			// X axis
-//			gasMu * (gasA + 2) / (2 * pow(dx,2)) * (
-//				pow(cell[n][i+1][j].Vx[0], 2) +
-//				pow(cell[n][i-1][j].Vx[0], 2) -
-//				2*pow(curCell.Vx[0], 2)
-//			) + gasA * gasMu / (4*dx*dr) * (
-//				cell[n][i+1][j].Vx[0] * (
-//					cell[n][i+1][j+1].Vr[0] - cell[n][i+1][j-1].Vr[0]
-//				) - cell[n][i-1][j].Vx[0] * (
-//					cell[n][i-1][j+1].Vr[0] - cell[n][i-1][j-1].Vr[0]
-//				)
-//			) + gasMu / (pow(dx,2)) * (
-//				pow(cell[n][i+1][j].Vr[0], 2) +
-//				pow(cell[n][i-1][j].Vr[0], 2) -
-//				2*pow(curCell.Vr[0], 2)
-//			) + gasMu / (4*dx*dr) * (
-//				cell[n][i+1][j].Vr[0] * (
-//					cell[n][i+1][j+1].Vx[0] - cell[n][i+1][j-1].Vx[0]
-//				) - cell[n][i-1][j].Vr[0] * (
-//					cell[n][i-1][j+1].Vx[0] - cell[n][i-1][j-1].Vx[0]
-//				)
-//			) + gasB * gasMu / pow(dx,2) * (
-//				I3 + I2 - 2*I1
-//			) +
-//			// R axis
-//			gasMu * (gasA + 2) / (2 * pow(dr,2)) * (
-//				pow(cell[n][i][j+1].Vr[0], 2) +
-//				pow(cell[n][i][j-1].Vr[0], 2) -
-//				2*pow(curCell.Vr[0], 2)
-//			) + gasA * gasMu / (4*dx*dr) * (
-//				cell[n][i][j+1].Vr[0] * (
-//					cell[n][i+1][j+1].Vx[0] - cell[n][i-1][j+1].Vx[0]
-//				) - cell[n][i][j-1].Vr[0] * (
-//					cell[n][i+1][j-1].Vx[0] - cell[n][i-1][j-1].Vx[0]
-//				)
-//			) + gasMu / (pow(dr,2)) * (
-//				pow(cell[n][i][j+1].Vx[0], 2) +
-//				pow(cell[n][i][j-1].Vx[0], 2) -
-//				2*pow(curCell.Vx[0], 2)
-//			) + gasMu / (4*dx*dr) * (
-//				cell[n][i][j+1].Vx[0] * (
-//					cell[n][i+1][j+1].Vr[0] - cell[n][i-1][j+1].Vr[0]
-//				) - cell[n][i][j-1].Vx[0] * (
-//					cell[n][i+1][j-1].Vr[0] - cell[n][i-1][j-1].Vr[0]
-//				)
-//			) + gasB * gasMu / pow(dr,2) * (
-//				I5 + I4 - 2*I1
-//			)
-//	)
-//	/** If powder present **/
-//	+ curCell.P[0]/((k-1)*I_k) * (1 + lambda*curCell.final_z) * f*kappa*dt
-//	;
-
 
 	/** Catch less-than-zero rezult **/
 	//~ if (result < 0) {
@@ -926,21 +851,25 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 	} else {
 		array[1] = (fabs(j-axis_j-0.5))*curCell.A[1] * brd[RHO_POS].ij * Vx_i_12 * pow(dr,2) * dt;
 	}
+	if (fabs(array[1]) < pow(10,-14)) array[1] = 0;
 	if (ruleVx2) {
 		array[2] = (fabs(j-axis_j-0.5))*curCell.A[2] * brd[RHO_POS].ij * Vx_i12 * pow(dr,2) * dt;
 	} else {
 		array[2] = (fabs(j-axis_j-0.5))*cell[n][i+1][j].A[1] * brd[RHO_POS].i1j * Vx_i12 * pow(dr,2) * dt;
 	}
+	if (fabs(array[2]) < pow(10,-14)) array[1] = 0;
 	if (ruleVr1) {
 		array[3] = cell[n][i][j-1].A[4] * brd[RHO_POS].ij_1 * Vr_j_12 * j*dx*dr * dt;
 	} else {
 		array[3] = curCell.A[3] * brd[RHO_POS].ij * Vr_j_12 * j*dx*dr * dt;
 	}
+	if (fabs(array[3]) < pow(10,-14)) array[1] = 0;
 	if (ruleVr2) {
 		array[4] = curCell.A[4] * brd[RHO_POS].ij * Vr_j12 * (j+1)*dx*dr * dt;
 	} else {
 		array[4] = cell[n][i][j+1].A[3] * brd[RHO_POS].ij1 * Vr_j12 * (j+1)*dx*dr * dt;
 	}
+	if (fabs(array[4]) < pow(10,-14)) array[1] = 0;
 	array[5] = ruleVx1 ? 1 : 0;
 	array[6] = ruleVx2 ? 0 : 1;
 	array[7] = ruleVr1 ? 1 : 0;

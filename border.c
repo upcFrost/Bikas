@@ -858,7 +858,7 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				result[9].i1j_1 = cell[i+1][j-1].final_psi;
 			}
 
-			for (unsigned int idx = 0; idx < 8; idx++) {
+			for (unsigned int idx = 0; idx < 10; idx++) {
 				result[idx].ij1 = 0;
 			}
 			for (unsigned int idx = 0; idx < cell[i][j].weightVector.y.size(); idx++) {
@@ -898,7 +898,7 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				}
 			}
 
-			for (unsigned int idx = 0; idx < 8; idx++) {
+			for (unsigned int idx = 0; idx < 10; idx++) {
 				result[idx].i1j1 = 0;
 			}
 			for (unsigned int idx = 0; idx < cell[i][j].weightVector.xy.size(); idx++) {
@@ -1053,52 +1053,52 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				result[0].i_1j_1 = cell[i-1][j-1].P[0]; 	result[0].ij_1 = cell[i][j-1].P[0]; 	result[0].i1j_1 = cell[i][j-1].P[0];
 			}
 			if (isSet_Vx) {
-				result[1].i_1j1 = cell[i-1][j+1].Vx[0]; 	result[1].ij1 = cell[i][j+1].Vx[0];		result[1].i1j1 = cell[i+1][j+1].Vx[0];
-				result[1].i_1j = cell[i-1][j].Vx[0]; 		result[1].ij = cell[i][j].Vx[0]; 		result[1].i1j = cell[i+1][j].Vx[0];
-				result[1].i_1j_1 = cell[i-1][j-1].Vx[0];	result[1].ij_1 = cell[i][j-1].Vx[0];	result[1].i1j_1 = cell[i+1][j-1].Vx[0];
+				result[1].i_1j1 = cell[i-1][j].Vx[0]; 	result[1].ij1 = cell[i][j].Vx[0];		result[1].i1j1 = cell[i][j].Vx[0];
+				result[1].i_1j = cell[i-1][j].Vx[0]; 		result[1].ij = cell[i][j].Vx[0]; 		result[1].i1j = cell[i][j].Vx[0];
+				result[1].i_1j_1 = cell[i-1][j-1].Vx[0];	result[1].ij_1 = cell[i][j-1].Vx[0];	result[1].i1j_1 = cell[i][j-1].Vx[0];
 			}
 			if (isSet_Vr) {
-				result[2].i_1j1 = cell[i-1][j+1].Vr[0]; 	result[2].ij1 = cell[i][j+1].Vr[0];		result[2].i1j1 = cell[i+1][j+1].Vr[0];
-				result[2].i_1j = cell[i-1][j].Vr[0]; 		result[2].ij = cell[i][j].Vr[0]; 		result[2].i1j = cell[i+1][j].Vr[0];
-				result[2].i_1j_1 = cell[i-1][j-1].Vr[0];	result[2].ij_1 = cell[i][j-1].Vr[0];	result[2].i1j_1 = cell[i+1][j-1].Vr[0];
+				result[2].i_1j1 = cell[i-1][j].Vr[0]; 	result[2].ij1 = cell[i][j].Vr[0];		result[2].i1j1 = cell[i][j].Vr[0];
+				result[2].i_1j = cell[i-1][j].Vr[0]; 		result[2].ij = cell[i][j].Vr[0]; 		result[2].i1j = cell[i][j].Vr[0];
+				result[2].i_1j_1 = cell[i-1][j-1].Vr[0];	result[2].ij_1 = cell[i][j-1].Vr[0];	result[2].i1j_1 = cell[i][j-1].Vr[0];
 			}
 			if (isSet_E) {
-				result[3].i_1j1 = cell[i-1][j+1].e; 		result[3].ij1 = cell[i][j+1].e;		result[3].i1j1 = cell[i+1][j+1].e;
-				result[3].i_1j = cell[i-1][j].e; 		result[3].ij = cell[i][j].e; 		result[3].i1j = cell[i+1][j].e;
-				result[3].i_1j_1 = cell[i-1][j-1].e;		result[3].ij_1 = cell[i][j-1].e;		result[3].i1j_1 = cell[i+1][j-1].e;
+				result[3].i_1j1 = cell[i-1][j].e; 		result[3].ij1 = cell[i][j].e;		result[3].i1j1 = cell[i][j].e;
+				result[3].i_1j = cell[i-1][j].e; 		result[3].ij = cell[i][j].e; 		result[3].i1j = cell[i][j].e;
+				result[3].i_1j_1 = cell[i-1][j-1].e;		result[3].ij_1 = cell[i][j-1].e;		result[3].i1j_1 = cell[i][j-1].e;
 			}
 			if (isSet_rho) {
-				result[4].i_1j1 = cell[i-1][j+1].rho;	result[4].ij1 = cell[i][j+1].rho;	result[4].i1j1 = cell[i+1][j+1].rho;
-				result[4].i_1j = cell[i-1][j].rho;		result[4].ij = cell[i][j].rho; 		result[4].i1j = cell[i+1][j].rho;
-				result[4].i_1j_1 = cell[i-1][j-1].rho;	result[4].ij_1 = cell[i][j-1].rho;	result[4].i1j_1 = cell[i+1][j-1].rho;
+				result[4].i_1j1 = cell[i-1][j].rho;	result[4].ij1 = cell[i][j].rho;	result[4].i1j1 = cell[i][j].rho;
+				result[4].i_1j = cell[i-1][j].rho;		result[4].ij = cell[i][j].rho; 		result[4].i1j = cell[i][j].rho;
+				result[4].i_1j_1 = cell[i-1][j-1].rho;	result[4].ij_1 = cell[i][j-1].rho;	result[4].i1j_1 = cell[i][j-1].rho;
 			}
 			if (isSet_barVx) {
-				result[5].i_1j1 = cell[i-1][j+1].bar_Vx[0];	result[5].ij1 = cell[i][j+1].bar_Vx[0];	result[5].i1j1 = cell[i+1][j+1].bar_Vx[0];
-				result[5].i_1j = cell[i-1][j].bar_Vx[0];		result[5].ij = cell[i][j].bar_Vx[0]; 	result[5].i1j = cell[i+1][j].bar_Vx[0];
-				result[5].i_1j_1 = cell[i-1][j-1].bar_Vx[0];	result[5].ij_1 = cell[i][j-1].bar_Vx[0];	result[5].i1j_1 = cell[i+1][j-1].bar_Vx[0];
+				result[5].i_1j1 = cell[i-1][j].bar_Vx[0];	result[5].ij1 = cell[i][j].bar_Vx[0];	result[5].i1j1 = cell[i][j].bar_Vx[0];
+				result[5].i_1j = cell[i-1][j].bar_Vx[0];		result[5].ij = cell[i][j].bar_Vx[0]; 	result[5].i1j = cell[i][j].bar_Vx[0];
+				result[5].i_1j_1 = cell[i-1][j-1].bar_Vx[0];	result[5].ij_1 = cell[i][j-1].bar_Vx[0];	result[5].i1j_1 = cell[i][j-1].bar_Vx[0];
 			}
 			if (isSet_barVr) {
-				result[6].i_1j1 = cell[i-1][j+1].bar_Vr[0];	result[6].ij1 = cell[i][j+1].bar_Vr[0];	result[6].i1j1 = cell[i+1][j+1].bar_Vr[0];
-				result[6].i_1j = cell[i-1][j].bar_Vr[0];		result[6].ij = cell[i][j].bar_Vr[0]; 	result[6].i1j = cell[i+1][j].bar_Vr[0];
-				result[6].i_1j_1 = cell[i-1][j-1].bar_Vr[0];	result[6].ij_1 = cell[i][j-1].bar_Vr[0];	result[6].i1j_1 = cell[i+1][j-1].bar_Vr[0];
+				result[6].i_1j1 = cell[i-1][j].bar_Vr[0];	result[6].ij1 = cell[i][j].bar_Vr[0];	result[6].i1j1 = cell[i][j].bar_Vr[0];
+				result[6].i_1j = cell[i-1][j].bar_Vr[0];		result[6].ij = cell[i][j].bar_Vr[0]; 	result[6].i1j = cell[i][j].bar_Vr[0];
+				result[6].i_1j_1 = cell[i-1][j-1].bar_Vr[0];	result[6].ij_1 = cell[i][j-1].bar_Vr[0];	result[6].i1j_1 = cell[i][j-1].bar_Vr[0];
 			}
 			if (isSet_barE) {
-				result[7].i_1j1 = cell[i-1][j+1].bar_e;	result[7].ij1 = cell[i][j+1].bar_e;	result[7].i1j1 = cell[i+1][j+1].bar_e;
-				result[7].i_1j = cell[i-1][j].bar_e;		result[7].ij = cell[i][j].bar_e; 	result[7].i1j = cell[i+1][j].bar_e;
-				result[7].i_1j_1 = cell[i-1][j-1].bar_e;	result[7].ij_1 = cell[i][j-1].bar_e;	result[7].i1j_1 = cell[i+1][j-1].bar_e;
+				result[7].i_1j1 = cell[i-1][j].bar_e;	result[7].ij1 = cell[i][j].bar_e;	result[7].i1j1 = cell[i][j].bar_e;
+				result[7].i_1j = cell[i-1][j].bar_e;		result[7].ij = cell[i][j].bar_e; 	result[7].i1j = cell[i][j].bar_e;
+				result[7].i_1j_1 = cell[i-1][j-1].bar_e;	result[7].ij_1 = cell[i][j-1].bar_e;	result[7].i1j_1 = cell[i][j-1].bar_e;
 			}
 			if (isSet_z) {
-				result[8].i_1j1 = cell[i-1][j+1].final_z;	result[8].ij1 = cell[i][j+1].final_z;	result[8].i1j1 = cell[i+1][j+1].final_z;
-				result[8].i_1j = cell[i-1][j].final_z;		result[8].ij = cell[i][j].final_z; 	result[8].i1j = cell[i+1][j].final_z;
-				result[8].i_1j_1 = cell[i-1][j-1].final_z;	result[8].ij_1 = cell[i][j-1].final_z;	result[8].i1j_1 = cell[i+1][j-1].final_z;
+				result[8].i_1j1 = cell[i-1][j].final_z;	result[8].ij1 = cell[i][j].final_z;	result[8].i1j1 = cell[i][j].final_z;
+				result[8].i_1j = cell[i-1][j].final_z;		result[8].ij = cell[i][j].final_z; 	result[8].i1j = cell[i][j].final_z;
+				result[8].i_1j_1 = cell[i-1][j-1].final_z;	result[8].ij_1 = cell[i][j-1].final_z;	result[8].i1j_1 = cell[i][j-1].final_z;
 			}
 			if (isSet_psi) {
-				result[9].i_1j1 = cell[i-1][j+1].final_psi;	result[9].ij1 = cell[i][j+1].final_psi;	result[9].i1j1 = cell[i+1][j+1].final_psi;
-				result[9].i_1j = cell[i-1][j].final_psi;		result[9].ij = cell[i][j].final_psi; 	result[9].i1j = cell[i+1][j].final_psi;
-				result[9].i_1j_1 = cell[i-1][j-1].final_psi;	result[9].ij_1 = cell[i][j-1].final_psi;	result[9].i1j_1 = cell[i+1][j-1].final_psi;
+				result[9].i_1j1 = cell[i-1][j].final_psi;	result[9].ij1 = cell[i][j].final_psi;	result[9].i1j1 = cell[i][j].final_psi;
+				result[9].i_1j = cell[i-1][j].final_psi;		result[9].ij = cell[i][j].final_psi; 	result[9].i1j = cell[i][j].final_psi;
+				result[9].i_1j_1 = cell[i-1][j-1].final_psi;	result[9].ij_1 = cell[i][j-1].final_psi;	result[9].i1j_1 = cell[i][j-1].final_psi;
 			}
 
-			for (unsigned int idx = 0; idx < 8; idx++) {
+			for (unsigned int idx = 0; idx < 10; idx++) {
 				result[idx].i1j = 0;
 			}
 			for (unsigned int idx = 0; idx < cell[i][j].weightVector.x.size(); idx++) {
@@ -1138,7 +1138,7 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				}
 			}
 
-			for (unsigned int idx = 0; idx < 8; idx++) {
+			for (unsigned int idx = 0; idx < 10; idx++) {
 				result[idx].ij1 = 0;
 			}
 			for (unsigned int idx = 0; idx < cell[i][j].weightVector.y.size(); idx++) {
@@ -1178,7 +1178,7 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				}
 			}
 
-			for (unsigned int idx = 0; idx < 8; idx++) {
+			for (unsigned int idx = 0; idx < 10; idx++) {
 				result[idx].i1j1 = 0;
 			}
 			for (unsigned int idx = 0; idx < cell[i][j].weightVector.xy.size(); idx++) {
@@ -1775,7 +1775,7 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				result[9].i_1j_1 = cell[i-1][j-1].final_psi;	result[9].ij_1 = cell[i][j-1].final_psi;	result[9].i1j_1 = cell[i][j-1].final_psi;
 			}
 
-			for (unsigned int idx = 0; idx < 8; idx++) {
+			for (unsigned int idx = 0; idx < 10; idx++) {
 				result[idx].ij1 = 0;
 			}
 			for (unsigned int idx = 0; idx < cell[i][j].weightVector.y.size(); idx++) {
@@ -1815,7 +1815,7 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				}
 			}
 
-			for (unsigned int idx = 0; idx < 8; idx++) {
+			for (unsigned int idx = 0; idx < 10; idx++) {
 				result[idx].i1j1 = 0;
 			}
 			for (unsigned int idx = 0; idx < cell[i][j].weightVector.xy.size(); idx++) {
