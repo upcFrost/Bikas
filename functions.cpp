@@ -29,11 +29,16 @@ void euler_proj_broder(double array[5], int j, double Xsn, double dx, double dr)
 	full[3] = 2*M_PI*(j-axis_j)*dr*dx;
 	full[4] = 2*M_PI*(j-axis_j+1)*dr*dx;
 
-	array[0] = 1 + M_PI*(2*(j-axis_j)+1)*pow(dr,2)*fmod(Xsn, dx) / full[0];
+//	array[0] = 1 + M_PI*(2*(j-axis_j)+1)*pow(dr,2)*fmod(Xsn, dx) / full[0];
+//	array[1] = 1;
+//	array[2] = 0;
+//	array[3] = 1 + 2*M_PI * (j-axis_j)*dr * fmod(Xsn, dx) / full[3];
+//	array[4] = 1 + 2*M_PI * (j-axis_j+1)*dr * fmod(Xsn, dx) / full[4];
+	array[0] = 1 + fmod(Xsn, dx)/dx;
 	array[1] = 1;
 	array[2] = 0;
-	array[3] = 1 + 2*M_PI * (j-axis_j)*dr * fmod(Xsn, dx) / full[3];
-	array[4] = 1 + 2*M_PI * (j-axis_j+1)*dr * fmod(Xsn, dx) / full[4];
+	array[3] = 1 + fmod(Xsn, dx) / dx;
+	array[4] = 1 + fmod(Xsn, dx) / dx;
 
 	if (j == max_j - 2) array[4] = 0;
 	if (j == axis_j) array[3] = 0;
@@ -122,10 +127,10 @@ double euler_bar_Vx(cell2d& cell, int n, int i, int j,
 		break;
 	}
 
-	if (i == 111 && j == 15) {
-		gasCell cell_109 = cell[n][109][15];
-		gasCell cell_110 = cell[n][110][15];
-		gasCell cell_111 = cell[n][111][15];
+	if (i == 108 && j == 15) {
+		gasCell cell_106 = cell[n][106][15];
+		gasCell cell_107 = cell[n][107][15];
+		gasCell cell_108 = cell[n][108][15];
 		printf("123");
 	}
 
@@ -545,10 +550,10 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 	array[8] = ruleVr2 ? 0 : 1;
 
 
-	if (i == 111 && j == 15) {
-		gasCell cell_109 = cell[n][109][15];
-		gasCell cell_110 = cell[n][110][15];
-		gasCell cell_111 = cell[n][111][15];
+	if (i == 108 && j == 15) {
+		gasCell cell_106 = cell[n][106][15];
+		gasCell cell_107 = cell[n][107][15];
+		gasCell cell_108 = cell[n][108][15];
 		printf("123");
 	}
 
@@ -778,15 +783,32 @@ double new_final_psi (cell2d& cell, int i, int j, int n,
 
 
 /* Final stage P calculation */
-double final_calc_p(gasCell * prevCell, gasCell * cell) {
-	double result = (cell->e - (pow(cell->Vx[0],2)+pow(cell->Vr[0],2))/2 ) * (k-1) /
-		(
-//			1/cell->rho // No powder present
-			1/cell->rho - (1 - cell->final_psi)/delta - alpha_k * cell->final_psi // BMSTU var
-//			alpha_k // Abel (Dupre) equation
-		)
-//		- (pow(cell->Vx[0],2)+pow(cell->Vr[0],2))/2 // From Ershov, UDK 519.6:532.6, #775, 2007, str. 159-173
-		;
+double final_calc_p(gasCell * prevCell, gasCell * cell, int var) {
+	double result = 0;
+	switch (var) {
+	case IDEAL_GAS:
+		result = (cell->e - (pow(cell->Vx[0],2)+pow(cell->Vr[0],2))/2 ) * (k-1) /
+			(1/cell->rho);
+		break;
+
+	case ABEL_DUPRE:
+		result = (cell->e - (pow(cell->Vx[0],2)+pow(cell->Vr[0],2))/2 ) * (k-1) /
+			(1/cell->rho - alpha_k);
+		break;
+
+	case POWDER_EQ:
+		result = (cell->e - (pow(cell->Vx[0],2)+pow(cell->Vr[0],2))/2 ) * (k-1) /
+			(1/cell->rho - (1 - cell->final_psi)/delta - alpha_k * cell->final_psi);
+		break;
+
+	case PISTON:
+		result = PISTON_B * cell->rho * (cell->rho - PISTON_RHO) /
+			pow(PISTON_C - cell->rho/PISTON_RHO, 2);
+		break;
+
+	default:
+		break;
+	}
 
 	if (i == 111 && j == 15) {
 		printf("123");

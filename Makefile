@@ -41,8 +41,8 @@ interp.o : interp.c
 debug.o : debug.c
 	$(CPP) $(CFLAGS) $(INCLUDES) debug.c
 
-border.o : border.c
-	$(CPP) $(CFLAGS) $(INCLUDES) border.c
+border.o : border.cpp
+	$(CPP) $(CFLAGS) $(INCLUDES) border.cpp
 
 output.o : output.c
 	$(CPP) $(CFLAGS) $(INCLUDES) output.c

@@ -93,6 +93,11 @@ static const double gasCp = 1650; // Решение задачи по опред
 static const double gasPr = gasMu * gasCp / gasKappa;
 static const double gasB = gasKappa / gasPr;
 
+/* Piston constants */
+static const double PISTON_RHO 	= 920;
+static const double PISTON_B 	= 1.19 * pow(10.0, 9);
+static const double PISTON_C 	= 1.73;
+
 /* STUB */
 extern int Qr;
 extern int m;

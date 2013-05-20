@@ -8,7 +8,7 @@
  *  */
 void pre_cell_geometry(double array[5], gasCell cell, int i, int j) {
     double full[5];
-	full[0] = M_PI*(2*(j-axis_j)+1)*pow(dr,2)*dx;
+	full[0] = M_PI*(2*(j-axis_j)+0.5)*pow(dr,2)*dx;
 	full[1] = M_PI*(2*(j-axis_j)+1)*pow(dr,2);
 	full[2] = M_PI*(2*(j-axis_j)+1)*pow(dr,2);
 	full[3] = 2*M_PI*(j-axis_j)*dr*dx;
@@ -813,6 +813,15 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 	/* Dummy cells calc */
 	int type = cell[i][j].type;
 	if (i == i_sn - 1) {
+		if (type == 13) {
+			type = 20;
+		} else if (type == 14) {
+			type = 21;
+		} else if (type == 0) {
+			type = 19;
+		}
+	}
+	if (i == i_sn) {
 		if (type == 13) {
 			type = 20;
 		} else if (type == 14) {

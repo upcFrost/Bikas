@@ -67,8 +67,8 @@ int main(int argc, char** argv) {
     	init(inputFile, cell);
 
 		/** Test - Riemann problem 1 **/
-		i_sn = max_i - 10;
-		x_sn.back() = i_sn * dx;
+//		i_sn = max_i - 10;
+//		x_sn.back() = i_sn * dx;
 				
 		/* Prepare output files */
 		prepOutputDynCSV(outputDyn);
@@ -164,15 +164,19 @@ int main(int argc, char** argv) {
 			/* Projectile position calculation */
 			/** TODO: fix P_sn **/
 			int i_sn_prev = i_sn;
-			double P_sn = 0; double count = 0;
+			double P_sn = 0; double count = 0; int top_j = 0; int bottom_j = 0;
 			for (j = 0; j < max_j; j++) {
-				if (cell.at(n).at(i_sn-1).at(4).type != 18) {
+				if (cell.at(n).at(i_sn-1).at(j).type != 18) {
 					count++;
+					top_j = j;
 					P_sn += cell.at(n).at(i_sn-1).at(j).P[0];
+				} else {
+					if (bottom_j == 0) bottom_j++;
 				}
 			}
 			P_sn /= count;
-			U_sn.push_back(euler_Usn(P_sn, 3.1415*pow((max_j-4)*dr,2), 0, dt, U_sn.back()));
+			U_sn.push_back(euler_Usn(P_sn, M_PI*pow(top_j*dr,2) - M_PI*pow(bottom_j*dr,2),
+					0, dt, U_sn.back()));
 			x_sn.push_back(euler_Xsn(x_sn.back(), U_sn.back()));
 			i_sn = floor(x_sn.back() / dx);
 			double arrayT[5];
@@ -228,12 +232,9 @@ int main(int argc, char** argv) {
 					// For n
 					for (int iter = 0; iter < 5; iter++) {
 						cell.at(n).at(i_sn-1).at(j).A[iter] = arrayT[iter];
-						cell.at(n+1).at(i_sn-1).at(j).A[iter] = arrayT[iter];
 					}
 					if (cell.at(n).at(i_sn-1).at(j+1).type == 18) cell.at(n).at(i_sn-1).at(j).A[4] = 0;
 					if (cell.at(n).at(i_sn-1).at(j-1).type == 18) cell.at(n).at(i_sn-1).at(j).A[3] = 0;
-					if (cell.at(n).at(i_sn-1).at(j+1).type == 18) cell.at(n+1).at(i_sn-1).at(j).A[4] = 0;
-					if (cell.at(n).at(i_sn-1).at(j-1).type == 18) cell.at(n+1).at(i_sn-1).at(j).A[3] = 0;
 					
 					for (int iter = 0; iter < 5; iter++) {
 						if (cell.at(n).at(i_sn-1).at(j).A[iter] >= 2) {
@@ -270,12 +271,12 @@ int main(int argc, char** argv) {
 					double borderP = curCell->P[0] + ai*curCell->rho *
 							(U_sn.back() - curCell->Vx[0]);
 					// Density at the center of the cell
-					double newRho = curCell->rho * Qi / barQi;
+					double newRho = curCell->rho * cell.at(n-1).at(i_sn-1).at(j).A[0] / curCell->A[0];
 					// Gas velocity at the center of the cell
 					double newVx = curCell->rho / newRho * Qi / barQi * curCell->Vx[0] +
 							(borderP - curCell->P[0]) / newRho / barQi * dt * M_PI*(2*(j-axis_j)+1)*pow(dr,2);
 					// Gas full energy at the center of the cell
-					double newE = curCell->e + borderP * (Qi - barQi) / newRho / Qi;
+					double newE = curCell->e + borderP * (Qi - barQi) / curCell->rho / Qi;
 					// Gas pressure at the center of the cell
 					double newP = (k-1) * (newE - (pow(newVx,2) - pow(curCell->Vr[0],2))/2) /
 							( 1/newRho - (1 - curCell->final_psi)/delta - alpha_k * curCell->final_psi); // BMSTU var
@@ -291,8 +292,6 @@ int main(int argc, char** argv) {
 					curCell->e = newE;
 					curCell->Vx[0] = newVx;
 					curCell->rho = newRho;
-					
-
 				}
 			}
 			
@@ -349,7 +348,8 @@ int main(int argc, char** argv) {
 						// Post-final stage
 						nextTCell->z = final_calc_z(&cell, &cell.at(n+1).at(i).at(j), n, i, j);
 						nextTCell->psi = final_calc_psi(&cell, &cell.at(n+1).at(i).at(j), n, i, j);
-						nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j));
+						nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
+								POWDER_EQ);
 					}
 				}
 			}
