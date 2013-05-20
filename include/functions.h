@@ -13,10 +13,6 @@ static const int SECOND_ORDER 		= 1;
 static const int FIRST_ORDER_NS		= 2;
 static const int SECOND_ORDER_NS	= 3;
 
-double pre_alpha(gasCell cell, int i, int i_p, double delta_0, double delta);
-
-void pre_cell_geometry(double array[5], gasCell cell, int i, int j);
-
 double euler_Usn(double P_sn, double S, double F, double dt, double U_prev);
 
 double euler_Xsn(double x_prev, double U_new);

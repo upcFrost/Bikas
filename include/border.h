@@ -4,7 +4,7 @@
 #include "types.h"
 #include "globals.h"
 #include <vector>
-#include "stdbool.h"
+#include <stdbool.h>
 
 typedef struct TPoint2D { double x; double y; int type; } TPoint2D;
 
@@ -18,5 +18,6 @@ struct find_type : std::unary_function<TPoint2D, bool> {
 
 WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug);
 void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond result[8]);
+void pre_cell_geometry(double array[5], gasCell cell, int i, int j);
 
 #endif	/* BORDER_H */

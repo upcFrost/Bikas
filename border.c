@@ -1,5 +1,231 @@
 #include "border.h"
 
+
+/* Cell geometry parameter calculation
+ *
+ * TODO: Fix full[0], [1] and [2] EVERYWHERE
+ *
+ *  */
+void pre_cell_geometry(double array[5], gasCell cell, int i, int j) {
+    double full[5];
+	full[0] = M_PI*(2*(j-axis_j)+1)*pow(dr,2)*dx;
+	full[1] = M_PI*(2*(j-axis_j)+1)*pow(dr,2);
+	full[2] = M_PI*(2*(j-axis_j)+1)*pow(dr,2);
+	full[3] = 2*M_PI*(j-axis_j)*dr*dx;
+	full[4] = 2*M_PI*(j-axis_j+1)*dr*dx;
+    switch (cell.type) {
+	case 0:
+		array[0] = 1;
+		array[1] = 1;
+		array[2] = 1;
+		array[3] = 1;
+		array[4] = 1;
+		break;
+
+	case 1:
+	    //~ array[0] = (2*M_PI * (j*dr + (cell.r_1*dr + cell.r_2*dr)/2) * (cell.r_1*dr + cell.r_2*dr)/2 * dx) / full[0] ;
+	    //~ array[1] = (M_PI * (2*j*dr*cell.r_1*dr + pow(cell.r_1*dr, 2))) / full[1] ;
+	    //~ array[2] = (M_PI * (2*j*dr*cell.r_2*dr + pow(cell.r_2*dr, 2))) / full[2] ;
+	    //~ array[3] = 1;
+	    //~ array[4] = 0;
+	    array[0] = ((j-1)*(cell.r_1+cell.r_2) + cell.r_1*cell.r_2 +
+			pow(cell.r_2-cell.r_1, 2)/3) / (2*j-1);
+		array[1] = cell.r_1 * (j-1+cell.r_1/2) / (j-0.5);
+		array[2] = cell.r_2 * (j-1+cell.r_2/2) / (j-0.5);
+		array[3] = 1;
+		array[4] = 0;
+	    printf("Cell at (%d, %d) with type 1; A[1] = %4.4f, A[2] = %4.4f, A[3] = %4.4f, A[4] = %4.4f\n", i,j,array[1],array[2],array[3],array[4]);
+	    break;
+
+	case 2:
+	    array[0] = (2*M_PI*(j*dr + dr/2)*dx*dr - 2*M_PI * (j*dr + (cell.r_1*dr + cell.r_2*dr)/2) * (cell.r_1*dr + cell.r_2*dr)/2 * dx) / full[0] ;
+	    array[1] = (M_PI * (2*(j+1)*dr*cell.r_1*dr - pow(cell.r_1*dr, 2))) / full[1] ;
+	    array[2] = (M_PI * (2*(j+1)*dr*cell.r_2*dr - pow(cell.r_2*dr, 2))) / full[2] ;
+	    array[3] = 0;
+	    array[4] = 1;
+	    break;
+
+	case 3:
+	    //~ array[0] = (2*M_PI * (j*dr + dr/2) * (cell.x_1*dx + cell.x_2*dx)/2 * dr) / full[0] ;
+	    //~ array[1] = 1;
+	    //~ array[2] = 0;
+	    //~ array[3] = (2*M_PI*j*cell.x_1*dx*dr) / full[3] ;
+	    //~ array[4] = (2*M_PI*(j+1)*cell.x_2*dx*dr) / full[4] ;
+	    array[0] = (j*cell.x_2 + (j-1)*cell.x_1 - (cell.x_2 - cell.x_1)/3) / (2*j-1);
+	    array[1] = 1;
+	    array[2] = 0;
+	    array[3] = cell.x_1;
+	    array[4] = cell.x_2;
+	    printf("Cell at (%d, %d) with type 3; A[1] = %4.4f, A[2] = %4.4f, A[3] = %4.4f, A[4] = %4.4f\n", i,j,array[1],array[2],array[3],array[4]);
+	    break;
+
+	case 4:
+	    array[0] = (2*M_PI*(j*dr + dr/2)*dx*dr - 2*M_PI * (j*dr + dr/2) * (cell.x_1*dx + cell.x_2*dx)/2 * dr) / full[0] ;
+	    array[1] = 0;
+	    array[2] = 1;
+	    array[3] = (2*M_PI*j*(dx - cell.x_1*dx)*dr) / full[3] ;
+	    array[4] = (2*M_PI*j*(dx - cell.x_2*dx)*dr) / full[4] ;
+	    break;
+
+	case 5:
+	    array[0] = (2*M_PI*(j*dr + dr/2)*dx*dr - 2*M_PI*(j*dr + cell.r_1*dr + (dr-cell.r_1*dr)/2) * (dr-cell.r_1*dr)*cell.x_2*dx/2) / full[0] ;
+	    array[1] = (M_PI*(2*j*dr*cell.r_1*dr + pow(cell.r_1*dr, 2))) / full[1] ;
+	    array[2] = 1;
+	    array[3] = 1;
+	    array[4] = (2*M_PI*j*(dx-cell.x_2*dx)*dr) / full[4] ;
+	    break;
+
+	case 6:
+	    array[0] = (2*M_PI*(j*dr + dr/2)*dx*dr - 2*M_PI*(j*dr + cell.r_1*dr/2) * cell.r_1*dr*cell.x_1*dx / 2) / full[0] ;
+	    array[1] = (M_PI*(2*(j+1)*dr*cell.r_1*dr - pow(cell.r_1*dr, 2))) / full[1] ;
+	    array[2] = 1;
+	    array[3] = (2*M_PI*j*(dx - cell.x_1*dx)*dr) / full[3] ;
+	    array[4] = 1;
+	    break;
+
+	case 7:
+	    array[0] = (2*M_PI*(j*dr + dr/2)*dx*dr - 2*M_PI*(j*dr + cell.r_1*dr/2)*cell.r_1*dr * (dx - cell.x_1*dx)/2) / full[0] ;
+	    array[1] = 1;
+	    array[2] = (M_PI*(2*(j+1)*dr*cell.r_2*dr - pow(cell.r_2*dr,2))) / full[2] ;
+	    array[3] = (2*M_PI*j*cell.x_1*dx*dr) / full[3] ;
+	    array[4] = 1;
+	    break;
+
+	case 8:
+	    array[0] = (2*M_PI*(j*dr + dr/2)*dx*dr - 2*M_PI*(j*dr + cell.r_1*dr + (dr - cell.r_1*dr)/2) * (dr - cell.r_1*dr)*(dx - cell.x_2*dx)/2) / full[0] ;
+	    array[1] = 1;
+	    array[2] = (M_PI*(2*j*dr*cell.r_1*dr - pow(cell.r_1*dr,2))) / full[2] ;
+	    array[3] = 1;
+	    array[4] = (2*M_PI*(j+1)*cell.x_2*dx*dr) / full[4] ;
+	    break;
+
+	case 9:
+	    array[0] = (2*M_PI*(j*dr + cell.r_1*dr + (dr-cell.r_1*dr)/2) * (dr-cell.r_1*dr)*cell.x_2*dx/2) / full[0] ;
+	    array[1] = (2*M_PI*j*pow(dr,2)*dx - M_PI*(2*j*dr*cell.r_1*dr + pow(cell.r_1*dr, 2))) / full[1] ;
+	    array[2] = 0;
+	    array[3] = 0;
+	    array[4] = (2*M_PI*j*pow(dr,2)*dx - 2*M_PI*j*(dx-cell.x_2*dx)*dr) / full[4] ;
+	    break;
+
+	case 10:
+	    //~ array[0] = (2*M_PI*(j*dr + cell.r_1*dr/2) * cell.r_1*dr*cell.x_1*dx / 2) / full[0] ;
+	    //~ array[1] = (M_PI * (2*j*dr*cell.r_1*dr + pow(cell.r_1*dr, 2))) / full[1] ;
+	    //~ array[2] = 0;
+	    //~ array[3] = (2*M_PI*j*cell.x_1*dx*dr) / full[3] ;
+	    //~ array[4] = 0;
+	    array[0] = cell.x_1*cell.r_1*(j-1 + cell.r_1/3) / (2*j-1);
+	    array[1] = cell.r_1 * (j-1 + cell.r_1/2) / (j-0.5);
+	    array[2] = 0;
+	    array[3] = cell.x_1;
+	    array[4] = 0;
+	    printf("Cell at (%d, %d) with type 10; A[1] = %4.4f, A[2] = %4.4f, A[3] = %4.4f, A[4] = %4.4f\n", i,j,array[1],array[2],array[3],array[4]);
+	    break;
+
+	case 11:
+	    array[0] = (2*M_PI*(j*dr + cell.r_1*dr/2)*cell.r_1*dr * (dx - cell.x_1*dx)/2) / full[0] ;
+	    array[1] = 0;
+	    array[2] = (2*M_PI*j*pow(dr,2)*dx - M_PI*(2*(j+1)*dr*cell.r_2*dr - pow(cell.r_2*dr,2))) / full[2] ;
+	    array[3] = (2*M_PI*j*pow(dr,2)*dx - 2*M_PI*j*cell.x_1*dx*dr) / full[3] ;
+	    array[4] = 0;
+	    break;
+
+	case 12:
+	    array[0] = (2*M_PI*(j*dr + cell.r_1*dr + (dr - cell.r_1*dr)/2) * (dr - cell.r_1*dr)*(dx - cell.x_2*dx)/2) / full[0] ;
+	    array[1] = 0;
+	    array[2] = (2*M_PI*j*pow(dr,2)*dx - M_PI*(2*j*dr*cell.r_1*dr - pow(cell.r_1*dr,2))) / full[2] ;
+	    array[3] = 0;
+	    array[4] = (2*M_PI*j*pow(dr,2)*dx - 2*M_PI*(j+1)*cell.x_2*dx*dr) / full[4] ;
+	    break;
+
+	case 13:
+		array[0] = 1;
+		array[1] = 1;
+		array[2] = 1;
+		array[3] = 1;
+		array[4] = 0;
+		break;
+
+	case 14:
+		array[0] = 1;
+		array[1] = 1;
+		array[2] = 1;
+		array[3] = 1;
+		array[4] = 1;
+		break;
+
+	case 15:
+		array[0] = 1;
+		array[1] = 0;
+		array[2] = 1;
+		array[3] = 1;
+		array[4] = 0;
+		break;
+
+	case 16:
+		array[0] = 1;
+		array[1] = 0;
+		array[2] = 1;
+		array[3] = 0;
+		array[4] = 1;
+		break;
+
+	case 17:
+		array[0] = 1;
+		array[1] = 0;
+		array[2] = 1;
+		array[3] = 1;
+		array[4] = 1;
+		break;
+
+	case 18:
+		array[0] = 0;
+		array[1] = 0;
+		array[2] = 0;
+		array[3] = 0;
+		array[4] = 0;
+		break;
+
+	case 19:
+		array[0] = 1;
+		array[1] = 1;
+		array[2] = 0;
+		array[3] = 1;
+		array[4] = 1;
+		break;
+
+	case 20:
+		array[0] = 1;
+		array[1] = 1;
+		array[2] = 0;
+		array[3] = 1;
+		array[4] = 0;
+		break;
+
+	case 21:
+		array[0] = 1;
+		array[1] = 1;
+		array[2] = 0;
+		array[3] = 0;
+		array[4] = 1;
+		break;
+
+	case 22:
+	    array[0] = ((j-1)*(cell.r_1+cell.r_2) + cell.r_1*cell.r_2 +
+			pow(cell.r_2-cell.r_1, 2)/3) / (2*j-1);
+		array[1] = cell.r_1 * (j-1+cell.r_1/2) / (j-0.5);
+		array[2] = 0;
+		array[3] = 1;
+		array[4] = 0;
+
+
+	default:
+		break;
+	}
+}
+
+
+
+
 double polygonArea(double *X, double *Y, int points) {
 
   double  area=0. ;

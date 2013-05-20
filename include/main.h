@@ -9,6 +9,8 @@
 #include "functions.h"
 #include "output.h"
 #include "border.h"
+#include "init.h"
+
 #include <ctime>
 #include <cstring> 
 #include <stdexcept>
@@ -17,9 +19,7 @@
 #include <cmath>
 
 
-double P_atm = 100000;
-double rho_atm = 1.2754;
-double P_v = 30000000;
+
 
 /* Base64 encoding */
 static const std::string base64_chars = 

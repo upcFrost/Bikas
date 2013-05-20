@@ -32,6 +32,9 @@ std::vector <double> x_sn (0);
 std::vector <double> U_sn (0);
 double f = 0.922*pow(10,6);
 int P_f = 30000000;
+double P_atm = 100000;
+double rho_atm = 1.2754;
+double P_v = 30000000;
 
 /* STUB */
 int Qr = 0;

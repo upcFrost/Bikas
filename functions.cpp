@@ -2,237 +2,6 @@
 
 using namespace std;
 
-/* Alpha calculation */
-double pre_alpha(gasCell cell, int i, int i_p, double delta_0, double delta) {
-    if (i <= i_p)
-		//return delta_0/delta; 
-		return 1;
-	else
-		return 1;
-}
-
-/* Cell geometry parameter calculation
- * 
- * TODO: Fix full[0], [1] and [2] EVERYWHERE
- * 
- *  */
-void pre_cell_geometry(double array[5], gasCell cell, int i, int j) {
-    double full[5];
-	full[0] = M_PI*(2*(j-axis_j)+1)*pow(dr,2)*dx;
-	full[1] = M_PI*(2*(j-axis_j)+1)*pow(dr,2);
-	full[2] = M_PI*(2*(j-axis_j)+1)*pow(dr,2);
-	full[3] = 2*M_PI*(j-axis_j)*dr*dx;
-	full[4] = 2*M_PI*(j-axis_j+1)*dr*dx;
-    switch (cell.type) {
-	case 0:
-		array[0] = 1;
-		array[1] = 1;
-		array[2] = 1;
-		array[3] = 1;
-		array[4] = 1;
-		break;
-
-	case 1:
-	    //~ array[0] = (2*M_PI * (j*dr + (cell.r_1*dr + cell.r_2*dr)/2) * (cell.r_1*dr + cell.r_2*dr)/2 * dx) / full[0] ;
-	    //~ array[1] = (M_PI * (2*j*dr*cell.r_1*dr + pow(cell.r_1*dr, 2))) / full[1] ;
-	    //~ array[2] = (M_PI * (2*j*dr*cell.r_2*dr + pow(cell.r_2*dr, 2))) / full[2] ;
-	    //~ array[3] = 1;
-	    //~ array[4] = 0;
-	    array[0] = ((j-1)*(cell.r_1+cell.r_2) + cell.r_1*cell.r_2 +
-			pow(cell.r_2-cell.r_1, 2)/3) / (2*j-1);
-		array[1] = cell.r_1 * (j-1+cell.r_1/2) / (j-0.5);
-		array[2] = cell.r_2 * (j-1+cell.r_2/2) / (j-0.5);
-		array[3] = 1;
-		array[4] = 0;
-	    printf("Cell at (%d, %d) with type 1; A[1] = %4.4f, A[2] = %4.4f, A[3] = %4.4f, A[4] = %4.4f\n", i,j,array[1],array[2],array[3],array[4]);
-	    break;
-
-	case 2:
-	    array[0] = (2*M_PI*(j*dr + dr/2)*dx*dr - 2*M_PI * (j*dr + (cell.r_1*dr + cell.r_2*dr)/2) * (cell.r_1*dr + cell.r_2*dr)/2 * dx) / full[0] ;
-	    array[1] = (M_PI * (2*(j+1)*dr*cell.r_1*dr - pow(cell.r_1*dr, 2))) / full[1] ;
-	    array[2] = (M_PI * (2*(j+1)*dr*cell.r_2*dr - pow(cell.r_2*dr, 2))) / full[2] ;
-	    array[3] = 0;
-	    array[4] = 1;
-	    break;
-
-	case 3:
-	    //~ array[0] = (2*M_PI * (j*dr + dr/2) * (cell.x_1*dx + cell.x_2*dx)/2 * dr) / full[0] ;
-	    //~ array[1] = 1;
-	    //~ array[2] = 0;
-	    //~ array[3] = (2*M_PI*j*cell.x_1*dx*dr) / full[3] ;
-	    //~ array[4] = (2*M_PI*(j+1)*cell.x_2*dx*dr) / full[4] ;
-	    array[0] = (j*cell.x_2 + (j-1)*cell.x_1 - (cell.x_2 - cell.x_1)/3) / (2*j-1);
-	    array[1] = 1;
-	    array[2] = 0;
-	    array[3] = cell.x_1;
-	    array[4] = cell.x_2;
-	    printf("Cell at (%d, %d) with type 3; A[1] = %4.4f, A[2] = %4.4f, A[3] = %4.4f, A[4] = %4.4f\n", i,j,array[1],array[2],array[3],array[4]);
-	    break;
-
-	case 4:
-	    array[0] = (2*M_PI*(j*dr + dr/2)*dx*dr - 2*M_PI * (j*dr + dr/2) * (cell.x_1*dx + cell.x_2*dx)/2 * dr) / full[0] ;
-	    array[1] = 0;
-	    array[2] = 1;
-	    array[3] = (2*M_PI*j*(dx - cell.x_1*dx)*dr) / full[3] ;
-	    array[4] = (2*M_PI*j*(dx - cell.x_2*dx)*dr) / full[4] ;
-	    break;
-
-	case 5:
-	    array[0] = (2*M_PI*(j*dr + dr/2)*dx*dr - 2*M_PI*(j*dr + cell.r_1*dr + (dr-cell.r_1*dr)/2) * (dr-cell.r_1*dr)*cell.x_2*dx/2) / full[0] ;
-	    array[1] = (M_PI*(2*j*dr*cell.r_1*dr + pow(cell.r_1*dr, 2))) / full[1] ;
-	    array[2] = 1;
-	    array[3] = 1;
-	    array[4] = (2*M_PI*j*(dx-cell.x_2*dx)*dr) / full[4] ;
-	    break;
-
-	case 6:
-	    array[0] = (2*M_PI*(j*dr + dr/2)*dx*dr - 2*M_PI*(j*dr + cell.r_1*dr/2) * cell.r_1*dr*cell.x_1*dx / 2) / full[0] ;
-	    array[1] = (M_PI*(2*(j+1)*dr*cell.r_1*dr - pow(cell.r_1*dr, 2))) / full[1] ;
-	    array[2] = 1;
-	    array[3] = (2*M_PI*j*(dx - cell.x_1*dx)*dr) / full[3] ;
-	    array[4] = 1;
-	    break;
-
-	case 7:
-	    array[0] = (2*M_PI*(j*dr + dr/2)*dx*dr - 2*M_PI*(j*dr + cell.r_1*dr/2)*cell.r_1*dr * (dx - cell.x_1*dx)/2) / full[0] ;
-	    array[1] = 1;
-	    array[2] = (M_PI*(2*(j+1)*dr*cell.r_2*dr - pow(cell.r_2*dr,2))) / full[2] ;
-	    array[3] = (2*M_PI*j*cell.x_1*dx*dr) / full[3] ;
-	    array[4] = 1;
-	    break;
-
-	case 8:
-	    array[0] = (2*M_PI*(j*dr + dr/2)*dx*dr - 2*M_PI*(j*dr + cell.r_1*dr + (dr - cell.r_1*dr)/2) * (dr - cell.r_1*dr)*(dx - cell.x_2*dx)/2) / full[0] ;
-	    array[1] = 1;
-	    array[2] = (M_PI*(2*j*dr*cell.r_1*dr - pow(cell.r_1*dr,2))) / full[2] ;
-	    array[3] = 1;
-	    array[4] = (2*M_PI*(j+1)*cell.x_2*dx*dr) / full[4] ;
-	    break;
-
-	case 9:
-	    array[0] = (2*M_PI*(j*dr + cell.r_1*dr + (dr-cell.r_1*dr)/2) * (dr-cell.r_1*dr)*cell.x_2*dx/2) / full[0] ;
-	    array[1] = (2*M_PI*j*pow(dr,2)*dx - M_PI*(2*j*dr*cell.r_1*dr + pow(cell.r_1*dr, 2))) / full[1] ;
-	    array[2] = 0;
-	    array[3] = 0;
-	    array[4] = (2*M_PI*j*pow(dr,2)*dx - 2*M_PI*j*(dx-cell.x_2*dx)*dr) / full[4] ;
-	    break;
-
-	case 10:
-	    //~ array[0] = (2*M_PI*(j*dr + cell.r_1*dr/2) * cell.r_1*dr*cell.x_1*dx / 2) / full[0] ;
-	    //~ array[1] = (M_PI * (2*j*dr*cell.r_1*dr + pow(cell.r_1*dr, 2))) / full[1] ;
-	    //~ array[2] = 0;
-	    //~ array[3] = (2*M_PI*j*cell.x_1*dx*dr) / full[3] ;
-	    //~ array[4] = 0;
-	    array[0] = cell.x_1*cell.r_1*(j-1 + cell.r_1/3) / (2*j-1);
-	    array[1] = cell.r_1 * (j-1 + cell.r_1/2) / (j-0.5);
-	    array[2] = 0;
-	    array[3] = cell.x_1;
-	    array[4] = 0;
-	    printf("Cell at (%d, %d) with type 10; A[1] = %4.4f, A[2] = %4.4f, A[3] = %4.4f, A[4] = %4.4f\n", i,j,array[1],array[2],array[3],array[4]);
-	    break;
-
-	case 11:
-	    array[0] = (2*M_PI*(j*dr + cell.r_1*dr/2)*cell.r_1*dr * (dx - cell.x_1*dx)/2) / full[0] ;
-	    array[1] = 0;
-	    array[2] = (2*M_PI*j*pow(dr,2)*dx - M_PI*(2*(j+1)*dr*cell.r_2*dr - pow(cell.r_2*dr,2))) / full[2] ;
-	    array[3] = (2*M_PI*j*pow(dr,2)*dx - 2*M_PI*j*cell.x_1*dx*dr) / full[3] ;
-	    array[4] = 0;
-	    break;
-
-	case 12:
-	    array[0] = (2*M_PI*(j*dr + cell.r_1*dr + (dr - cell.r_1*dr)/2) * (dr - cell.r_1*dr)*(dx - cell.x_2*dx)/2) / full[0] ;
-	    array[1] = 0;
-	    array[2] = (2*M_PI*j*pow(dr,2)*dx - M_PI*(2*j*dr*cell.r_1*dr - pow(cell.r_1*dr,2))) / full[2] ;
-	    array[3] = 0;
-	    array[4] = (2*M_PI*j*pow(dr,2)*dx - 2*M_PI*(j+1)*cell.x_2*dx*dr) / full[4] ;
-	    break;
-
-	case 13:
-		array[0] = 1;
-		array[1] = 1;
-		array[2] = 1;
-		array[3] = 1;
-		array[4] = 0;
-		break;
-
-	case 14:
-		array[0] = 1;
-		array[1] = 1;
-		array[2] = 1;
-		array[3] = 1;
-		array[4] = 1;
-		break;
-
-	case 15:
-		array[0] = 1;
-		array[1] = 0;
-		array[2] = 1;
-		array[3] = 1;
-		array[4] = 0;
-		break;
-
-	case 16:
-		array[0] = 1;
-		array[1] = 0;
-		array[2] = 1;
-		array[3] = 0;
-		array[4] = 1;
-		break;
-
-	case 17:
-		array[0] = 1;
-		array[1] = 0;
-		array[2] = 1;
-		array[3] = 1;
-		array[4] = 1;
-		break;
-
-	case 18:
-		array[0] = 0;
-		array[1] = 0;
-		array[2] = 0;
-		array[3] = 0;
-		array[4] = 0;
-		break;
-
-	case 19:
-		array[0] = 1;
-		array[1] = 1;
-		array[2] = 0;
-		array[3] = 1;
-		array[4] = 1;
-		break;
-
-	case 20:
-		array[0] = 1;
-		array[1] = 1;
-		array[2] = 0;
-		array[3] = 1;
-		array[4] = 0;
-		break;
-
-	case 21:
-		array[0] = 1;
-		array[1] = 1;
-		array[2] = 0;
-		array[3] = 0;
-		array[4] = 1;
-		break;
-
-	case 22:
-	    array[0] = ((j-1)*(cell.r_1+cell.r_2) + cell.r_1*cell.r_2 +
-			pow(cell.r_2-cell.r_1, 2)/3) / (2*j-1);
-		array[1] = cell.r_1 * (j-1+cell.r_1/2) / (j-0.5);
-		array[2] = 0;
-		array[3] = 1;
-		array[4] = 0;
-
-
-	default:
-		break;
-	}
-}
-
 
 /* Euler stage U_sn calculation */
 double euler_Usn(double P_sn, double S, double F, double dt, double U_prev) {
@@ -353,10 +122,10 @@ double euler_bar_Vx(cell2d& cell, int n, int i, int j,
 		break;
 	}
 
-	if (i == 107 && j == 15) {
-		gasCell cell_106 = cell[n][106][15];
-		gasCell cell_107 = cell[n][107][15];
-		gasCell cell_108 = cell[n][108][15];
+	if (i == 111 && j == 15) {
+		gasCell cell_109 = cell[n][109][15];
+		gasCell cell_110 = cell[n][110][15];
+		gasCell cell_111 = cell[n][111][15];
 		printf("123");
 	}
 
@@ -639,96 +408,6 @@ double euler_bar_e(cell2d& cell, int n, int i, int j,
             //~ cell->A[0] * cell->rho
         //~ );
 
-	/** Catch less-than-zero rezult **/
-	//~ if (result < 0) {
-		//~ cout << "bar_e < 0" << endl;
-		//~ cout << "e = " << (*cell)[n][i][j].e << endl <<
-				//~ "P[1-4] = {" << (*cell)[n][i][j].P[1] << "    " << (*cell)[n][i][j].P[2] << "    " << (*cell)[n][i][j].P[3] << "    " << (*cell)[n][i][j].P[4] << "}" << endl <<
-				//~ "V[1-4] = {" << (*cell)[n][i][j].Vx[1] << "    " << (*cell)[n][i][j].Vx[2] << "    " << (*cell)[n][i][j].Vr[3] << "    " << (*cell)[n][i][j].Vr[4] << "}" << endl <<
-				//~ "A[1-4] = {" << (*cell)[n][i][j].A[1] << "    " << (*cell)[n][i][j].A[2] << "    " << (*cell)[n][i][j].A[3] << "    " << (*cell)[n][i][j].A[4] << "}" << endl;
-		//~ cout << "first brackets: " << ((*cell)[n][i][j].P[2]*(*cell)[n][i][j].Vx[2] - (*cell)[n][i][j].P[1]*(*cell)[n][i][j].Vx[1]) / dx *
-		//~ fmax((*cell)[n][i][j].A[1],(*cell)[n][i][j].A[2]) << endl;
-		//~ cout << "second brackets: " << ((*cell)[n][i][j].P[4]*(*cell)[n][i][j].Vr[4] - (*cell)[n][i][j].P[3]*(*cell)[n][i][j].Vr[3]) / ((fabs(j-axis_j-0.5))*dr) *
-		//~ fmax((*cell)[n][i][j].A[3],(*cell)[n][i][j].A[4]) << endl;
-		//~ getchar();
-	//~ }
-
-	//~ if (result < 0 || result > pow(10,8)) {
-		//~ cout << "bar_E = " << result << endl;
-		//~ cout << "i = " << i << ", j = " << j << endl;
-		//~ cout << "Pressure part = " << 1/(2*dx) * (
-				//~ (*cell)[n][i][j].Vx[0] * (
-					//~ (*cell)[n][i-1][j].P[0] - (*cell)[n][i+1][j].P[0]
-				//~ ) + (*cell)[n][i][j].P[0] * (
-					//~ (*cell)[n][i-1][j].Vx[0] - (*cell)[n][i+1][j].Vx[0]
-				//~ )
-			//~ ) + 1/(2*dr) * (
-				//~ (*cell)[n][i][j].Vr[0] * (
-					//~ (*cell)[n][i][j-1].P[0] - (*cell)[n][i][j+1].P[0]
-				//~ ) + (*cell)[n][i][j].P[0] * (
-					//~ (*cell)[n][i][j-1].Vr[0] - (*cell)[n][i][j+1].Vr[0]
-				//~ )
-			//~ ) << endl;
-		//~ cout << "Viscosity part X axis first = " << gasMu * (gasA + 2) / (2 * pow(dx,2)) * (
-				//~ pow((*cell)[n][i+1][j].Vx[0], 2) +
-				//~ pow((*cell)[n][i-1][j].Vx[0], 2) -
-				//~ 2*pow((*cell)[n][i][j].Vx[0], 2)
-			//~ ) << endl;
-		//~ cout << "Viscosity part X axis second = " << gasA * gasMu / (4*dx*dr) * (
-				//~ (*cell)[n][i+1][j].Vx[0] * (
-					//~ (*cell)[n][i+1][j+1].Vr[0] - (*cell)[n][i+1][j-1].Vr[0]
-				//~ ) - (*cell)[n][i-1][j].Vx[0] * (
-					//~ (*cell)[n][i-1][j+1].Vr[0] - (*cell)[n][i-1][j-1].Vr[0]
-				//~ )
-			//~ ) << endl;
-		//~ cout << "Viscosity part X axis third = " << gasMu / (pow(dx,2)) * (
-				//~ pow((*cell)[n][i+1][j].Vr[0], 2) +
-				//~ pow((*cell)[n][i-1][j].Vr[0], 2) -
-				//~ 2*pow((*cell)[n][i][j].Vr[0], 2)
-			//~ ) << endl;
-		//~ cout << "Viscosity part X axis forth = " << gasMu / (4*dx*dr) * (
-				//~ (*cell)[n][i+1][j].Vr[0] * (
-					//~ (*cell)[n][i+1][j+1].Vx[0] - (*cell)[n][i+1][j-1].Vx[0]
-				//~ ) - (*cell)[n][i-1][j].Vr[0] * (
-					//~ (*cell)[n][i-1][j+1].Vx[0] - (*cell)[n][i-1][j-1].Vx[0]
-				//~ )
-			//~ ) << endl;
-		//~ cout << "Viscosity part X axis sixth = " << gasB * gasMu / pow(dx,2) * (
-				//~ I3 + I2 - 2*I1
-			//~ ) << endl;
-		//~ cout << "Viscosity part X axis sixth in brackets = " << (I3 + I2 - 2*I1) << endl;
-		//~ cout << "Viscosity part X axis sixth in brackets first = " << I3 << endl;
-		//~ cout << "Viscosity part X axis sixth in brackets second = " << I2 << endl;
-		//~ cout << "e[i-1] = " << (*cell)[n][i-1][j].e << endl;
-		//~ cout << "(Vx[0]^2 + Vr[0]^2)/2 = " << (pow((*cell)[n][i-1][j].Vx[0],2) + pow((*cell)[n][i-1][j].Vr[0],2))/2 << endl;
-		//~ cout << "Viscosity part X axis sixth in brackets third = " << 2*I1 << endl;
-			//~ // R axis
-			//~ cout << "Viscosity part R axis = " << gasMu * (gasA + 2) / (2 * pow(dr,2)) * (
-				//~ pow((*cell)[n][i][j+1].Vr[0], 2) +
-				//~ pow((*cell)[n][i][j-1].Vr[0], 2) -
-				//~ 2*pow((*cell)[n][i][j].Vr[0], 2)
-			//~ ) + gasA * gasMu / (4*dx*dr) * (
-				//~ (*cell)[n][i][j+1].Vr[0] * (
-					//~ (*cell)[n][i+1][j+1].Vx[0] - (*cell)[n][i-1][j+1].Vx[0]
-				//~ ) - (*cell)[n][i][j-1].Vr[0] * (
-					//~ (*cell)[n][i+1][j-1].Vx[0] - (*cell)[n][i-1][j-1].Vx[0]
-				//~ )
-			//~ ) + gasMu / (pow(dr,2)) * (
-				//~ pow((*cell)[n][i][j+1].Vx[0], 2) +
-				//~ pow((*cell)[n][i][j-1].Vx[0], 2) -
-				//~ 2*pow((*cell)[n][i][j].Vx[0], 2)
-			//~ ) + gasMu / (4*dx*dr) * (
-				//~ (*cell)[n][i][j+1].Vx[0] * (
-					//~ (*cell)[n][i+1][j+1].Vr[0] - (*cell)[n][i-1][j+1].Vr[0]
-				//~ ) - (*cell)[n][i][j-1].Vx[0] * (
-					//~ (*cell)[n][i+1][j-1].Vr[0] - (*cell)[n][i-1][j-1].Vr[0]
-				//~ )
-			//~ ) + gasB * gasMu / pow(dr,2) * (
-				//~ I5 + I4 - 2*I1
-			//~ ) << endl;
-		//~ getchar();
-	//~ }
-
 	if (fabs(result-brd[E_POS].ij) < pow(10.0,-15)) result = brd[E_POS].ij;
 	if (result == result) { // if not NaN
 		return result;
@@ -784,35 +463,21 @@ double lagrange_rho(gasCell * cell, gasCell * prevCell, int i, int j, double dt,
     } else {
     	result = cell->rho;
     }
-        //~ if (j == 6 && prevCell->A[0]/cell->A[0] > 1) {
-			//~ cout << "K > 1" << endl
-				//~ << "j = " << j << endl
-				//~ << "rho = " << cell->rho << endl
-				//~ << "result = " << result << endl
-				//~ << "k = " << k << endl
-				//~ << "prev A[0] = " << prevCell->A[0] << endl
-				//~ << "A[0] = " << cell->A[0] << endl
-				//~ << "dM[1] = " << cell->dM[1] << endl
-				//~ << "dM[2] = " << cell->dM[2] << endl
-				//~ << "dM[3] = " << cell->dM[3] << endl
-				//~ << "dM[4] = " << cell->dM[4] << endl;
-			//~ getchar();
-		//~ }
-        if (result < 0) {
-			cout << "rho < 0" << endl
-				<< "i = " << i << endl
-				<< "j = " << j << endl
-				<< "rho = " << cell->rho << endl
-				<< "A[0] = " << cell->A[0] << endl
-				<< "dM[1] = " << cell->dM[1]*dt << endl
-				<< "dM[2] = " << cell->dM[2]*dt << endl
-				<< "dM[3] = " << cell->dM[3]*dt << endl
-				<< "dM[4] = " << cell->dM[4]*dt << endl
-				<< "dx = " << dx << endl
-				<< "dr = " << dr << endl
-				<< "dt = " << dt << endl << endl;
-			getchar();
-		}
+	if (result < 0) {
+		cout << "rho < 0" << endl
+			<< "i = " << i << endl
+			<< "j = " << j << endl
+			<< "rho = " << cell->rho << endl
+			<< "A[0] = " << cell->A[0] << endl
+			<< "dM[1] = " << cell->dM[1]*dt << endl
+			<< "dM[2] = " << cell->dM[2]*dt << endl
+			<< "dM[3] = " << cell->dM[3]*dt << endl
+			<< "dM[4] = " << cell->dM[4]*dt << endl
+			<< "dx = " << dx << endl
+			<< "dr = " << dr << endl
+			<< "dt = " << dt << endl << endl;
+		getchar();
+	}
     return result;
 }
 
@@ -852,28 +517,40 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 		array[1] = (fabs(j-axis_j-0.5))*curCell.A[1] * brd[RHO_POS].ij * Vx_i_12 * pow(dr,2) * dt;
 	}
 	if (fabs(array[1]) < pow(10,-14)) array[1] = 0;
+
 	if (ruleVx2) {
 		array[2] = (fabs(j-axis_j-0.5))*curCell.A[2] * brd[RHO_POS].ij * Vx_i12 * pow(dr,2) * dt;
 	} else {
 		array[2] = (fabs(j-axis_j-0.5))*cell[n][i+1][j].A[1] * brd[RHO_POS].i1j * Vx_i12 * pow(dr,2) * dt;
 	}
-	if (fabs(array[2]) < pow(10,-14)) array[1] = 0;
+	if (fabs(array[2]) < pow(10,-14)) array[2] = 0;
+
 	if (ruleVr1) {
 		array[3] = cell[n][i][j-1].A[4] * brd[RHO_POS].ij_1 * Vr_j_12 * j*dx*dr * dt;
 	} else {
 		array[3] = curCell.A[3] * brd[RHO_POS].ij * Vr_j_12 * j*dx*dr * dt;
 	}
-	if (fabs(array[3]) < pow(10,-14)) array[1] = 0;
+	if (fabs(array[3]) < pow(10,-14)) array[3] = 0;
+
 	if (ruleVr2) {
 		array[4] = curCell.A[4] * brd[RHO_POS].ij * Vr_j12 * (j+1)*dx*dr * dt;
 	} else {
 		array[4] = cell[n][i][j+1].A[3] * brd[RHO_POS].ij1 * Vr_j12 * (j+1)*dx*dr * dt;
 	}
-	if (fabs(array[4]) < pow(10,-14)) array[1] = 0;
+	if (fabs(array[4]) < pow(10,-14)) array[4] = 0;
+
 	array[5] = ruleVx1 ? 1 : 0;
 	array[6] = ruleVx2 ? 0 : 1;
 	array[7] = ruleVr1 ? 1 : 0;
 	array[8] = ruleVr2 ? 0 : 1;
+
+
+	if (i == 111 && j == 15) {
+		gasCell cell_109 = cell[n][109][15];
+		gasCell cell_110 = cell[n][110][15];
+		gasCell cell_111 = cell[n][111][15];
+		printf("123");
+	}
 
 	/** Central **/
 //	array[1] = brd[RHO_POS].i_1j * brd[BAR_VX_POS].i_1j * (fabs(j-axis_j-0.5)) * pow(dr,2) * dt;
@@ -1046,7 +723,11 @@ double new_final_z (cell2d& cell, int i, int j, int n,
 	    (1-curCell.D[4]) * brd[Z_POS].i_1j * curCell.dM[4] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
     )
 	;
-    return result;
+    if (result > 1) {
+		return 1;
+	} else {
+		return result;
+	}
 }
 
 double new_final_psi (cell2d& cell, int i, int j, int n,
@@ -1082,7 +763,11 @@ double new_final_psi (cell2d& cell, int i, int j, int n,
 		    (1-curCell.D[4]) * brd[PSI_POS].i_1j * curCell.dM[4] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	    )
 		;
-    return result;
+	if (result > 1) {
+		return 1;
+	} else {
+		return result;
+	}
 }
 
 
@@ -1102,6 +787,14 @@ double final_calc_p(gasCell * prevCell, gasCell * cell) {
 		)
 //		- (pow(cell->Vx[0],2)+pow(cell->Vr[0],2))/2 // From Ershov, UDK 519.6:532.6, #775, 2007, str. 159-173
 		;
+
+	if (i == 111 && j == 15) {
+		printf("123");
+	}
+	if (i == 110 && j == 15) {
+		printf("123");
+	}
+
 	if (result < 0) {
 		broken_dt = true;
 		cout << "P < 0" << endl;

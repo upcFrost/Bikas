@@ -17,7 +17,7 @@ endif
 
 OPENMP=-fopenmp
 
-OBJECTS=main.o functions.o globals.o interp.o border.o \
+OBJECTS=main.o init.o functions.o globals.o interp.o border.o \
 		debug.o output.o
 		
 all : $(TARGET)
@@ -46,6 +46,9 @@ border.o : border.c
 
 output.o : output.c
 	$(CPP) $(CFLAGS) $(INCLUDES) output.c
+
+init.o : init.cpp
+	$(CPP) $(CFLAGS) $(INCLUDES) init.cpp
 
 clean:
 	rm -rf *o $(TARGET)

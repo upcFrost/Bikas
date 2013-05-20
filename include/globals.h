@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <fstream>
 #include <vector>
-#include <math.h>
+#include <cmath>
 #include <algorithm>
 #include <iomanip>
 #include "types.h"
@@ -53,7 +53,7 @@ unsigned int const PSI_POS		= 9;
 
 extern int n, i, j, max_i, max_j, I_k, i_v, j_v, i_sn, j_sn, i_sn_0, P_f;
 extern double delta, delta_0, dx, dr, dt, p0, lambda, kappa, k, m_sn, max_z,max_z_0, f;
-extern double V0;
+extern double V0, P_atm, rho_atm, P_v;
 extern double dM0;
 extern bool broken_dt;
 extern std::vector <double> t;
@@ -92,7 +92,6 @@ static const double gasKappa = 1.21; // Решение задачи по опр�
 static const double gasCp = 1650; // Решение задачи по определению эффективности многокамерного дульного тормоза
 static const double gasPr = gasMu * gasCp / gasKappa;
 static const double gasB = gasKappa / gasPr;
-
 
 /* STUB */
 extern int Qr;
