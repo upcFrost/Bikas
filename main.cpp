@@ -455,9 +455,9 @@ int main(int argc, char** argv) {
 					if (j == 2) cout << "barQi = " << barQi << endl;
 					if (j == 2) debug_projectile_par(i_sn, j, borderP, newRho, newVx, newE, newP, cell.at(n).at(i_sn-1).at(j).final_psi, x_sn.back());
 					
-//					curCell->P[0] = newP;
-//					curCell->e = newE;
-//					curCell->Vx[0] = newVx;
+					curCell->P[0] = newP;
+					curCell->e = newE;
+					curCell->Vx[0] = newVx;
 					curCell->rho = newRho;
 					
 
@@ -526,7 +526,7 @@ int main(int argc, char** argv) {
 			/* X axis */
 //			int pointNum = 4; // Should be even, number of interpolating points
 //			for (j = 0; j < max_j; j++) {
-//				for (i = i_sn-3; i < i_sn-2; i++) {
+//				for (i = i_sn-10; i < i_sn-3; i++) {
 //					if (cell.at(n+1).at(i).at(j).type != 18 &&
 //							cell.at(n+1).at(i+1).at(j).type != 18 &&
 //							cell.at(n+1).at(i+2).at(j).type != 18 &&
@@ -537,6 +537,7 @@ int main(int argc, char** argv) {
 //						double VrPoints[pointNum]; double VrPointsLin[pointNum]; double VrPointsQuad[pointNum]; double VrPointsCub[pointNum];
 //						double PPoints[pointNum]; double PPointsLin[pointNum]; double PPointsQuad[pointNum]; double PPointsCub[pointNum];
 //						double ePoints[pointNum]; double ePointsLin[pointNum]; double ePointsQuad[pointNum]; double ePointsCub[pointNum];
+//						double rhoPoints[pointNum]; double rhoPointsLin[pointNum]; double rhoPointsQuad[pointNum]; double rhoPointsCub[pointNum];
 //						for (int iter = 0; iter < pointNum; iter++) {
 //							int current_i = iter < pointNum/2 ? i - pointNum/2 + iter : i - pointNum/2 + iter + 1;
 //							xPoints[iter] = current_i * dx;
@@ -544,16 +545,19 @@ int main(int argc, char** argv) {
 //							VrPoints[iter] = cell.at(n+1).at(current_i).at(j).Vr[0];
 //							PPoints[iter] = cell.at(n+1).at(current_i).at(j).P[0];
 //							ePoints[iter] = cell.at(n+1).at(current_i).at(j).e;
+//							rhoPoints[iter] = cell.at(n+1).at(current_i).at(j).rho;
 //						}
 //						cubic_nak ( pointNum, xPoints, VxPoints, VxPointsLin, VxPointsQuad, VxPointsCub );
 //						cubic_nak ( pointNum, xPoints, VrPoints, VrPointsLin, VrPointsQuad, VrPointsCub );
 //						cubic_nak ( pointNum, xPoints, PPoints, PPointsLin, PPointsQuad, PPointsCub );
 //						cubic_nak ( pointNum, xPoints, ePoints, ePointsLin, ePointsQuad, ePointsCub );
+//						cubic_nak ( pointNum, xPoints, rhoPoints, rhoPointsLin, rhoPointsQuad, rhoPointsCub );
 //
 //						cell.at(n+1).at(i).at(j).Vx[0] = spline_eval ( pointNum, xPoints, VxPoints, VxPointsLin, VxPointsQuad, VxPointsCub, i*dx );
 //						cell.at(n+1).at(i).at(j).Vr[0] = spline_eval ( pointNum, xPoints, VrPoints, VrPointsLin, VrPointsQuad, VrPointsCub, i*dx );
 //						cell.at(n+1).at(i).at(j).P[0] = spline_eval ( pointNum, xPoints, PPoints, PPointsLin, PPointsQuad, PPointsCub, i*dx );
 //						cell.at(n+1).at(i).at(j).e = spline_eval ( pointNum, xPoints, ePoints, ePointsLin, ePointsQuad, ePointsCub, i*dx );
+//						cell.at(n+1).at(i).at(j).rho = spline_eval ( pointNum, xPoints, rhoPoints, rhoPointsLin, rhoPointsQuad, rhoPointsCub, i*dx );
 //					}
 //				}
 //			}
