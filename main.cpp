@@ -227,7 +227,7 @@ int main(int argc, char** argv) {
 			
 			/* Moving projectile borders */
 			for (j = 0; j < max_j; j++) {
-				if (cell.at(n).at(i_sn).at(j).type != 18) {
+				if (cell.at(n).at(i_sn-1).at(j).type != 18) {
 					euler_proj_broder(arrayT, j, x_sn.back(), dx, dr);
 					// For n
 					for (int iter = 0; iter < 5; iter++) {

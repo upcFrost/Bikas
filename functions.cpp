@@ -131,6 +131,7 @@ double euler_bar_Vx(cell2d& cell, int n, int i, int j,
 		gasCell cell_106 = cell[n][106][15];
 		gasCell cell_107 = cell[n][107][15];
 		gasCell cell_108 = cell[n][108][15];
+		gasCell cell_SN = cell[n][i_sn-1][15];
 		printf("123");
 	}
 
@@ -521,28 +522,28 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 	} else {
 		array[1] = (fabs(j-axis_j-0.5))*curCell.A[1] * brd[RHO_POS].ij * Vx_i_12 * pow(dr,2) * dt;
 	}
-	if (fabs(array[1]) < pow(10,-14)) array[1] = 0;
+	if (fabs(array[1]) < pow(10.0,-14)) array[1] = 0;
 
 	if (ruleVx2) {
 		array[2] = (fabs(j-axis_j-0.5))*curCell.A[2] * brd[RHO_POS].ij * Vx_i12 * pow(dr,2) * dt;
 	} else {
 		array[2] = (fabs(j-axis_j-0.5))*cell[n][i+1][j].A[1] * brd[RHO_POS].i1j * Vx_i12 * pow(dr,2) * dt;
 	}
-	if (fabs(array[2]) < pow(10,-14)) array[2] = 0;
+	if (fabs(array[2]) < pow(10.0,-14)) array[2] = 0;
 
 	if (ruleVr1) {
 		array[3] = cell[n][i][j-1].A[4] * brd[RHO_POS].ij_1 * Vr_j_12 * j*dx*dr * dt;
 	} else {
 		array[3] = curCell.A[3] * brd[RHO_POS].ij * Vr_j_12 * j*dx*dr * dt;
 	}
-	if (fabs(array[3]) < pow(10,-14)) array[3] = 0;
+	if (fabs(array[3]) < pow(10.0,-14)) array[3] = 0;
 
 	if (ruleVr2) {
 		array[4] = curCell.A[4] * brd[RHO_POS].ij * Vr_j12 * (j+1)*dx*dr * dt;
 	} else {
 		array[4] = cell[n][i][j+1].A[3] * brd[RHO_POS].ij1 * Vr_j12 * (j+1)*dx*dr * dt;
 	}
-	if (fabs(array[4]) < pow(10,-14)) array[4] = 0;
+	if (fabs(array[4]) < pow(10.0,-14)) array[4] = 0;
 
 	array[5] = ruleVx1 ? 1 : 0;
 	array[6] = ruleVx2 ? 0 : 1;

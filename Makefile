@@ -38,14 +38,14 @@ globals.o : globals.cpp
 interp.o : interp.c
 	$(CPP) $(CFLAGS) $(INCLUDES) interp.c
 
-debug.o : debug.c
-	$(CPP) $(CFLAGS) $(INCLUDES) debug.c
+debug.o : debug.cpp
+	$(CPP) $(CFLAGS) $(INCLUDES) debug.cpp
 
 border.o : border.cpp
 	$(CPP) $(CFLAGS) $(INCLUDES) border.cpp
 
-output.o : output.c
-	$(CPP) $(CFLAGS) $(INCLUDES) output.c
+output.o : output.cpp
+	$(CPP) $(CFLAGS) $(INCLUDES) output.cpp
 
 init.o : init.cpp
 	$(CPP) $(CFLAGS) $(INCLUDES) init.cpp
