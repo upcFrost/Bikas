@@ -297,12 +297,8 @@ double euler_bar_e(cell2d& cell, int n, int i, int j,
 		result = curCell.e -
 			(
 				(P_i12*Vx_i12 - P_i_12*Vx_i_12) / dx * fmax(curCell.A[1],curCell.A[2]) +
-				(fabs(j-axis_j)*P_j12*Vr_j12 - fabs(j-axis_j-1)*P_j_12*Vr_j_12) / ((fabs(j-axis_j-0.5))*pow(dr,2)) * fmax(curCell.A[3],curCell.A[4])
-			) * dt / (curCell.A[0] * curCell.rho)
-		/** If powder present **/
-			+ curCell.P[0]/((k-1)*I_k) * (1 + lambda * cell[n][i][j].final_z) * f*kappa*dt
-		/** End here **/
-			;
+				(fabs(j-axis_j)*P_j12*Vr_j12 - fabs(j-axis_j-1)*P_j_12*Vr_j_12) / (fabs(j-axis_j-0.5)*dr) * fmax(curCell.A[3],curCell.A[4])
+			) * dt / (curCell.A[0] * curCell.rho);
 		break;
 
 	case SECOND_ORDER:
@@ -320,7 +316,7 @@ double euler_bar_e(cell2d& cell, int n, int i, int j,
 				// Pressure
 				(P_i12*Vx_i12 - P_i_12*Vx_i_12) / dx * fmax(curCell.A[1],curCell.A[2]) +
 				(fabs(j-axis_j)*P_j12*Vr_j12 - fabs(j-axis_j-1)*P_j_12*Vr_j_12) /
-					((fabs(j-axis_j-0.5))*pow(dr,2)) * fmax(curCell.A[3],curCell.A[4])
+					((fabs(j-axis_j-0.5))*dr) * fmax(curCell.A[3],curCell.A[4])
 				-
 				// Viscosity
 				// X axis
@@ -364,10 +360,7 @@ double euler_bar_e(cell2d& cell, int n, int i, int j,
 				)
 				+
 				gasB * gasMu / pow(dr,2) * (I5 + I4 - 2*I1)
-		)
-		/** If powder present **/
-		+ curCell.P[0]/((k-1)*I_k) * (1 + lambda*curCell.final_z) * f*kappa*dt
-		;
+		);
 	    break;
 	}
 
@@ -439,15 +432,6 @@ double lagrange_e(gasCell * prevCell, gasCell * cell) {
 		//~ (pow(prevCell->Vx[0],2) + pow(prevCell->Vr[0],2))/2;
 	double scaled_e = cell->bar_e * Ak;
 	return scaled_e;
-}
-
-/* Powder -> gas */
-double lagrange_m(gasCell * cell) {
-	if (cell->psi < 1) {
-		return (1 - cell->alpha)*delta / (1 - cell->psi) * (kappa + 2 * kappa * lambda * cell->z) * cell->P[0]/I_k;
-	} else {
-		return 0;
-	}
 }
 
 /* Density on lagrange stage */
@@ -634,49 +618,6 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
     //~ array[8] = array[4] > 0 ? 0 : 1;
 }
 
-/* Final stage z calculation */
-double final_calc_z (cell2d * previousCell, gasCell * cell, int n, int i, int j) {
-	double z1 = ((*previousCell)[n][i-1][j].z + (*previousCell)[n][i][j].z) / 2;
-	double z2 = ((*previousCell)[n][i+1][j].z + (*previousCell)[n][i][j].z) / 2;
-	double z3 = ((*previousCell)[n][i][j-1].z + (*previousCell)[n][i][j].z) / 2;
-	double z4 = ((*previousCell)[n][i][j+1].z + (*previousCell)[n][i][j].z) / 2;
-	double result = (*previousCell)[n][i][j].z +
-		(
-			cell->P[0] / I_k -
-			cell->Vx[0] * (z2 - z1) / dx -
-			cell->Vr[0] * (z4 - z3) / ((fabs(j-axis_j-0.5))*pow(dr,2))
-		) * dt;
-	if (result > max_z) {
-		return (*previousCell)[n][i][j].z;
-	} else if (result < 0) {
-		return 0;
-	} else {
-		return result;
-	}
-}
-
-/* Final stage psi calculation */
-double final_calc_psi (cell2d * previousCell, gasCell * cell, int n, int i, int j) {
-	double psi1 = ((*previousCell)[n][i-1][j].psi + (*previousCell)[n][i][j].psi) / 2;
-	double psi2 = ((*previousCell)[n][i+1][j].psi + (*previousCell)[n][i][j].psi) / 2;
-	double psi3 = ((*previousCell)[n][i][j-1].psi + (*previousCell)[n][i][j].psi) / 2;
-	double psi4 = ((*previousCell)[n][i][j+1].psi + (*previousCell)[n][i][j].psi) / 2;
-	double result = (*previousCell)[n][i][j].psi +
-		(
-			(kappa + 2*kappa*lambda*cell->z) * cell->P[0] / I_k -
-			cell->Vx[0] * (psi2 - psi1) / dx -
-			cell->Vr[0] * (psi4 - psi3) / ((fabs(j-axis_j-0.5))*pow(dr,2))
-		) * dt;
-	if (result > 1) {
-		return 1;
-	} else if (result < 0) {
-		return 0;
-	} else {
-		return result;
-	}
-}
-
-
 double euler_z (cell2d * previousCell, gasCell * cell, int n, int i, int j) {
 	double result = (*previousCell)[n][i][j].final_z +
 		cell->P[0] / I_k * dt;
@@ -686,9 +627,9 @@ double euler_z (cell2d * previousCell, gasCell * cell, int n, int i, int j) {
 		return result;
 	}
 }
-double euler_psi (cell2d * previousCell, gasCell * cell, int n, int i, int j) {
-	double result = (*previousCell)[n][i][j].final_psi +
-		(kappa + 2*kappa*lambda*cell->bar_z) * cell->P[0] / I_k * dt;
+double euler_psi (gasCell& cell, int n, int i, int j) {
+	double result = cell.final_psi +
+		(kappa + 2*kappa*lambda*cell.bar_z) * cell.P[0] / I_k * dt;
 	if (result > 1) {
 		return 1;
 	} else {
@@ -709,7 +650,7 @@ double new_final_z (cell2d& cell, int i, int j, int n,
 	BorderCond brd[10];
 	calculateBorder(n, cell[n], NEEDED_COND, brd);
 
-    double result = brd[Z_POS].ij * brd[RHO_POS].ij / cell[n+1][i][j].rho
+    double result = curCell.bar_z * curCell.rho / cell[n+1][i][j].rho
     +
     (
 		curCell.D[1] * brd[Z_POS].i_1j * curCell.dM[1] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
@@ -749,7 +690,7 @@ double new_final_psi (cell2d& cell, int i, int j, int n,
 	BorderCond brd[10];
 	calculateBorder(n, cell[n], NEEDED_COND, brd);
 
-	double result = brd[PSI_POS].ij * brd[RHO_POS].ij / cell[n+1][i][j].rho
+	double result = curCell.bar_psi * curCell.rho / cell[n+1][i][j].rho
 	    +
 	    (
 			curCell.D[1] * brd[PSI_POS].i_1j * curCell.dM[1] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
@@ -798,7 +739,7 @@ double final_calc_p(gasCell * prevCell, gasCell * cell, int var) {
 		break;
 
 	case POWDER_EQ:
-		result = (cell->e - (pow(cell->Vx[0],2)+pow(cell->Vr[0],2))/2 ) * (k-1) /
+		result = (cell->e - (pow(cell->Vx[0],2)+pow(cell->Vr[0],2))/2 - f/(k-1)*(1-cell->final_psi)) * (k-1) /
 			(1/cell->rho - (1 - cell->final_psi)/delta - alpha_k * cell->final_psi);
 		break;
 

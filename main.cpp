@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
 	
     if (inputFile.is_open() && outputDyn.is_open() && outputGas.is_open())
     {
-    	init(inputFile, cell);
+    	init(inputFile, cell, POWDER_EQ);
 
 		/** Test - Riemann problem 1 **/
 //		i_sn = max_i - 10;
@@ -94,12 +94,8 @@ int main(int argc, char** argv) {
 		
 		
 		/* Add one more position as as ending */
-		printf("weightVector size on %d for 99:13 = %u\n", 
-			n, (unsigned int)cell.at(n).at(99).at(13).weightVector.y.size());
 		cell2dStatic currentCell = cell.back();
 		cell.push_back(currentCell);
-		printf("weightVector size on %d for 99:13 = %u\n", 
-			n+1, (unsigned int)cell.at(n+1).at(99).at(13).weightVector.y.size());
 
 		finishInit(cell.at(n).at(5).at(5).e);
 		
@@ -278,7 +274,7 @@ int main(int argc, char** argv) {
 					// Gas full energy at the center of the cell
 					double newE = curCell->e + borderP * (Qi - barQi) / curCell->rho / Qi;
 					// Gas pressure at the center of the cell
-					double newP = (k-1) * (newE - (pow(newVx,2) - pow(curCell->Vr[0],2))/2) /
+					double newP = (k-1) * (newE - (pow(newVx,2) - pow(curCell->Vr[0],2))/2 - f/(k-1)*(1-curCell->final_psi)) /
 							( 1/newRho - (1 - curCell->final_psi)/delta - alpha_k * curCell->final_psi); // BMSTU var
 //					double newP = (k-1) * (newE - pow(newVx,2)/2) * newRho; // If no powder present
 
@@ -304,7 +300,7 @@ int main(int argc, char** argv) {
 						gasCell * curCell = &cell.at(n).at(i).at(j);
 
 						curCell->bar_z = euler_z(&cell, &cell.at(n).at(i).at(j), n, i, j);
-						curCell->bar_psi = euler_psi(&cell, &cell.at(n).at(i).at(j), n, i, j);
+						curCell->bar_psi = euler_psi(cell.at(n).at(i).at(j), n, i, j);
 						curCell->bar_Vx[0] = euler_bar_Vx(cell,n,i,j,dt,dx,dr,FIRST_ORDER_NS);
 						curCell->bar_Vr[0] = euler_bar_Vr(cell,n,i,j,dt,dx,dr,FIRST_ORDER_NS);
 						curCell->bar_e = euler_bar_e(cell,n,i,j,dt,dx,dr,FIRST_ORDER_NS);
@@ -319,7 +315,6 @@ int main(int argc, char** argv) {
 						gasCell * curCell = &cell.at(n).at(i).at(j);
 						gasCell * nextTCell = &cell.at(n+1).at(i).at(j);
 
-						cell.at(n).at(i).at(j).m = lagrange_m(&cell.at(n).at(i).at(j));
 						double array[21] = {0};
 						lagrange_mass(array, cell, i, j, n, dx, dr, dt);
 						curCell->dM[0] = 0;
@@ -346,8 +341,6 @@ int main(int argc, char** argv) {
 						nextTCell->final_psi = new_final_psi(cell,i,j,n,dx,dr,dt);
 						
 						// Post-final stage
-						nextTCell->z = final_calc_z(&cell, &cell.at(n+1).at(i).at(j), n, i, j);
-						nextTCell->psi = final_calc_psi(&cell, &cell.at(n+1).at(i).at(j), n, i, j);
 						nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
 								POWDER_EQ);
 					}

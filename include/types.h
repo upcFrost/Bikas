@@ -61,8 +61,6 @@ struct gasCell {
     double e;
     double bar_e;
     double alpha;
-    double z;
-    double psi;
     double m;
     
     WeightVector weightVector;

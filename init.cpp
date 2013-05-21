@@ -104,7 +104,7 @@ void initCellVector(cell2d & cell) {
 	}
 }
 
-void populateCellVector(std::ifstream & inputFile, cell2d & cell) {
+void populateCellVector(std::ifstream & inputFile, cell2d & cell, int var) {
 	std::string line;
 	std::string tmpLine;
 	int charNum = 0;
@@ -173,33 +173,44 @@ void populateCellVector(std::ifstream & inputFile, cell2d & cell) {
 			for (int iter = 0; iter < 5; iter++) curCell->bar_Vr[iter] = 0;
 			for (int iter = 0; iter < 5; iter++) curCell->dM[iter] = 0;
 			curCell->rho = delta_0;
-			curCell->final_psi = (delta/delta_0 - 1) / (f * delta / P_v + alpha_k * delta - 1);
-			curCell->final_z = 2 * curCell->final_psi / (kappa * (1 + sqrt(1 + 4*lambda*curCell->final_psi/kappa)));
-			//~ cell.at(n).at(i).at(j).e = cell.at(n).at(i).at(j).P[0] / (k-1) / delta_0; // Ideal gas
-			//~ cell.at(n).at(i).at(j).e = cell.at(n).at(i).at(j).P[0] / (k-1) * (1/delta_0 - 1/delta); // BMSTU var
-			curCell->e = curCell->P[0] / (k-1) * (1/curCell->rho - (1 - curCell->final_psi)/delta - alpha_k * curCell->final_psi); // From BMSTU P equation
-			curCell->psi = (delta/delta_0 - 1) / (f * delta / P_v + alpha_k * delta - 1);
-			curCell->z = 2 * curCell->psi / (kappa * (1 + sqrt(1 + 4*lambda*curCell->psi/kappa)));
+			switch (var) {
+			case IDEAL_GAS:
+				curCell->final_psi = 1;
+				curCell->final_z = 1;
+				curCell->e = cell.at(n).at(i).at(j).P[0] / (k-1) / delta_0;
+				break;
+			case ABEL_DUPRE:
+				curCell->final_psi = 1;
+				curCell->final_z = 1;
+				curCell->e = cell.at(n).at(i).at(j).P[0] / (k-1) / delta_0;
+				break;
+			case POWDER_EQ:
+				curCell->final_psi = (delta/delta_0 - 1) / (f * delta / P_v + alpha_k * delta - 1);
+				curCell->final_z = 2 * curCell->final_psi / (kappa * (1 + sqrt(1 + 4*lambda*curCell->final_psi/kappa)));
+				curCell->e = curCell->P[0] / (k-1) * (1/curCell->rho -
+					(1 - curCell->final_psi)/delta - alpha_k * curCell->final_psi) +
+					f/(k-1)*(1-curCell->final_psi);
+				break;
+			default:
+				break;
+			}
 		} else {
 			for (int iter = 0; iter < 5; iter++) curCell->P[iter] = P_atm;
 			for (int iter = 0; iter < 5; iter++) curCell->Vx[iter] = 0;
 			for (int iter = 0; iter < 5; iter++) curCell->Vr[iter] = 0;
 			for (int iter = 0; iter < 5; iter++) curCell->dM[iter] = 0;
 			curCell->rho = rho_atm; // Air
-			//~ cell.at(n).at(i).at(j).e = P_atm * 2*M_PI*(j*dr + dr/2)*dx*dr / 0.4; // Used for powder eq
 			curCell->e = P_atm / rho_atm / (k - 1); // Ideal gas
-			curCell->psi = 1;
-			curCell->z = 1;
 			curCell->final_psi = 1;
 			curCell->final_z = 1;
 		}
 	}
 }
 
-void init(std::ifstream & inputFile, cell2d & cell) {
+void init(std::ifstream & inputFile, cell2d & cell, int var) {
 	getGlobalVars(inputFile);
 	U_sn.at(0) = 0;
 	scaleGlobalVars();
 	initCellVector(cell);
-	populateCellVector(inputFile, cell);
+	populateCellVector(inputFile, cell, var);
 }

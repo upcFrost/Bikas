@@ -190,5 +190,9 @@ void debug_final_output(int n, int nArray, int *i, int *j, cell2d cell) {
 				i[iter],j[iter],cell.at(n+1).at(i[iter]).at(j[iter]).Vx[0]);
 		printf("Vr at %d:%d = %16.16f\n",
 				i[iter],j[iter],cell.at(n+1).at(i[iter]).at(j[iter]).Vr[0]);
+		printf("Final_psi at %d:%d = %16.16f\n",
+				i[iter],j[iter],cell.at(n+1).at(i[iter]).at(j[iter]).final_psi);
+		printf("Final_z at %d:%d = %16.16f\n",
+				i[iter],j[iter],cell.at(n+1).at(i[iter]).at(j[iter]).final_z);
 	}
 }

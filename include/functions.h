@@ -8,16 +8,6 @@
 #include "globals.h"
 #include <set>
 
-static const int FIRST_ORDER 		= 0;
-static const int SECOND_ORDER 		= 1;
-static const int FIRST_ORDER_NS		= 2;
-static const int SECOND_ORDER_NS	= 3;
-
-static const int IDEAL_GAS			= 0;
-static const int ABEL_DUPRE			= 1;
-static const int POWDER_EQ			= 2;
-static const int PISTON				= 3;
-
 double euler_Usn(double P_sn, double S, double F, double dt, double U_prev);
 
 double euler_Xsn(double x_prev, double U_new);
@@ -66,7 +56,7 @@ double final_calc_p(gasCell * prevCell, gasCell * cell, int var);
 
 double euler_z(cell2d * previousCell, gasCell * cell, int n, int i, int j);
 
-double euler_psi(cell2d * previousCell, gasCell * cell, int n, int i, int j);
+double euler_psi(gasCell& cell, int n, int i, int j);
 
 double new_final_z(cell2d& cell, int i, int j, int n, double dx, double dr,
 		double dt);

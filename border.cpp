@@ -216,6 +216,7 @@ void pre_cell_geometry(double array[5], gasCell cell, int i, int j) {
 		array[2] = 0;
 		array[3] = 1;
 		array[4] = 0;
+		break;
 
 
 	default:
@@ -958,26 +959,26 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				result[7].i1j_1 = cell[i+1][j-1].bar_e;
 			}
 			if (isSet_z) {
-				result[8].i_1j1 = no_I_1 ? (cell[i][j+1].final_z+cell[i-1][j].final_z)/2 : cell[i-1][j+1].final_z;
-				result[8].ij1 = cell[i][j+1].final_z;
-				result[8].i1j1 = no_I1 ? (cell[i][j+1].final_z+cell[i+1][j].final_z)/2 : cell[i+1][j+1].final_z;
-				result[8].i_1j = cell[i-1][j].final_z;
-				result[8].ij = cell[i][j].final_z;
-				result[8].i1j = cell[i+1][j].final_z;
-				result[8].i_1j_1 = cell[i-1][j-1].final_z;
-				result[8].ij_1 = cell[i][j-1].final_z;
-				result[8].i1j_1 = cell[i+1][j-1].final_z;
+				result[8].i_1j1 = no_I_1 ? (cell[i][j+1].bar_z+cell[i-1][j].bar_z)/2 : cell[i-1][j+1].bar_z;
+				result[8].ij1 = cell[i][j+1].bar_z;
+				result[8].i1j1 = no_I1 ? (cell[i][j+1].bar_z+cell[i+1][j].bar_z)/2 : cell[i+1][j+1].bar_z;
+				result[8].i_1j = cell[i-1][j].bar_z;
+				result[8].ij = cell[i][j].bar_z;
+				result[8].i1j = cell[i+1][j].bar_z;
+				result[8].i_1j_1 = cell[i-1][j-1].bar_z;
+				result[8].ij_1 = cell[i][j-1].bar_z;
+				result[8].i1j_1 = cell[i+1][j-1].bar_z;
 			}
 			if (isSet_psi) {
-				result[9].i_1j1 = no_I_1 ? (cell[i][j+1].final_psi+cell[i-1][j].final_psi)/2 : cell[i-1][j+1].final_psi;
-				result[9].ij1 = cell[i][j+1].final_psi;
-				result[9].i1j1 = no_I1 ? (cell[i][j+1].final_psi+cell[i+1][j].final_psi)/2 : cell[i+1][j+1].final_psi;
-				result[9].i_1j = cell[i-1][j].final_psi;
-				result[9].ij = cell[i][j].final_psi;
-				result[9].i1j = cell[i+1][j].final_psi;
-				result[9].i_1j_1 = cell[i-1][j-1].final_psi;
-				result[9].ij_1 = cell[i][j-1].final_psi;
-				result[9].i1j_1 = cell[i+1][j-1].final_psi;
+				result[9].i_1j1 = no_I_1 ? (cell[i][j+1].bar_psi+cell[i-1][j].bar_psi)/2 : cell[i-1][j+1].bar_psi;
+				result[9].ij1 = cell[i][j+1].bar_psi;
+				result[9].i1j1 = no_I1 ? (cell[i][j+1].bar_psi+cell[i+1][j].bar_psi)/2 : cell[i+1][j+1].bar_psi;
+				result[9].i_1j = cell[i-1][j].bar_psi;
+				result[9].ij = cell[i][j].bar_psi;
+				result[9].i1j = cell[i+1][j].bar_psi;
+				result[9].i_1j_1 = cell[i-1][j-1].bar_psi;
+				result[9].ij_1 = cell[i][j-1].bar_psi;
+				result[9].i1j_1 = cell[i+1][j-1].bar_psi;
 			}
 			break;
 
@@ -1071,26 +1072,26 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				result[7].i1j_1 = cell[i+1][j-1].bar_e;
 			}
 			if (isSet_z) {
-				result[8].i_1j1 = no_I_1 ? cell[i-1][j].final_z : cell[i-1][j+1].final_z;
-				result[8].ij1 = cell[i][j+1].final_z;
-				result[8].i1j1 = cell[i+1][j+1].final_z;
-				result[8].i_1j = cell[i-1][j].final_z;
-				result[8].ij = cell[i][j].final_z;
-				result[8].i1j = cell[i+1][j].final_z;
-				result[8].i_1j_1 = cell[i-1][j-1].final_z;
-				result[8].ij_1 = cell[i][j-1].final_z;
-				result[8].i1j_1 = cell[i+1][j-1].final_z;
+				result[8].i_1j1 = no_I_1 ? cell[i-1][j].bar_z : cell[i-1][j+1].bar_z;
+				result[8].ij1 = cell[i][j+1].bar_z;
+				result[8].i1j1 = cell[i+1][j+1].bar_z;
+				result[8].i_1j = cell[i-1][j].bar_z;
+				result[8].ij = cell[i][j].bar_z;
+				result[8].i1j = cell[i+1][j].bar_z;
+				result[8].i_1j_1 = cell[i-1][j-1].bar_z;
+				result[8].ij_1 = cell[i][j-1].bar_z;
+				result[8].i1j_1 = cell[i+1][j-1].bar_z;
 			}
 			if (isSet_psi) {
-				result[9].i_1j1 = no_I_1 ? cell[i-1][j].final_psi : cell[i-1][j+1].final_psi;
-				result[9].ij1 = cell[i][j+1].final_psi;
-				result[9].i1j1 = cell[i+1][j+1].final_psi;
-				result[9].i_1j = cell[i-1][j].final_psi;
-				result[9].ij = cell[i][j].final_psi;
-				result[9].i1j = cell[i+1][j].final_psi;
-				result[9].i_1j_1 = cell[i-1][j-1].final_psi;
-				result[9].ij_1 = cell[i][j-1].final_psi;
-				result[9].i1j_1 = cell[i+1][j-1].final_psi;
+				result[9].i_1j1 = no_I_1 ? cell[i-1][j].bar_psi : cell[i-1][j+1].bar_psi;
+				result[9].ij1 = cell[i][j+1].bar_psi;
+				result[9].i1j1 = cell[i+1][j+1].bar_psi;
+				result[9].i_1j = cell[i-1][j].bar_psi;
+				result[9].ij = cell[i][j].bar_psi;
+				result[9].i1j = cell[i+1][j].bar_psi;
+				result[9].i_1j_1 = cell[i-1][j-1].bar_psi;
+				result[9].ij_1 = cell[i][j-1].bar_psi;
+				result[9].i1j_1 = cell[i+1][j-1].bar_psi;
 			}
 
 			for (unsigned int idx = 0; idx < 10; idx++) {
@@ -1126,10 +1127,10 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 					result[7].ij1 += weight*cell[weightCell.i][weightCell.j].bar_e;
 				}
 				if (isSet_z) {
-					result[8].ij1 -= weight*cell[weightCell.i][weightCell.j].final_z;
+					result[8].ij1 -= weight*cell[weightCell.i][weightCell.j].bar_z;
 				}
 				if (isSet_psi) {
-					result[9].ij1 += weight*cell[weightCell.i][weightCell.j].final_psi;
+					result[9].ij1 += weight*cell[weightCell.i][weightCell.j].bar_psi;
 				}
 			}
 
@@ -1166,10 +1167,10 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 					result[7].i1j1 += weight*cell[weightCell.i][weightCell.j].bar_e;
 				}
 				if (isSet_z) {
-					result[8].i1j1 -= weight*cell[weightCell.i][weightCell.j].final_z;
+					result[8].i1j1 -= weight*cell[weightCell.i][weightCell.j].bar_z;
 				}
 				if (isSet_psi) {
-					result[9].i1j1 += weight*cell[weightCell.i][weightCell.j].final_psi;
+					result[9].i1j1 += weight*cell[weightCell.i][weightCell.j].bar_psi;
 				}
 			}
 			break;
@@ -1216,14 +1217,14 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				result[7].i_1j_1 = cell[i-1][j-1].bar_e;	result[7].ij_1 = cell[i][j-1].bar_e;	result[7].i1j_1 = cell[i+1][j-1].bar_e;
 			}
 			if (isSet_z) {
-				result[8].i_1j1 = cell[i-1][j+1].final_z;	result[8].ij1 = cell[i][j+1].final_z;	result[8].i1j1 = cell[i+1][j+1].final_z;
-				result[8].i_1j = cell[i-1][j].final_z;		result[8].ij = cell[i][j].final_z; 	result[8].i1j = cell[i+1][j].final_z;
-				result[8].i_1j_1 = cell[i-1][j-1].final_z;	result[8].ij_1 = cell[i][j-1].final_z;	result[8].i1j_1 = cell[i+1][j-1].final_z;
+				result[8].i_1j1 = cell[i-1][j+1].bar_z;	result[8].ij1 = cell[i][j+1].bar_z;	result[8].i1j1 = cell[i+1][j+1].bar_z;
+				result[8].i_1j = cell[i-1][j].bar_z;		result[8].ij = cell[i][j].bar_z; 	result[8].i1j = cell[i+1][j].bar_z;
+				result[8].i_1j_1 = cell[i-1][j-1].bar_z;	result[8].ij_1 = cell[i][j-1].bar_z;	result[8].i1j_1 = cell[i+1][j-1].bar_z;
 			}
 			if (isSet_psi) {
-				result[9].i_1j1 = cell[i-1][j+1].final_psi;	result[9].ij1 = cell[i][j+1].final_psi;	result[9].i1j1 = cell[i+1][j+1].final_psi;
-				result[9].i_1j = cell[i-1][j].final_psi;		result[9].ij = cell[i][j].final_psi; 	result[9].i1j = cell[i+1][j].final_psi;
-				result[9].i_1j_1 = cell[i-1][j-1].final_psi;	result[9].ij_1 = cell[i][j-1].final_psi;	result[9].i1j_1 = cell[i+1][j-1].final_psi;
+				result[9].i_1j1 = cell[i-1][j+1].bar_psi;	result[9].ij1 = cell[i][j+1].bar_psi;	result[9].i1j1 = cell[i+1][j+1].bar_psi;
+				result[9].i_1j = cell[i-1][j].bar_psi;		result[9].ij = cell[i][j].bar_psi; 	result[9].i1j = cell[i+1][j].bar_psi;
+				result[9].i_1j_1 = cell[i-1][j-1].bar_psi;	result[9].ij_1 = cell[i][j-1].bar_psi;	result[9].i1j_1 = cell[i+1][j-1].bar_psi;
 			}
 			break;
 
@@ -1269,14 +1270,14 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				result[7].i_1j_1 = cell[i-1][j-1].bar_e;	result[7].ij_1 = cell[i][j-1].bar_e;	result[7].i1j_1 = cell[i+1][j-1].bar_e;
 			}
 			if (isSet_z) {
-				result[8].i_1j1 = cell[i-1][j+1].final_z;	result[8].ij1 = cell[i][j+1].final_z;	result[8].i1j1 = cell[i+1][j+1].final_z;
-				result[8].i_1j = cell[i-1][j].final_z;		result[8].ij = cell[i][j].final_z; 	result[8].i1j = cell[i+1][j].final_z;
-				result[8].i_1j_1 = cell[i-1][j-1].final_z;	result[8].ij_1 = cell[i][j-1].final_z;	result[8].i1j_1 = cell[i+1][j-1].final_z;
+				result[8].i_1j1 = cell[i-1][j+1].bar_z;	result[8].ij1 = cell[i][j+1].bar_z;	result[8].i1j1 = cell[i+1][j+1].bar_z;
+				result[8].i_1j = cell[i-1][j].bar_z;		result[8].ij = cell[i][j].bar_z; 	result[8].i1j = cell[i+1][j].bar_z;
+				result[8].i_1j_1 = cell[i-1][j-1].bar_z;	result[8].ij_1 = cell[i][j-1].bar_z;	result[8].i1j_1 = cell[i+1][j-1].bar_z;
 			}
 			if (isSet_psi) {
-				result[9].i_1j1 = cell[i-1][j+1].final_psi;	result[9].ij1 = cell[i][j+1].final_psi;	result[9].i1j1 = cell[i+1][j+1].final_psi;
-				result[9].i_1j = cell[i-1][j].final_psi;		result[9].ij = cell[i][j].final_psi; 	result[9].i1j = cell[i+1][j].final_psi;
-				result[9].i_1j_1 = cell[i-1][j-1].final_psi;	result[9].ij_1 = cell[i][j-1].final_psi;	result[9].i1j_1 = cell[i+1][j-1].final_psi;
+				result[9].i_1j1 = cell[i-1][j+1].bar_psi;	result[9].ij1 = cell[i][j+1].bar_psi;	result[9].i1j1 = cell[i+1][j+1].bar_psi;
+				result[9].i_1j = cell[i-1][j].bar_psi;		result[9].ij = cell[i][j].bar_psi; 	result[9].i1j = cell[i+1][j].bar_psi;
+				result[9].i_1j_1 = cell[i-1][j-1].bar_psi;	result[9].ij_1 = cell[i][j-1].bar_psi;	result[9].i1j_1 = cell[i+1][j-1].bar_psi;
 			}
 			break;
 
@@ -1323,14 +1324,14 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				result[7].i_1j_1 = cell[i-1][j-1].bar_e;	result[7].ij_1 = cell[i][j-1].bar_e;	result[7].i1j_1 = cell[i][j-1].bar_e;
 			}
 			if (isSet_z) {
-				result[8].i_1j1 = cell[i-1][j].final_z;	result[8].ij1 = cell[i][j].final_z;	result[8].i1j1 = cell[i][j].final_z;
-				result[8].i_1j = cell[i-1][j].final_z;		result[8].ij = cell[i][j].final_z; 	result[8].i1j = cell[i][j].final_z;
-				result[8].i_1j_1 = cell[i-1][j-1].final_z;	result[8].ij_1 = cell[i][j-1].final_z;	result[8].i1j_1 = cell[i][j-1].final_z;
+				result[8].i_1j1 = cell[i-1][j].bar_z;	result[8].ij1 = cell[i][j].bar_z;	result[8].i1j1 = cell[i][j].bar_z;
+				result[8].i_1j = cell[i-1][j].bar_z;		result[8].ij = cell[i][j].bar_z; 	result[8].i1j = cell[i][j].bar_z;
+				result[8].i_1j_1 = cell[i-1][j-1].bar_z;	result[8].ij_1 = cell[i][j-1].bar_z;	result[8].i1j_1 = cell[i][j-1].bar_z;
 			}
 			if (isSet_psi) {
-				result[9].i_1j1 = cell[i-1][j].final_psi;	result[9].ij1 = cell[i][j].final_psi;	result[9].i1j1 = cell[i][j].final_psi;
-				result[9].i_1j = cell[i-1][j].final_psi;		result[9].ij = cell[i][j].final_psi; 	result[9].i1j = cell[i][j].final_psi;
-				result[9].i_1j_1 = cell[i-1][j-1].final_psi;	result[9].ij_1 = cell[i][j-1].final_psi;	result[9].i1j_1 = cell[i][j-1].final_psi;
+				result[9].i_1j1 = cell[i-1][j].bar_psi;	result[9].ij1 = cell[i][j].bar_psi;	result[9].i1j1 = cell[i][j].bar_psi;
+				result[9].i_1j = cell[i-1][j].bar_psi;		result[9].ij = cell[i][j].bar_psi; 	result[9].i1j = cell[i][j].bar_psi;
+				result[9].i_1j_1 = cell[i-1][j-1].bar_psi;	result[9].ij_1 = cell[i][j-1].bar_psi;	result[9].i1j_1 = cell[i][j-1].bar_psi;
 			}
 
 			for (unsigned int idx = 0; idx < 10; idx++) {
@@ -1366,10 +1367,10 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 					result[7].i1j += weight*cell[weightCell.i][weightCell.j].bar_e;
 				}
 				if (isSet_z) {
-					result[8].i1j -= weight*cell[weightCell.i][weightCell.j].final_z;
+					result[8].i1j -= weight*cell[weightCell.i][weightCell.j].bar_z;
 				}
 				if (isSet_psi) {
-					result[9].i1j += weight*cell[weightCell.i][weightCell.j].final_psi;
+					result[9].i1j += weight*cell[weightCell.i][weightCell.j].bar_psi;
 				}
 			}
 
@@ -1406,10 +1407,10 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 					result[7].ij1 += weight*cell[weightCell.i][weightCell.j].bar_e;
 				}
 				if (isSet_z) {
-					result[8].ij1 -= weight*cell[weightCell.i][weightCell.j].final_z;
+					result[8].ij1 -= weight*cell[weightCell.i][weightCell.j].bar_z;
 				}
 				if (isSet_psi) {
-					result[9].ij1 += weight*cell[weightCell.i][weightCell.j].final_psi;
+					result[9].ij1 += weight*cell[weightCell.i][weightCell.j].bar_psi;
 				}
 			}
 
@@ -1446,10 +1447,10 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 					result[7].i1j1 += weight*cell[weightCell.i][weightCell.j].bar_e;
 				}
 				if (isSet_z) {
-					result[8].i1j1 -= weight*cell[weightCell.i][weightCell.j].final_z;
+					result[8].i1j1 -= weight*cell[weightCell.i][weightCell.j].bar_z;
 				}
 				if (isSet_psi) {
-					result[9].i1j1 += weight*cell[weightCell.i][weightCell.j].final_psi;
+					result[9].i1j1 += weight*cell[weightCell.i][weightCell.j].bar_psi;
 				}
 			}
 			break;
@@ -1545,26 +1546,26 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				result[7].i1j_1 = cell[i+1][j-1].bar_e;
 			}
 			if (isSet_z) {
-				result[8].i_1j1 = no_I_1 ? cell[i-1][j].final_z : cell[i-1][j+1].final_z;
-				result[8].ij1 = cell[i][j].final_z;
-				result[8].i1j1 = no_I1 ? cell[i+1][j].final_z : cell[i+1][j+1].final_z;
-				result[8].i_1j = cell[i-1][j].final_z;
-				result[8].ij = cell[i][j].final_z;
-				result[8].i1j = cell[i+1][j].final_z;
-				result[8].i_1j_1 = cell[i-1][j-1].final_z;
-				result[8].ij_1 = cell[i][j-1].final_z;
-				result[8].i1j_1 = cell[i+1][j-1].final_z;
+				result[8].i_1j1 = no_I_1 ? cell[i-1][j].bar_z : cell[i-1][j+1].bar_z;
+				result[8].ij1 = cell[i][j].bar_z;
+				result[8].i1j1 = no_I1 ? cell[i+1][j].bar_z : cell[i+1][j+1].bar_z;
+				result[8].i_1j = cell[i-1][j].bar_z;
+				result[8].ij = cell[i][j].bar_z;
+				result[8].i1j = cell[i+1][j].bar_z;
+				result[8].i_1j_1 = cell[i-1][j-1].bar_z;
+				result[8].ij_1 = cell[i][j-1].bar_z;
+				result[8].i1j_1 = cell[i+1][j-1].bar_z;
 			}
 			if (isSet_psi) {
-				result[9].i_1j1 = no_I_1 ? cell[i-1][j].final_psi : cell[i-1][j+1].final_psi;
-				result[9].ij1 = cell[i][j].final_psi;
-				result[9].i1j1 = no_I1 ? cell[i+1][j].final_psi : cell[i+1][j+1].final_psi;
-				result[9].i_1j = cell[i-1][j].final_psi;
-				result[9].ij = cell[i][j].final_psi;
-				result[9].i1j = cell[i+1][j].final_psi;
-				result[9].i_1j_1 = cell[i-1][j-1].final_psi;
-				result[9].ij_1 = cell[i][j-1].final_psi;
-				result[9].i1j_1 = cell[i+1][j-1].final_psi;
+				result[9].i_1j1 = no_I_1 ? cell[i-1][j].bar_psi : cell[i-1][j+1].bar_psi;
+				result[9].ij1 = cell[i][j].bar_psi;
+				result[9].i1j1 = no_I1 ? cell[i+1][j].bar_psi : cell[i+1][j+1].bar_psi;
+				result[9].i_1j = cell[i-1][j].bar_psi;
+				result[9].ij = cell[i][j].bar_psi;
+				result[9].i1j = cell[i+1][j].bar_psi;
+				result[9].i_1j_1 = cell[i-1][j-1].bar_psi;
+				result[9].ij_1 = cell[i][j-1].bar_psi;
+				result[9].i1j_1 = cell[i+1][j-1].bar_psi;
 			}
 			break;
 
@@ -1611,14 +1612,14 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				result[7].i_1j_1 = cell[i-1][j].bar_e;	result[7].ij_1 = cell[i][j].bar_e;	result[7].i1j_1 = cell[i+1][j].bar_e;
 			}
 			if (isSet_z) {
-				result[8].i_1j1 = cell[i-1][j+1].final_z;	result[8].ij1 = cell[i][j+1].final_z;	result[8].i1j1 = cell[i+1][j+1].final_z;
-				result[8].i_1j = cell[i-1][j].final_z;		result[8].ij = cell[i][j].final_z; 	result[8].i1j = cell[i+1][j].final_z;
-				result[8].i_1j_1 = cell[i-1][j].final_z;	result[8].ij_1 = cell[i][j].final_z;	result[8].i1j_1 = cell[i+1][j].final_z;
+				result[8].i_1j1 = cell[i-1][j+1].bar_z;	result[8].ij1 = cell[i][j+1].bar_z;	result[8].i1j1 = cell[i+1][j+1].bar_z;
+				result[8].i_1j = cell[i-1][j].bar_z;		result[8].ij = cell[i][j].bar_z; 	result[8].i1j = cell[i+1][j].bar_z;
+				result[8].i_1j_1 = cell[i-1][j].bar_z;	result[8].ij_1 = cell[i][j].bar_z;	result[8].i1j_1 = cell[i+1][j].bar_z;
 			}
 			if (isSet_psi) {
-				result[9].i_1j1 = cell[i-1][j+1].final_psi;	result[9].ij1 = cell[i][j+1].final_psi;	result[9].i1j1 = cell[i+1][j+1].final_psi;
-				result[9].i_1j = cell[i-1][j].final_psi;		result[9].ij = cell[i][j].final_psi; 	result[9].i1j = cell[i+1][j].final_psi;
-				result[9].i_1j_1 = cell[i-1][j].final_psi;	result[9].ij_1 = cell[i][j].final_psi;	result[9].i1j_1 = cell[i+1][j].final_psi;
+				result[9].i_1j1 = cell[i-1][j+1].bar_psi;	result[9].ij1 = cell[i][j+1].bar_psi;	result[9].i1j1 = cell[i+1][j+1].bar_psi;
+				result[9].i_1j = cell[i-1][j].bar_psi;		result[9].ij = cell[i][j].bar_psi; 	result[9].i1j = cell[i+1][j].bar_psi;
+				result[9].i_1j_1 = cell[i-1][j].bar_psi;	result[9].ij_1 = cell[i][j].bar_psi;	result[9].i1j_1 = cell[i+1][j].bar_psi;
 			}
 			break;
 
@@ -1665,14 +1666,14 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				result[7].i_1j_1 = cell[i][j-1].bar_e;	result[7].ij_1 = cell[i][j-1].bar_e;	result[7].i1j_1 = cell[i+1][j-1].bar_e;
 			}
 			if (isSet_z) {
-				result[8].i_1j1 = cell[i][j].final_z;	result[8].ij1 = cell[i][j].final_z;	result[8].i1j1 = cell[i+1][j].final_z;
-				result[8].i_1j = cell[i][j].final_z;		result[8].ij = cell[i][j].final_z; 	result[8].i1j = cell[i+1][j].final_z;
-				result[8].i_1j_1 = cell[i][j-1].final_z;	result[8].ij_1 = cell[i][j-1].final_z;	result[8].i1j_1 = cell[i+1][j-1].final_z;
+				result[8].i_1j1 = cell[i][j].bar_z;	result[8].ij1 = cell[i][j].bar_z;	result[8].i1j1 = cell[i+1][j].bar_z;
+				result[8].i_1j = cell[i][j].bar_z;		result[8].ij = cell[i][j].bar_z; 	result[8].i1j = cell[i+1][j].bar_z;
+				result[8].i_1j_1 = cell[i][j-1].bar_z;	result[8].ij_1 = cell[i][j-1].bar_z;	result[8].i1j_1 = cell[i+1][j-1].bar_z;
 			}
 			if (isSet_psi) {
-				result[9].i_1j1 = cell[i][j].final_psi;	result[9].ij1 = cell[i][j].final_psi;	result[9].i1j1 = cell[i+1][j].final_psi;
-				result[9].i_1j = cell[i][j].final_psi;		result[9].ij = cell[i][j].final_psi; 	result[9].i1j = cell[i+1][j].final_psi;
-				result[9].i_1j_1 = cell[i][j-1].final_psi;	result[9].ij_1 = cell[i][j-1].final_psi;	result[9].i1j_1 = cell[i+1][j-1].final_psi;
+				result[9].i_1j1 = cell[i][j].bar_psi;	result[9].ij1 = cell[i][j].bar_psi;	result[9].i1j1 = cell[i+1][j].bar_psi;
+				result[9].i_1j = cell[i][j].bar_psi;		result[9].ij = cell[i][j].bar_psi; 	result[9].i1j = cell[i+1][j].bar_psi;
+				result[9].i_1j_1 = cell[i][j-1].bar_psi;	result[9].ij_1 = cell[i][j-1].bar_psi;	result[9].i1j_1 = cell[i+1][j-1].bar_psi;
 			}
 			break;
 
@@ -1719,14 +1720,14 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				result[7].i_1j_1 = cell[i][j].bar_e;	result[7].ij_1 = cell[i][j].bar_e;	result[7].i1j_1 = cell[i+1][j].bar_e;
 			}
 			if (isSet_z) {
-				result[8].i_1j1 = cell[i][j+1].final_z;	result[8].ij1 = cell[i][j+1].final_z;	result[8].i1j1 = cell[i+1][j+1].final_z;
-				result[8].i_1j = cell[i][j].final_z;		result[8].ij = cell[i][j].final_z; 	result[8].i1j = cell[i+1][j].final_z;
-				result[8].i_1j_1 = cell[i][j].final_z;	result[8].ij_1 = cell[i][j].final_z;	result[8].i1j_1 = cell[i+1][j].final_z;
+				result[8].i_1j1 = cell[i][j+1].bar_z;	result[8].ij1 = cell[i][j+1].bar_z;	result[8].i1j1 = cell[i+1][j+1].bar_z;
+				result[8].i_1j = cell[i][j].bar_z;		result[8].ij = cell[i][j].bar_z; 	result[8].i1j = cell[i+1][j].bar_z;
+				result[8].i_1j_1 = cell[i][j].bar_z;	result[8].ij_1 = cell[i][j].bar_z;	result[8].i1j_1 = cell[i+1][j].bar_z;
 			}
 			if (isSet_psi) {
-				result[9].i_1j1 = cell[i][j+1].final_psi;	result[9].ij1 = cell[i][j+1].final_psi;	result[9].i1j1 = cell[i+1][j+1].final_psi;
-				result[9].i_1j = cell[i][j].final_psi;		result[9].ij = cell[i][j].final_psi; 	result[9].i1j = cell[i+1][j].final_psi;
-				result[9].i_1j_1 = cell[i][j].final_psi;	result[9].ij_1 = cell[i][j].final_psi;	result[9].i1j_1 = cell[i+1][j].final_psi;
+				result[9].i_1j1 = cell[i][j+1].bar_psi;	result[9].ij1 = cell[i][j+1].bar_psi;	result[9].i1j1 = cell[i+1][j+1].bar_psi;
+				result[9].i_1j = cell[i][j].bar_psi;		result[9].ij = cell[i][j].bar_psi; 	result[9].i1j = cell[i+1][j].bar_psi;
+				result[9].i_1j_1 = cell[i][j].bar_psi;	result[9].ij_1 = cell[i][j].bar_psi;	result[9].i1j_1 = cell[i+1][j].bar_psi;
 			}
 			break;
 
@@ -1773,14 +1774,14 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				result[7].i_1j_1 = cell[i][j-1].bar_e;	result[7].ij_1 = cell[i][j-1].bar_e;	result[7].i1j_1 = cell[i+1][j-1].bar_e;
 			}
 			if (isSet_z) {
-				result[8].i_1j1 = cell[i][j+1].final_z;	result[8].ij1 = cell[i][j+1].final_z;	result[8].i1j1 = cell[i+1][j+1].final_z;
-				result[8].i_1j = cell[i][j].final_z;		result[8].ij = cell[i][j].final_z; 	result[8].i1j = cell[i+1][j].final_z;
-				result[8].i_1j_1 = cell[i][j-1].final_z;	result[8].ij_1 = cell[i][j-1].final_z;	result[8].i1j_1 = cell[i+1][j-1].final_z;
+				result[8].i_1j1 = cell[i][j+1].bar_z;	result[8].ij1 = cell[i][j+1].bar_z;	result[8].i1j1 = cell[i+1][j+1].bar_z;
+				result[8].i_1j = cell[i][j].bar_z;		result[8].ij = cell[i][j].bar_z; 	result[8].i1j = cell[i+1][j].bar_z;
+				result[8].i_1j_1 = cell[i][j-1].bar_z;	result[8].ij_1 = cell[i][j-1].bar_z;	result[8].i1j_1 = cell[i+1][j-1].bar_z;
 			}
 			if (isSet_psi) {
-				result[9].i_1j1 = cell[i][j+1].final_psi;	result[9].ij1 = cell[i][j+1].final_psi;	result[9].i1j1 = cell[i+1][j+1].final_psi;
-				result[9].i_1j = cell[i][j].final_psi;		result[9].ij = cell[i][j].final_psi; 	result[9].i1j = cell[i+1][j].final_psi;
-				result[9].i_1j_1 = cell[i][j-1].final_psi;	result[9].ij_1 = cell[i][j-1].final_psi;	result[9].i1j_1 = cell[i+1][j-1].final_psi;
+				result[9].i_1j1 = cell[i][j+1].bar_psi;	result[9].ij1 = cell[i][j+1].bar_psi;	result[9].i1j1 = cell[i+1][j+1].bar_psi;
+				result[9].i_1j = cell[i][j].bar_psi;		result[9].ij = cell[i][j].bar_psi; 	result[9].i1j = cell[i+1][j].bar_psi;
+				result[9].i_1j_1 = cell[i][j-1].bar_psi;	result[9].ij_1 = cell[i][j-1].bar_psi;	result[9].i1j_1 = cell[i+1][j-1].bar_psi;
 			}
 			break;
 
@@ -1833,14 +1834,14 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				result[7].i_1j_1 = cell[i-1][j-1].bar_e;	result[7].ij_1 = cell[i][j-1].bar_e;	result[7].i1j_1 = cell[i][j-1].bar_e;
 			}
 			if (isSet_z) {
-				result[8].i_1j1 = cell[i-1][j+1].final_z;	result[8].ij1 = cell[i][j+1].final_z;	result[8].i1j1 = cell[i][j+1].final_z;
-				result[8].i_1j = cell[i-1][j].final_z;		result[8].ij = cell[i][j].final_z; 	result[8].i1j = cell[i][j].final_z;
-				result[8].i_1j_1 = cell[i-1][j-1].final_z;	result[8].ij_1 = cell[i][j-1].final_z;	result[8].i1j_1 = cell[i][j-1].final_z;
+				result[8].i_1j1 = cell[i-1][j+1].bar_z;	result[8].ij1 = cell[i][j+1].bar_z;	result[8].i1j1 = cell[i][j+1].bar_z;
+				result[8].i_1j = cell[i-1][j].bar_z;		result[8].ij = cell[i][j].bar_z; 	result[8].i1j = cell[i][j].bar_z;
+				result[8].i_1j_1 = cell[i-1][j-1].bar_z;	result[8].ij_1 = cell[i][j-1].bar_z;	result[8].i1j_1 = cell[i][j-1].bar_z;
 			}
 			if (isSet_psi) {
-				result[9].i_1j1 = cell[i-1][j+1].final_psi;	result[9].ij1 = cell[i][j+1].final_psi;	result[9].i1j1 = cell[i][j+1].final_psi;
-				result[9].i_1j = cell[i-1][j].final_psi;		result[9].ij = cell[i][j].final_psi; 	result[9].i1j = cell[i][j].final_psi;
-				result[9].i_1j_1 = cell[i-1][j-1].final_psi;	result[9].ij_1 = cell[i][j-1].final_psi;	result[9].i1j_1 = cell[i][j-1].final_psi;
+				result[9].i_1j1 = cell[i-1][j+1].bar_psi;	result[9].ij1 = cell[i][j+1].bar_psi;	result[9].i1j1 = cell[i][j+1].bar_psi;
+				result[9].i_1j = cell[i-1][j].bar_psi;		result[9].ij = cell[i][j].bar_psi; 	result[9].i1j = cell[i][j].bar_psi;
+				result[9].i_1j_1 = cell[i-1][j-1].bar_psi;	result[9].ij_1 = cell[i][j-1].bar_psi;	result[9].i1j_1 = cell[i][j-1].bar_psi;
 			}
 			break;
 
@@ -1893,14 +1894,14 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				result[7].i_1j_1 = cell[i-1][j-1].bar_e;	result[7].ij_1 = cell[i][j-1].bar_e;	result[7].i1j_1 = cell[i][j-1].bar_e;
 			}
 			if (isSet_z) {
-				result[8].i_1j1 = cell[i-1][j].final_z;	result[8].ij1 = cell[i][j].final_z;	result[8].i1j1 = cell[i][j].final_z;
-				result[8].i_1j = cell[i-1][j].final_z;		result[8].ij = cell[i][j].final_z; 	result[8].i1j = cell[i][j].final_z;
-				result[8].i_1j_1 = cell[i-1][j-1].final_z;	result[8].ij_1 = cell[i][j-1].final_z;	result[8].i1j_1 = cell[i][j-1].final_z;
+				result[8].i_1j1 = cell[i-1][j].bar_z;	result[8].ij1 = cell[i][j].bar_z;	result[8].i1j1 = cell[i][j].bar_z;
+				result[8].i_1j = cell[i-1][j].bar_z;		result[8].ij = cell[i][j].bar_z; 	result[8].i1j = cell[i][j].bar_z;
+				result[8].i_1j_1 = cell[i-1][j-1].bar_z;	result[8].ij_1 = cell[i][j-1].bar_z;	result[8].i1j_1 = cell[i][j-1].bar_z;
 			}
 			if (isSet_psi) {
-				result[9].i_1j1 = cell[i-1][j].final_psi;	result[9].ij1 = cell[i][j].final_psi;	result[9].i1j1 = cell[i][j].final_psi;
-				result[9].i_1j = cell[i-1][j].final_psi;		result[9].ij = cell[i][j].final_psi; 	result[9].i1j = cell[i][j].final_psi;
-				result[9].i_1j_1 = cell[i-1][j-1].final_psi;	result[9].ij_1 = cell[i][j-1].final_psi;	result[9].i1j_1 = cell[i][j-1].final_psi;
+				result[9].i_1j1 = cell[i-1][j].bar_psi;	result[9].ij1 = cell[i][j].bar_psi;	result[9].i1j1 = cell[i][j].bar_psi;
+				result[9].i_1j = cell[i-1][j].bar_psi;		result[9].ij = cell[i][j].bar_psi; 	result[9].i1j = cell[i][j].bar_psi;
+				result[9].i_1j_1 = cell[i-1][j-1].bar_psi;	result[9].ij_1 = cell[i][j-1].bar_psi;	result[9].i1j_1 = cell[i][j-1].bar_psi;
 			}
 			break;
 
@@ -1947,14 +1948,14 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				result[7].i_1j_1 = cell[i-1][j].bar_e;	result[7].ij_1 = cell[i][j].bar_e;	result[7].i1j_1 = cell[i][j].bar_e;
 			}
 			if (isSet_z) {
-				result[8].i_1j1 = cell[i-1][j+1].final_z;	result[8].ij1 = cell[i][j+1].final_z;	result[8].i1j1 = cell[i][j+1].final_z;
-				result[8].i_1j = cell[i-1][j].final_z;		result[8].ij = cell[i][j].final_z; 	result[8].i1j = cell[i][j].final_z;
-				result[8].i_1j_1 = cell[i-1][j].final_z;	result[8].ij_1 = cell[i][j].final_z;	result[8].i1j_1 = cell[i][j].final_z;
+				result[8].i_1j1 = cell[i-1][j+1].bar_z;	result[8].ij1 = cell[i][j+1].bar_z;	result[8].i1j1 = cell[i][j+1].bar_z;
+				result[8].i_1j = cell[i-1][j].bar_z;		result[8].ij = cell[i][j].bar_z; 	result[8].i1j = cell[i][j].bar_z;
+				result[8].i_1j_1 = cell[i-1][j].bar_z;	result[8].ij_1 = cell[i][j].bar_z;	result[8].i1j_1 = cell[i][j].bar_z;
 			}
 			if (isSet_psi) {
-				result[9].i_1j1 = cell[i-1][j+1].final_psi;	result[9].ij1 = cell[i][j+1].final_psi;	result[9].i1j1 = cell[i][j+1].final_psi;
-				result[9].i_1j = cell[i-1][j].final_psi;		result[9].ij = cell[i][j].final_psi; 	result[9].i1j = cell[i][j].final_psi;
-				result[9].i_1j_1 = cell[i-1][j].final_psi;	result[9].ij_1 = cell[i][j].final_psi;	result[9].i1j_1 = cell[i][j].final_psi;
+				result[9].i_1j1 = cell[i-1][j+1].bar_psi;	result[9].ij1 = cell[i][j+1].bar_psi;	result[9].i1j1 = cell[i][j+1].bar_psi;
+				result[9].i_1j = cell[i-1][j].bar_psi;		result[9].ij = cell[i][j].bar_psi; 	result[9].i1j = cell[i][j].bar_psi;
+				result[9].i_1j_1 = cell[i-1][j].bar_psi;	result[9].ij_1 = cell[i][j].bar_psi;	result[9].i1j_1 = cell[i][j].bar_psi;
 			}
 			break;
 
@@ -2000,14 +2001,14 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 				result[7].i_1j_1 = cell[i-1][j-1].bar_e;	result[7].ij_1 = cell[i][j-1].bar_e;	result[7].i1j_1 = cell[i][j-1].bar_e;
 			}
 			if (isSet_z) {
-				result[8].i_1j1 = cell[i-1][j+1].final_z;	result[8].ij1 = cell[i][j+1].final_z;	result[8].i1j1 = cell[i][j+1].final_z;
-				result[8].i_1j = cell[i-1][j].final_z;		result[8].ij = cell[i][j].final_z; 	result[8].i1j = cell[i][j].final_z;
-				result[8].i_1j_1 = cell[i-1][j-1].final_z;	result[8].ij_1 = cell[i][j-1].final_z;	result[8].i1j_1 = cell[i][j-1].final_z;
+				result[8].i_1j1 = cell[i-1][j+1].bar_z;	result[8].ij1 = cell[i][j+1].bar_z;	result[8].i1j1 = cell[i][j+1].bar_z;
+				result[8].i_1j = cell[i-1][j].bar_z;		result[8].ij = cell[i][j].bar_z; 	result[8].i1j = cell[i][j].bar_z;
+				result[8].i_1j_1 = cell[i-1][j-1].bar_z;	result[8].ij_1 = cell[i][j-1].bar_z;	result[8].i1j_1 = cell[i][j-1].bar_z;
 			}
 			if (isSet_psi) {
-				result[9].i_1j1 = cell[i-1][j+1].final_psi;	result[9].ij1 = cell[i][j+1].final_psi;	result[9].i1j1 = cell[i][j+1].final_psi;
-				result[9].i_1j = cell[i-1][j].final_psi;		result[9].ij = cell[i][j].final_psi; 	result[9].i1j = cell[i][j].final_psi;
-				result[9].i_1j_1 = cell[i-1][j-1].final_psi;	result[9].ij_1 = cell[i][j-1].final_psi;	result[9].i1j_1 = cell[i][j-1].final_psi;
+				result[9].i_1j1 = cell[i-1][j+1].bar_psi;	result[9].ij1 = cell[i][j+1].bar_psi;	result[9].i1j1 = cell[i][j+1].bar_psi;
+				result[9].i_1j = cell[i-1][j].bar_psi;		result[9].ij = cell[i][j].bar_psi; 	result[9].i1j = cell[i][j].bar_psi;
+				result[9].i_1j_1 = cell[i-1][j-1].bar_psi;	result[9].ij_1 = cell[i][j-1].bar_psi;	result[9].i1j_1 = cell[i][j-1].bar_psi;
 			}
 
 			for (unsigned int idx = 0; idx < 10; idx++) {
@@ -2043,10 +2044,10 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 					result[7].ij1 += weight*cell[weightCell.i][weightCell.j].bar_e;
 				}
 				if (isSet_z) {
-					result[8].ij1 -= weight*cell[weightCell.i][weightCell.j].final_z;
+					result[8].ij1 -= weight*cell[weightCell.i][weightCell.j].bar_z;
 				}
 				if (isSet_psi) {
-					result[9].ij1 += weight*cell[weightCell.i][weightCell.j].final_psi;
+					result[9].ij1 += weight*cell[weightCell.i][weightCell.j].bar_psi;
 				}
 			}
 
@@ -2083,10 +2084,10 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond r
 					result[7].i1j1 += weight*cell[weightCell.i][weightCell.j].bar_e;
 				}
 				if (isSet_z) {
-					result[8].i1j1 -= weight*cell[weightCell.i][weightCell.j].final_z;
+					result[8].i1j1 -= weight*cell[weightCell.i][weightCell.j].bar_z;
 				}
 				if (isSet_psi) {
-					result[9].i1j1 += weight*cell[weightCell.i][weightCell.j].final_psi;
+					result[9].i1j1 += weight*cell[weightCell.i][weightCell.j].bar_psi;
 				}
 			}
 			break;
