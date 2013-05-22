@@ -158,12 +158,13 @@ void debug_dM_rho_output(int n, int nArray, int *i, int *j, cell2d cell)
 void debug_Vx_Vr_P_A_barVx_output(int n, int nArray, int *i, int *j, cell2d cell)
 {
 	for (int iter = 0; iter < nArray; iter++) {
+		gasCell * curCell = &cell.at(n).at(i[iter]).at(j[iter]);
 		std::cout << "For i = " << i[iter] << ", j = " << j[iter] << std::endl <<
-			"Vx = {" << cell.at(n).at(i[iter]).at(j[iter]).Vx[1] << ", " << cell.at(n).at(i[iter]).at(j[iter]).Vx[2] << ", " << cell.at(n).at(i[iter]).at(j[iter]).Vx[3] << ", " << cell.at(n).at(i[iter]).at(j[iter]).Vx[4] << "}" << std::endl <<
-			"Vr = {" << cell.at(n).at(i[iter]).at(j[iter]).Vr[1] << ", " << cell.at(n).at(i[iter]).at(j[iter]).Vr[2] << ", " << cell.at(n).at(i[iter]).at(j[iter]).Vr[3] << ", " << cell.at(n).at(i[iter]).at(j[iter]).Vr[4] << "}" << std::endl <<
-			"P = {" << cell.at(n).at(i[iter]).at(j[iter]).P[0] << ", "  << cell.at(n).at(i[iter]).at(j[iter]).P[1] << ", " << cell.at(n).at(i[iter]).at(j[iter]).P[2] << ", " << cell.at(n).at(i[iter]).at(j[iter]).P[3] << ", " << cell.at(n).at(i[iter]).at(j[iter]).P[4] << "}" << std::endl <<
-			"A = {" << cell.at(n).at(i[iter]).at(j[iter]).A[1] << ", " << cell.at(n).at(i[iter]).at(j[iter]).A[2] << ", " << cell.at(n).at(i[iter]).at(j[iter]).A[3] << ", " << cell.at(n).at(i[iter]).at(j[iter]).A[4] << "}" << std::endl <<
-			"bar_Vx = " << cell.at(n).at(i[iter]).at(j[iter]).bar_Vx[0] << ", bar_Vr = " << cell.at(n).at(i[iter]).at(j[iter]).bar_Vr[0] << ", bar_e = " << cell.at(n).at(i[iter]).at(j[iter]).bar_e << std::endl << std::endl;
+			"Vx = {" << curCell->Vx[1] << ", " << curCell->Vx[2] << ", " << curCell->Vx[3] << ", " << curCell->Vx[4] << "}" << std::endl <<
+			"Vr = {" << curCell->Vr[1] << ", " << curCell->Vr[2] << ", " << curCell->Vr[3] << ", " << curCell->Vr[4] << "}" << std::endl <<
+			"P = {" << curCell->P[0] << ", "  << curCell->P[1] << ", " << curCell->P[2] << ", " << curCell->P[3] << ", " << curCell->P[4] << "}" << std::endl <<
+			"A = {" << curCell->A[1] << ", " << curCell->A[2] << ", " << curCell->A[3] << ", " << curCell->A[4] << "}" << std::endl <<
+			"bar_Vx = " << curCell->bar_Vx[0] << ", bar_Vr = " << curCell->bar_Vr[0] << ", bar_e = " << curCell->bar_e << std::endl << std::endl;
 	}
 	std::cout << std::endl;
 }

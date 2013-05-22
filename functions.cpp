@@ -129,10 +129,14 @@ double euler_bar_Vx(cell2d& cell, int n, int i, int j,
 		break;
 	}
 
-    if (fabs(result-brd[VX_POS].ij) < pow(10.0,-14)) result = brd[VX_POS].ij;
-    if (i == i_sn-1 && j == 10) {
+
+    if (i == 101 && j == 31) {
+    	gasCell cell0 = cell[n][i][j-2];
+		gasCell cell1 = cell[n][i][j-1];
+		gasCell cell2 = cell[n][i][j];
 		printf("123");
 	}
+    if (fabs(result-brd[VX_POS].ij) < pow(10.0,-14)) result = brd[VX_POS].ij;
 	return result;
 }
 
@@ -440,10 +444,10 @@ double lagrange_rho(gasCell * cell, gasCell * prevCell, int i, int j, double dt,
     		fabs(cell->dM[4]) > pow(10.0,-15)) {
 	result = cell->rho +
 		(
-            cell->dM[1] +
-            cell->dM[3] -
-            cell->dM[2] -
-            cell->dM[4]
+            (2*cell->D[1] - 1)*cell->dM[1] +
+            (2*cell->D[3] - 1)*cell->dM[3] +
+            (2*cell->D[2] - 1)*cell->dM[2] +
+            (2*cell->D[4] - 1)*cell->dM[4]
         ) /
         (cell->A[0] * dx * fabs(j-axis_j-0.5) * pow(dr,2))
         ;
@@ -487,10 +491,10 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 	BorderCond brd[10];
 	calculateBorder(n, cell[n], NEEDED_COND, brd);
 
-    double Vx_i12 = (brd[BAR_VX_POS].i1j + brd[BAR_VX_POS].ij)/2;
 	double Vx_i_12 = (brd[BAR_VX_POS].i_1j + brd[BAR_VX_POS].ij)/2;
-	double Vr_j12 = (brd[BAR_VR_POS].ij1 + brd[BAR_VR_POS].ij)/2;
+	double Vx_i12 = (brd[BAR_VX_POS].i1j + brd[BAR_VX_POS].ij)/2;
 	double Vr_j_12 = (brd[BAR_VR_POS].ij_1 + brd[BAR_VR_POS].ij)/2;
+	double Vr_j12 = (brd[BAR_VR_POS].ij1 + brd[BAR_VR_POS].ij)/2;
 
 	/** First order **/
 	bool ruleVx1 = Vx_i_12 > 0 ? true : false;
@@ -531,8 +535,10 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 	array[7] = ruleVr1 ? 1 : 0;
 	array[8] = ruleVr2 ? 0 : 1;
 
-
-	if (i == i_sn-1 && j == 10) {
+    if (i == 101 && j == 31) {
+    	gasCell cell0 = cell[n][i][j-2];
+		gasCell cell1 = cell[n][i][j-1];
+		gasCell cell2 = cell[n][i][j];
 		printf("123");
 	}
 
@@ -884,6 +890,12 @@ double final_calc_e(cell2d& cell, int i, int j, int n,
 	    (1-curCell.D[4]) * curCell.bar_e * curCell.dM[4] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	)
     ;
+    if (i == 101 && j == 31) {
+    	gasCell cell0 = cell[n][i][j-2];
+		gasCell cell1 = cell[n][i][j-1];
+		gasCell cell2 = cell[n][i][j];
+		printf("123");
+	}
 	if (result < 0) {
 		cout << "E < 0" << endl;
 		cout << "i = " << i << endl

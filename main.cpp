@@ -301,9 +301,9 @@ int main(int argc, char** argv) {
 
 						curCell->bar_z = euler_z(&cell, &cell.at(n).at(i).at(j), n, i, j);
 						curCell->bar_psi = euler_psi(cell.at(n).at(i).at(j), n, i, j);
-						curCell->bar_Vx[0] = euler_bar_Vx(cell,n,i,j,dt,dx,dr,FIRST_ORDER_NS);
-						curCell->bar_Vr[0] = euler_bar_Vr(cell,n,i,j,dt,dx,dr,FIRST_ORDER_NS);
-						curCell->bar_e = euler_bar_e(cell,n,i,j,dt,dx,dr,FIRST_ORDER_NS);
+						curCell->bar_Vx[0] = euler_bar_Vx(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
+						curCell->bar_Vr[0] = euler_bar_Vr(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
+						curCell->bar_e = euler_bar_e(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
 					}
 				}
 			}
@@ -320,7 +320,7 @@ int main(int argc, char** argv) {
 						curCell->dM[0] = 0;
 						curCell->D[0] = 0;
 						for (int iter = 1; iter < 5; iter++) {
-							curCell->dM[iter] = array[iter];
+							curCell->dM[iter] = fabs(array[iter]);
 							curCell->D[iter] = array[4+iter];
 						}
 						nextTCell->rho = lagrange_rho(&cell.at(n).at(i).at(j),&cell.at(n-1).at(i).at(j),i,j,dt,dx,dr);
@@ -497,12 +497,12 @@ int main(int argc, char** argv) {
 				minimum.push_back(*min_element(array.begin(), array.end()));
 			}
 			
-			int debug_I = 107, debug_J = 15;
+			int debug_I = 103, debug_J = 30;
 			if (true && debug_I != 0 && debug_J != 0) {
 				int nArray = 3; int *iArray = new int[nArray]; int *jArray = new int[nArray];
-				iArray[0] = debug_I-1; jArray[0] = debug_J;
-				iArray[1] = debug_I; jArray[1] = debug_J;
-				iArray[2] = debug_I+1; jArray[2] = debug_J;
+				iArray[0] = debug_I-2; jArray[0] = debug_J;
+				iArray[1] = debug_I-1; jArray[1] = debug_J;
+				iArray[2] = debug_I; jArray[2] = debug_J;
 				debug_Vx_Vr_P_A_barVx_output(n, nArray, iArray, jArray, cell);
 				debug_dM_rho_output(n, nArray, iArray, jArray, cell);
 				debug_p_output(n, nArray, iArray, jArray, cell);
