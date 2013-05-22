@@ -29,8 +29,8 @@ unsigned int const RHO_POS		= 4;
 unsigned int const BAR_VX_POS	= 5;
 unsigned int const BAR_VR_POS	= 6;
 unsigned int const BAR_E_POS	= 7;
-unsigned int const Z_POS		= 8;
-unsigned int const PSI_POS		= 9;
+unsigned int const BAR_Z_POS	= 8;
+unsigned int const BAR_PSI_POS	= 9;
 
 #define P_PAR		(0x1 << 0);
 #define VX_PAR		(0x1 << 1);
