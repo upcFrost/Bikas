@@ -216,6 +216,14 @@ void prepOutputDynCSV(std::ofstream & outputDyn) {
 	outputDyn << "t,i_sn,x_sn,U_sn,P_0,P_sn" << endl;
 }
 
+void prepOutputGasCSV(std::ofstream & outputGas, bool verbose) {
+	if (verbose) {
+		outputGas << "t,i,j,P[0],rho,e,Vx[0],Vr[0],bar_Vx[0],bar_Vr[0],bar_e,m,z,psi,dM[1],dM[2],dM[3],dM[4],A[0],A[1],A[2],A[3],A[4],IntE" << endl;
+	} else {
+		outputGas << "t,x,y,z,P[0],rho,e,Vx[0],Vr[0],z,psi,IntE" << endl;
+	}
+}
+
 void outputDynCSV(std::ofstream & outputDyn, double t, int i_sn, double x_sn, double U_sn, double boltP, double projP) {
 	outputDyn << setiosflags(ios::fixed) << setprecision(10) 
 		<< t << ","

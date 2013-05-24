@@ -18,7 +18,7 @@ endif
 OPENMP=-fopenmp
 
 OBJECTS=main.o init.o functions.o globals.o interp.o border.o \
-		debug.o output.o
+		debug.o output.o projectile.o
 		
 all : $(TARGET)
 
@@ -49,6 +49,9 @@ output.o : output.cpp
 
 init.o : init.cpp
 	$(CPP) $(CFLAGS) $(INCLUDES) init.cpp
+	
+projectile.o : projectile.cpp
+	$(CPP) $(CFLAGS) $(INCLUDES) projectile.cpp
 
 clean:
 	rm -rf *o $(TARGET)

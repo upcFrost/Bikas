@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
 	
     if (inputFile.is_open() && outputDyn.is_open() && outputGas.is_open())
     {
-    	init(inputFile, cell, POWDER_EQ);
+    	init(inputFile, cell, IDEAL_GAS);
 
 		/** Test - Riemann problem 1 **/
 //		i_sn = max_i - 10;
@@ -72,11 +72,7 @@ int main(int argc, char** argv) {
 				
 		/* Prepare output files */
 		prepOutputDynCSV(outputDyn);
-		if (verbose) {
-			outputGas << "t,i,j,P[0],rho,e,Vx[0],Vr[0],bar_Vx[0],bar_Vr[0],bar_e,m,z,psi,dM[1],dM[2],dM[3],dM[4],A[0],A[1],A[2],A[3],A[4],IntE" << endl;
-		} else {
-			outputGas << "t,x,y,z,P[0],rho,e,Vx[0],Vr[0],z,psi,IntE" << endl;
-		}
+		prepOutputGasCSV(outputGas,  verbose);
 		
 		/* Set A for projectile border - needed if starting with non-full cell */
 	    double arrayT[5] = {0};
@@ -157,140 +153,8 @@ int main(int argc, char** argv) {
 			cell.push_back(currentCell);
 			n = cell.size() - 2;
 			
-			/* Projectile position calculation */
-			/** TODO: fix P_sn **/
-			int i_sn_prev = i_sn;
-			double P_sn = 0; double count = 0; int top_j = 0; int bottom_j = 0;
-			for (j = 0; j < max_j; j++) {
-				if (cell.at(n).at(i_sn-1).at(j).type != 18) {
-					count++;
-					top_j = j;
-					P_sn += cell.at(n).at(i_sn-1).at(j).P[0];
-				} else {
-					if (bottom_j == 0) bottom_j++;
-				}
-			}
-			P_sn /= count;
-			U_sn.push_back(euler_Usn(P_sn, M_PI*pow(top_j*dr,2) - M_PI*pow(bottom_j*dr,2),
-					0, dt, U_sn.back()));
-			x_sn.push_back(euler_Xsn(x_sn.back(), U_sn.back()));
-			i_sn = floor(x_sn.back() / dx);
-			double arrayT[5];
-			bool changed = false;
-			if (i_sn_prev != i_sn) {
-				changed = true;
-				cout << "i_sn changed" << endl;
-				for (j = 0; j < max_j; j++) {					
-					/* Return cell to its original shape */
-					// For n
-					double tempArray[5];
-					pre_cell_geometry(tempArray, cell.at(n).at(i_sn_prev-1).at(j), i_sn_prev-1, j);
-					
-					cell.at(n).at(i_sn_prev-1).at(j).A[0] = tempArray[0];
-					cell.at(n).at(i_sn_prev-1).at(j).A[1] = tempArray[1];
-					cell.at(n).at(i_sn_prev-1).at(j).A[2] = tempArray[2];
-					cell.at(n).at(i_sn_prev-1).at(j).A[3] = tempArray[3];
-					cell.at(n).at(i_sn_prev-1).at(j).A[4] = tempArray[4];
-					// For n+1
-					cell.at(n+1).at(i_sn_prev-1).at(j).A[0] = tempArray[0];
-					cell.at(n+1).at(i_sn_prev-1).at(j).A[1] = tempArray[1];
-					cell.at(n+1).at(i_sn_prev-1).at(j).A[2] = tempArray[2];
-					cell.at(n+1).at(i_sn_prev-1).at(j).A[3] = tempArray[3];
-					cell.at(n+1).at(i_sn_prev-1).at(j).A[4] = tempArray[4];
-
-					cell.at(n).at(i_sn-1).at(j).P[0] = cell.at(n).at(i_sn_prev-1).at(j).P[0];
-					cell.at(n).at(i_sn-1).at(j).P[1] = cell.at(n).at(i_sn_prev-1).at(j).P[1];
-					cell.at(n).at(i_sn-1).at(j).P[2] = cell.at(n).at(i_sn_prev-1).at(j).P[2];
-					cell.at(n).at(i_sn-1).at(j).P[3] = cell.at(n).at(i_sn_prev-1).at(j).P[3];
-					cell.at(n).at(i_sn-1).at(j).P[4] = cell.at(n).at(i_sn_prev-1).at(j).P[4];
-					cell.at(n).at(i_sn-1).at(j).rho = cell.at(n).at(i_sn_prev-1).at(j).rho;
-					cell.at(n).at(i_sn-1).at(j).e = cell.at(n).at(i_sn_prev-1).at(j).e;
-					cell.at(n).at(i_sn-1).at(j).Vx[0] = cell.at(n).at(i_sn_prev-1).at(j).Vx[0];
-					cell.at(n).at(i_sn-1).at(j).Vx[1] = cell.at(n).at(i_sn_prev-1).at(j).Vx[1];
-					cell.at(n).at(i_sn-1).at(j).Vx[2] = cell.at(n).at(i_sn_prev-1).at(j).Vx[2];
-					cell.at(n).at(i_sn-1).at(j).Vx[3] = cell.at(n).at(i_sn_prev-1).at(j).Vx[3];
-					cell.at(n).at(i_sn-1).at(j).Vx[4] = cell.at(n).at(i_sn_prev-1).at(j).Vx[4];
-					cell.at(n).at(i_sn-1).at(j).Vr[0] = cell.at(n).at(i_sn_prev-1).at(j).Vr[0];
-					cell.at(n).at(i_sn-1).at(j).Vr[1] = cell.at(n).at(i_sn_prev-1).at(j).Vr[1];
-					cell.at(n).at(i_sn-1).at(j).Vr[2] = cell.at(n).at(i_sn_prev-1).at(j).Vr[2];
-					cell.at(n).at(i_sn-1).at(j).Vr[3] = cell.at(n).at(i_sn_prev-1).at(j).Vr[3];
-					cell.at(n).at(i_sn-1).at(j).Vr[4] = cell.at(n).at(i_sn_prev-1).at(j).Vr[4];
-					cell.at(n).at(i_sn-1).at(j).final_z = cell.at(n).at(i_sn_prev-1).at(j).final_z;
-					cell.at(n).at(i_sn-1).at(j).final_psi = cell.at(n).at(i_sn_prev-1).at(j).final_psi;
-
-				}
-			}
-			
-			/* Moving projectile borders */
-			for (j = 0; j < max_j; j++) {
-				if (cell.at(n).at(i_sn-1).at(j).type != 18) {
-					euler_proj_broder(arrayT, j, x_sn.back(), dx, dr);
-					// For n
-					for (int iter = 0; iter < 5; iter++) {
-						cell.at(n).at(i_sn-1).at(j).A[iter] = arrayT[iter];
-					}
-					if (cell.at(n).at(i_sn-1).at(j+1).type == 18) cell.at(n).at(i_sn-1).at(j).A[4] = 0;
-					if (cell.at(n).at(i_sn-1).at(j-1).type == 18) cell.at(n).at(i_sn-1).at(j).A[3] = 0;
-					
-					for (int iter = 0; iter < 5; iter++) {
-						if (cell.at(n).at(i_sn-1).at(j).A[iter] >= 2) {
-							cell.at(n).at(i_sn-1).at(j).A[iter] -= 1;
-						}
-					}
-				}
-			}
-			
-			// From Zenkin V.A. "Issledovanie gazodin processov v dizelyah", 05.04.02 - Teplovie dvigateli, str 9
-			// Adjusting values
-			/** TODO: Check borderP (Qi) and newP (ceil) **/
-			for (j = 0; j < max_j; j++) {
-				if (cell.at(n).at(i_sn-1).at(j).type != 18) {
-					gasCell * curCell = &cell.at(n).at(i_sn-1).at(j);
-					double barQi;
-					double Qi;
-					
-					if (!changed) {
-						if (j == 2) cout << "A[0] = " << cell.at(n).at(i_sn-1).at(j).A[0] << endl;
-						if (j == 2) cout << "Prev A[0] = " << cell.at(n-1).at(i_sn-1).at(j).A[0] << endl;
-						barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
-						Qi = (cell.at(n-1).at(i_sn-1).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
-					} else {
-						if (j == 2) cout << "A[0] = " << cell.at(n).at(i_sn-1).at(j).A[0] << endl;
-						if (j == 2) cout << "Prev A[0] = " << cell.at(n-1).at(i_sn-2).at(j).A[0] << endl;
-						barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
-						Qi = (cell.at(n-1).at(i_sn-2).at(j).A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
-					}
-					
-					// Local speed of sound
-					double ai = sqrt(k * curCell->P[0] / curCell->rho);
-					// Pressure at the border
-					double borderP = curCell->P[0] + ai*curCell->rho *
-							(U_sn.back() - curCell->Vx[0]);
-					// Density at the center of the cell
-					double newRho = curCell->rho * cell.at(n-1).at(i_sn-1).at(j).A[0] / curCell->A[0];
-					// Gas velocity at the center of the cell
-					double newVx = curCell->rho / newRho * Qi / barQi * curCell->Vx[0] +
-							(borderP - curCell->P[0]) / newRho / barQi * dt * M_PI*(2*(j-axis_j)+1)*pow(dr,2);
-					// Gas full energy at the center of the cell
-					double newE = curCell->e + borderP * (Qi - barQi) / curCell->rho / Qi;
-					// Gas pressure at the center of the cell
-					double newP = (k-1) * (newE - (pow(newVx,2) - pow(curCell->Vr[0],2))/2 - f/(k-1)*(1-curCell->final_psi)) /
-							( 1/newRho - (1 - curCell->final_psi)/delta - alpha_k * curCell->final_psi); // BMSTU var
-//					double newP = (k-1) * (newE - pow(newVx,2)/2) * newRho; // If no powder present
-
-					/** DEBUG **/
-					if (j == 2) cout << endl << "Old rho = " << cell.at(n).at(i_sn-1).at(j).rho << endl;
-					if (j == 2) cout << "Qi = " << Qi << endl;
-					if (j == 2) cout << "barQi = " << barQi << endl;
-					if (j == 2) debug_projectile_par(i_sn, j, borderP, newRho, newVx, newE, newP, cell.at(n).at(i_sn-1).at(j).final_psi, x_sn.back());
-					
-					curCell->P[0] = newP;
-					curCell->e = newE;
-					curCell->Vx[0] = newVx;
-					curCell->rho = newRho;
-				}
-			}
-			
+			/* Projectile-related calculation */
+			projCalc(cell, IDEAL_GAS);
 			
 			/* Euler stage */
 			/** TODO: change i_sn to max_i **/
@@ -301,9 +165,9 @@ int main(int argc, char** argv) {
 
 						curCell->bar_z = euler_z(&cell, &cell.at(n).at(i).at(j), n, i, j);
 						curCell->bar_psi = euler_psi(cell.at(n).at(i).at(j), n, i, j);
-						curCell->bar_Vx[0] = euler_bar_Vx(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
-						curCell->bar_Vr[0] = euler_bar_Vr(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
-						curCell->bar_e = euler_bar_e(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
+						curCell->bar_Vx[0] = euler_bar_Vx(cell,n,i,j,dt,dx,dr,FIRST_ORDER_NS);
+						curCell->bar_Vr[0] = euler_bar_Vr(cell,n,i,j,dt,dx,dr,FIRST_ORDER_NS);
+						curCell->bar_e = euler_bar_e(cell,n,i,j,dt,dx,dr,FIRST_ORDER_NS);
 					}
 				}
 			}
@@ -342,7 +206,7 @@ int main(int argc, char** argv) {
 						
 						// Post-final stage
 						nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
-								POWDER_EQ);
+								IDEAL_GAS);
 					}
 				}
 			}

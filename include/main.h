@@ -10,6 +10,7 @@
 #include "output.h"
 #include "border.h"
 #include "init.h"
+#include "projectile.h"
 
 #include <ctime>
 #include <cstring> 

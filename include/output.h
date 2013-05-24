@@ -19,6 +19,7 @@
 void OutputPVD(cell2d cell, std::string filename);
 void outputCSV(cell2d cell, std::ofstream & outputGas);
 void prepOutputDynCSV(std::ofstream & outputDyn);
+void prepOutputGasCSV(std::ofstream & outputGas, bool verbose);
 void outputDynCSV(std::ofstream & outputDyn, double t, int i_sn, double x_sn, double U_sn, double boltP, double projP);
 
 #endif	/* OUTPUT_H */
