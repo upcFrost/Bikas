@@ -20,6 +20,7 @@ void projPCalc(cell2dStatic & cell, double & P_sn,
 			if (bottom_j == 0) bottom_j++;
 		}
 	}
+	bottom_j++;
 
 	P_sn /= count;
 
@@ -76,6 +77,62 @@ void projCheckIfChanged(cell2dStatic & cell, int i_sn_prev) {
 			newCell->final_z = oldCell->final_z;
 			newCell->final_psi = oldCell->final_psi;
 
+			/* Extrapolation */
+//			gasCell * secondCell = &cell.at(i_sn_prev-2).at(j);
+//			newCell->P[0] = secondCell->P[0] + 2.0/1.5 * (oldCell->P[0] - secondCell->P[0]);
+//			newCell->P[1] = secondCell->P[1] + 2.0/1.5 * (oldCell->P[1] - secondCell->P[1]);
+//			newCell->P[2] = secondCell->P[2] + 2.0/1.5 * (oldCell->P[2] - secondCell->P[2]);
+//			newCell->P[3] = secondCell->P[3] + 2.0/1.5 * (oldCell->P[3] - secondCell->P[3]);
+//			newCell->P[4] = secondCell->P[4] + 2.0/1.5 * (oldCell->P[4] - secondCell->P[4]);
+//			newCell->rho = secondCell->rho + 2.0/1.5 * (oldCell->rho - secondCell->rho);
+//			newCell->e = secondCell->e + 2.0/1.5 * (oldCell->e - secondCell->e);
+//			newCell->Vx[0] = secondCell->Vx[0] + 2.0/1.5 * (oldCell->Vx[0] - secondCell->Vx[0]);
+//			newCell->Vx[1] = secondCell->Vx[1] + 2.0/1.5 * (oldCell->Vx[1] - secondCell->Vx[1]);
+//			newCell->Vx[2] = secondCell->Vx[2] + 2.0/1.5 * (oldCell->Vx[2] - secondCell->Vx[2]);
+//			newCell->Vx[3] = secondCell->Vx[3] + 2.0/1.5 * (oldCell->Vx[3] - secondCell->Vx[3]);
+//			newCell->Vx[4] = secondCell->Vx[4] + 2.0/1.5 * (oldCell->Vx[4] - secondCell->Vx[4]);
+//			newCell->Vr[0] = secondCell->Vr[0] + 2.0/1.5 * (oldCell->Vr[0] - secondCell->Vr[0]);
+//			newCell->Vr[1] = secondCell->Vr[1] + 2.0/1.5 * (oldCell->Vr[1] - secondCell->Vr[1]);
+//			newCell->Vr[2] = secondCell->Vr[2] + 2.0/1.5 * (oldCell->Vr[2] - secondCell->Vr[2]);
+//			newCell->Vr[3] = secondCell->Vr[3] + 2.0/1.5 * (oldCell->Vr[3] - secondCell->Vr[3]);
+//			newCell->Vr[4] = secondCell->Vr[4] + 2.0/1.5 * (oldCell->Vr[4] - secondCell->Vr[4]);
+//			newCell->final_z = oldCell->final_z;
+//			newCell->final_psi = oldCell->final_psi;
+//
+//			oldCell->P[0] = secondCell->P[0] + 1.0/1.5 * (oldCell->P[0] - secondCell->P[0]);
+//			oldCell->P[1] = secondCell->P[1] + 1.0/1.5 * (oldCell->P[1] - secondCell->P[1]);
+//			oldCell->P[2] = secondCell->P[2] + 1.0/1.5 * (oldCell->P[2] - secondCell->P[2]);
+//			oldCell->P[3] = secondCell->P[3] + 1.0/1.5 * (oldCell->P[3] - secondCell->P[3]);
+//			oldCell->P[4] = secondCell->P[4] + 1.0/1.5 * (oldCell->P[4] - secondCell->P[4]);
+//			oldCell->rho = secondCell->rho + 1.0/1.5 * (oldCell->rho - secondCell->rho);
+//			oldCell->e = secondCell->e + 1.0/1.5 * (oldCell->e - secondCell->e);
+//			oldCell->Vx[0] = secondCell->Vx[0] + 1.0/1.5 * (oldCell->Vx[0] - secondCell->Vx[0]);
+//			oldCell->Vx[1] = secondCell->Vx[1] + 1.0/1.5 * (oldCell->Vx[1] - secondCell->Vx[1]);
+//			oldCell->Vx[2] = secondCell->Vx[2] + 1.0/1.5 * (oldCell->Vx[2] - secondCell->Vx[2]);
+//			oldCell->Vx[3] = secondCell->Vx[3] + 1.0/1.5 * (oldCell->Vx[3] - secondCell->Vx[3]);
+//			oldCell->Vx[4] = secondCell->Vx[4] + 1.0/1.5 * (oldCell->Vx[4] - secondCell->Vx[4]);
+//			oldCell->Vr[0] = secondCell->Vr[0] + 1.0/1.5 * (oldCell->Vr[0] - secondCell->Vr[0]);
+//			oldCell->Vr[1] = secondCell->Vr[1] + 1.0/1.5 * (oldCell->Vr[1] - secondCell->Vr[1]);
+//			oldCell->Vr[2] = secondCell->Vr[2] + 1.0/1.5 * (oldCell->Vr[2] - secondCell->Vr[2]);
+//			oldCell->Vr[3] = secondCell->Vr[3] + 1.0/1.5 * (oldCell->Vr[3] - secondCell->Vr[3]);
+//			oldCell->Vr[4] = secondCell->Vr[4] + 1.0/1.5 * (oldCell->Vr[4] - secondCell->Vr[4]);
+//			oldCell->P[0] = secondCell->P[0];
+//			oldCell->P[1] = secondCell->P[1];
+//			oldCell->P[2] = secondCell->P[2];
+//			oldCell->P[3] = secondCell->P[3];
+//			oldCell->P[4] = secondCell->P[4];
+//			oldCell->rho = secondCell->rho;
+//			oldCell->e = secondCell->e;
+//			oldCell->Vx[0] = secondCell->Vx[0];
+//			oldCell->Vx[1] = secondCell->Vx[1];
+//			oldCell->Vx[2] = secondCell->Vx[2];
+//			oldCell->Vx[3] = secondCell->Vx[3];
+//			oldCell->Vx[4] = secondCell->Vx[4];
+//			oldCell->Vr[0] = secondCell->Vr[0];
+//			oldCell->Vr[1] = secondCell->Vr[1];
+//			oldCell->Vr[2] = secondCell->Vr[2];
+//			oldCell->Vr[3] = secondCell->Vr[3];
+//			oldCell->Vr[4] = secondCell->Vr[4];
 		}
 	}
 }
@@ -127,7 +184,7 @@ void projParCalc(cell2d & cell, int i_sn_prev, int var) {
 			double borderP = curCell->P[0] + ai*curCell->rho *
 					(U_sn.back() - curCell->Vx[0]);
 			// Density at the center of the cell
-			double newRho = curCell->rho * cell.at(n-1).at(i_sn-1).at(j).A[0] / curCell->A[0];
+			double newRho = curCell->rho * Qi / barQi;
 			// Gas velocity at the center of the cell
 			double newVx = curCell->rho / newRho * Qi / barQi * curCell->Vx[0] +
 					(borderP - curCell->P[0]) / newRho / barQi *

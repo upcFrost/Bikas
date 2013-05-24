@@ -361,7 +361,7 @@ int main(int argc, char** argv) {
 				minimum.push_back(*min_element(array.begin(), array.end()));
 			}
 			
-			int debug_I = 103, debug_J = 30;
+			int debug_I = i_sn-1, debug_J = 15;
 			if (true && debug_I != 0 && debug_J != 0) {
 				int nArray = 3; int *iArray = new int[nArray]; int *jArray = new int[nArray];
 				iArray[0] = debug_I-2; jArray[0] = debug_J;

@@ -16,12 +16,6 @@ void OutputPVD(cell2d cell, std::string filename) {
 	outputZ->SetName("Z");
 	vtkSmartPointer<vtkDoubleArray> outputRho = vtkSmartPointer<vtkDoubleArray>::New();
 	outputRho->SetName("Rho");
-	vtkSmartPointer<vtkDoubleArray> outputBarVx = vtkSmartPointer<vtkDoubleArray>::New();
-	outputBarVx->SetName("bar_Vx");
-	vtkSmartPointer<vtkDoubleArray> outputDM1 = vtkSmartPointer<vtkDoubleArray>::New();
-	outputDM1->SetName("dM[1]");
-	vtkSmartPointer<vtkDoubleArray> outputDM2 = vtkSmartPointer<vtkDoubleArray>::New();
-	outputDM2->SetName("dM[2]");
 	vtkSmartPointer<vtkDoubleArray> outputV = vtkSmartPointer<vtkDoubleArray>::New();
 	outputV->SetName("V");
 	outputV->SetNumberOfComponents(3);
@@ -68,9 +62,6 @@ void OutputPVD(cell2d cell, std::string filename) {
 				outputE->InsertNextValue ( (c_0.e+c_i_1j_1.e+c_i_1.e+c_j_1.e)/4 );
 				outputRho->InsertNextValue ( (c_0.rho+c_i_1j_1.rho+c_i_1.rho+c_j_1.rho)/4 );
 				outputZ->InsertNextValue ( (c_0.final_z+c_i_1j_1.final_z+c_i_1.final_z+c_j_1.final_z)/4 );
-				outputBarVx->InsertNextValue ( (c_0.bar_Vx[0]+c_i_1j_1.bar_Vx[0]+c_i_1.bar_Vx[0]+c_j_1.bar_Vx[0])/4 );
-				outputDM1->InsertNextValue ( (c_0.dM[1]+c_i_1j_1.dM[1]+c_i_1.dM[1]+c_j_1.dM[1])/4 );
-				outputDM2->InsertNextValue ( (c_0.dM[2]+c_i_1j_1.dM[2]+c_i_1.dM[2]+c_j_1.dM[2])/4 );
 				outputV->InsertNextTuple3 ( (c_0.Vx[0]+c_i_1j_1.Vx[0]+c_i_1.Vx[0]+c_j_1.Vx[0])/4, 
 					(c_0.Vr[0]+c_i_1j_1.Vr[0]+c_i_1.Vr[0]+c_j_1.Vr[0])/4, 0 );
 				//~ strips->InsertCellPoint(IDs[0]);
@@ -80,9 +71,6 @@ void OutputPVD(cell2d cell, std::string filename) {
 				outputE->InsertNextValue ( (c_0.e+c_i1j_1.e+c_i1.e+c_j_1.e)/4 );
 				outputRho->InsertNextValue ( (c_0.rho+c_i1j_1.rho+c_i1.rho+c_j_1.rho)/4 );
 				outputZ->InsertNextValue ( (c_0.final_z+c_i1j_1.final_z+c_i1.final_z+c_j_1.final_z)/4 );
-				outputBarVx->InsertNextValue ( (c_0.bar_Vx[0]+c_i1j_1.bar_Vx[0]+c_i1.bar_Vx[0]+c_j_1.bar_Vx[0])/4 );
-				outputDM1->InsertNextValue ( (c_0.dM[1]+c_i1j_1.dM[1]+c_i1.dM[1]+c_j_1.dM[1])/4 );
-				outputDM2->InsertNextValue ( (c_0.dM[2]+c_i1j_1.dM[2]+c_i1.dM[2]+c_j_1.dM[2])/4 );
 				outputV->InsertNextTuple3 ( (c_0.Vx[0]+c_i1j_1.Vx[0]+c_i1.Vx[0]+c_j_1.Vx[0])/4, 
 					(c_0.Vr[0]+c_i1j_1.Vr[0]+c_i1.Vr[0]+c_j_1.Vr[0])/4, 0 );
 				//~ strips->InsertCellPoint(IDs[1]);
@@ -92,9 +80,6 @@ void OutputPVD(cell2d cell, std::string filename) {
 				outputE->InsertNextValue ( (c_0.e+c_i_1j1.e+c_i_1.e+c_j1.e)/4 );
 				outputRho->InsertNextValue ( (c_0.rho+c_i_1j1.rho+c_i_1.rho+c_j1.rho)/4 );
 				outputZ->InsertNextValue ( (c_0.final_z+c_i_1j1.final_z+c_i_1.final_z+c_j1.final_z)/4 );
-				outputBarVx->InsertNextValue ( (c_0.bar_Vx[0]+c_i_1j1.bar_Vx[0]+c_i_1.bar_Vx[0]+c_j1.bar_Vx[0])/4 );
-				outputDM1->InsertNextValue ( (c_0.dM[1]+c_i_1j1.dM[1]+c_i_1.dM[1]+c_j1.dM[1])/4 );
-				outputDM2->InsertNextValue ( (c_0.dM[2]+c_i_1j1.dM[2]+c_i_1.dM[2]+c_j1.dM[2])/4 );
 				outputV->InsertNextTuple3 ( (c_0.Vx[0]+c_i_1j1.Vx[0]+c_i_1.Vx[0]+c_j1.Vx[0])/4, 
 					(c_0.Vr[0]+c_i_1j1.Vr[0]+c_i_1.Vr[0]+c_j1.Vr[0])/4, 0 );
 				//~ strips->InsertCellPoint(IDs[2]);
@@ -105,9 +90,6 @@ void OutputPVD(cell2d cell, std::string filename) {
 					outputE->InsertNextValue ( (c_0.e+c_i1j1.e+c_i1.e+c_j1.e)/4 );
 					outputRho->InsertNextValue ( (c_0.rho+c_i1j1.rho+c_i1.rho+c_j1.rho)/4 );
 					outputZ->InsertNextValue ( (c_0.final_z+c_i1j1.final_z+c_i1.final_z+c_j1.final_z)/4 );
-					outputBarVx->InsertNextValue ( (c_0.bar_Vx[0]+c_i1j1.bar_Vx[0]+c_i1.bar_Vx[0]+c_j1.bar_Vx[0])/4 );
-					outputDM1->InsertNextValue ( (c_0.dM[1]+c_i1j1.dM[1]+c_i1.dM[1]+c_j1.dM[1])/4 );
-					outputDM2->InsertNextValue ( (c_0.dM[2]+c_i1j1.dM[2]+c_i1.dM[2]+c_j1.dM[2])/4 );
 					outputV->InsertNextTuple3 ( (c_0.Vx[0]+c_i1j1.Vx[0]+c_i1.Vx[0]+c_j1.Vx[0])/4, 
 						(c_0.Vr[0]+c_i1j1.Vr[0]+c_i1.Vr[0]+c_j1.Vr[0])/4, 0 );
 					//~ strips->InsertCellPoint(IDs[3]);
@@ -120,9 +102,6 @@ void OutputPVD(cell2d cell, std::string filename) {
 				outputE->InsertNextValue ( c_0.e );
 				outputRho->InsertNextValue ( c_0.rho );
 				outputZ->InsertNextValue ( c_0.final_z );
-				outputBarVx->InsertNextValue ( c_0.bar_Vx[0] );
-				outputDM1->InsertNextValue ( c_0.dM[1] );
-				outputDM2->InsertNextValue ( c_0.dM[2] );
 				outputV->InsertNextTuple3 ( c_0.Vx[0], c_0.Vr[0], 0 );
 				//~ strips->InsertCellPoint(IDs[5]);
 				
@@ -159,9 +138,6 @@ void OutputPVD(cell2d cell, std::string filename) {
 	polydata->GetPointData()->AddArray(outputP);
 	polydata->GetPointData()->AddArray(outputE);
 	polydata->GetPointData()->AddArray(outputRho);
-	polydata->GetPointData()->AddArray(outputBarVx);
-	polydata->GetPointData()->AddArray(outputDM1);
-	polydata->GetPointData()->AddArray(outputDM2);
 	polydata->GetPointData()->SetVectors(outputV);
 	polydata->GetPointData()->AddArray(outputZ);
 	 
@@ -183,7 +159,7 @@ void OutputPVD(cell2d cell, std::string filename) {
 void outputCSV(cell2d cell, std::ofstream & outputGas) {
 	for (i = 0; i < max_i; i++) {
 		for (j = 0; j < max_j; j++) {
-			outputGas << setiosflags(ios::fixed) << setprecision(10)
+			outputGas << std::setiosflags(std::ios::fixed) << std::setprecision(10)
 				<< t.at(n) << "," 
 				<< i << "," 
 				<< j << "," 
@@ -207,29 +183,29 @@ void outputCSV(cell2d cell, std::ofstream & outputGas) {
 				<< cell.at(n).at(i).at(j).A[2] << ","
 				<< cell.at(n).at(i).at(j).A[3] << ","
 				<< cell.at(n).at(i).at(j).A[4] << ","
-				<< cell.at(n+1).at(i).at(j).e - (pow(cell.at(n+1).at(i).at(j).Vx[0],2)+pow(cell.at(n+1).at(i).at(j).Vr[0],2))/2 << endl;
+				<< cell.at(n+1).at(i).at(j).e - (pow(cell.at(n+1).at(i).at(j).Vx[0],2)+pow(cell.at(n+1).at(i).at(j).Vr[0],2))/2 << std::endl;
 		}
 	}
 }
 
 void prepOutputDynCSV(std::ofstream & outputDyn) {
-	outputDyn << "t,i_sn,x_sn,U_sn,P_0,P_sn" << endl;
+	outputDyn << "t,i_sn,x_sn,U_sn,P_0,P_sn" << std::endl;
 }
 
 void prepOutputGasCSV(std::ofstream & outputGas, bool verbose) {
 	if (verbose) {
-		outputGas << "t,i,j,P[0],rho,e,Vx[0],Vr[0],bar_Vx[0],bar_Vr[0],bar_e,m,z,psi,dM[1],dM[2],dM[3],dM[4],A[0],A[1],A[2],A[3],A[4],IntE" << endl;
+		outputGas << "t,i,j,P[0],rho,e,Vx[0],Vr[0],bar_Vx[0],bar_Vr[0],bar_e,m,z,psi,dM[1],dM[2],dM[3],dM[4],A[0],A[1],A[2],A[3],A[4],IntE" << std::endl;
 	} else {
-		outputGas << "t,x,y,z,P[0],rho,e,Vx[0],Vr[0],z,psi,IntE" << endl;
+		outputGas << "t,x,y,z,P[0],rho,e,Vx[0],Vr[0],z,psi,IntE" << std::endl;
 	}
 }
 
 void outputDynCSV(std::ofstream & outputDyn, double t, int i_sn, double x_sn, double U_sn, double boltP, double projP) {
-	outputDyn << setiosflags(ios::fixed) << setprecision(10) 
+	outputDyn << std::setiosflags(std::ios::fixed) << std::setprecision(10)
 		<< t << ","
 		<< i_sn << ","
 		<< x_sn << ","
 		<< U_sn << ","
 		<< boltP << ","
-		<< projP << endl;
+		<< projP << std::endl;
 }
