@@ -98,7 +98,7 @@ void projCheckIfChanged(cell2dStatic & cell, int i_sn_prev) {
 //			newCell->Vr[4] = secondCell->Vr[4] + 2.0/1.5 * (oldCell->Vr[4] - secondCell->Vr[4]);
 //			newCell->final_z = oldCell->final_z;
 //			newCell->final_psi = oldCell->final_psi;
-//
+
 //			oldCell->P[0] = secondCell->P[0] + 1.0/1.5 * (oldCell->P[0] - secondCell->P[0]);
 //			oldCell->P[1] = secondCell->P[1] + 1.0/1.5 * (oldCell->P[1] - secondCell->P[1]);
 //			oldCell->P[2] = secondCell->P[2] + 1.0/1.5 * (oldCell->P[2] - secondCell->P[2]);
@@ -212,6 +212,8 @@ void projParCalc(cell2d & cell, int i_sn_prev, int var) {
 			if (j == 2) printf("Old rho = %8.8f\n", curCell->rho);
 			if (j == 2) printf("Qi = %10.10f\n",Qi);
 			if (j == 2) printf("barQi = %10.10f\n",barQi);
+			if (j == 2) printf("delta rho = %10.10f\n",curCell->rho - newRho);
+			if (j == 2) printf("delta P = %10.10f\n",curCell->P[0] - newP);
 			if (j == 2) debug_projectile_par(i_sn, j, borderP, newRho,
 					newVx, newE, newP, curCell->final_psi, x_sn.back());
 
