@@ -47,6 +47,7 @@ int main(int argc, char** argv) {
     string line;
     string tmpLine;
     bool verbose = false;
+    int gasVar = IDEAL_GAS;
     double timestep = 0;
     
     t.resize(1);
@@ -64,11 +65,23 @@ int main(int argc, char** argv) {
 	
     if (inputFile.is_open() && outputDyn.is_open() && outputGas.is_open())
     {
-    	init(inputFile, cell, IDEAL_GAS);
+    	printf("Which gas model is used?\n"
+    			"0 - Ideal gas, 2 - Powder\n");
+    	scanf("%d", &gasVar);
+    	while (gasVar != IDEAL_GAS && gasVar != POWDER_EQ) {
+    		printf("\nInvalid input, please try again\n");
+    		scanf("%d", &gasVar);
+    	}
+    	init(inputFile, cell, gasVar);
 
 		/** Test - Riemann problem 1 **/
-//		i_sn = max_i - 10;
-//		x_sn.back() = i_sn * dx;
+    	int riemannTest = 0;
+    	printf("\nPreform riemann test? (1 - yes, any other digit - no)\n");
+    	scanf("%d", &riemannTest);
+    	if (riemannTest == 1) {
+    		i_sn = max_i - 10;
+    		x_sn.back() = i_sn * dx;
+    	}
 				
 		/* Prepare output files */
 		prepOutputDynCSV(outputDyn);
@@ -154,7 +167,7 @@ int main(int argc, char** argv) {
 			n = cell.size() - 2;
 			
 			/* Projectile-related calculation */
-			projCalc(cell, IDEAL_GAS);
+			projCalc(cell, gasVar);
 			
 			/* Euler stage */
 			/** TODO: change i_sn to max_i **/
@@ -165,9 +178,9 @@ int main(int argc, char** argv) {
 
 						curCell->bar_z = euler_z(&cell, &cell.at(n).at(i).at(j), n, i, j);
 						curCell->bar_psi = euler_psi(cell.at(n).at(i).at(j), n, i, j);
-						curCell->bar_Vx[0] = euler_bar_Vx(cell,n,i,j,dt,dx,dr,FIRST_ORDER_NS);
-						curCell->bar_Vr[0] = euler_bar_Vr(cell,n,i,j,dt,dx,dr,FIRST_ORDER_NS);
-						curCell->bar_e = euler_bar_e(cell,n,i,j,dt,dx,dr,FIRST_ORDER_NS);
+						curCell->bar_Vx[0] = euler_bar_Vx(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
+						curCell->bar_Vr[0] = euler_bar_Vr(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
+						curCell->bar_e = euler_bar_e(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
 					}
 				}
 			}
@@ -206,7 +219,7 @@ int main(int argc, char** argv) {
 						
 						// Post-final stage
 						nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
-								IDEAL_GAS);
+								gasVar);
 					}
 				}
 			}

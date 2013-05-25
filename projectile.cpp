@@ -41,7 +41,8 @@ void projSpeedPositionCalc(cell2dStatic & cell, double P_sn,
 	i_sn = floor(x_sn.back() / dx);
 }
 
-void projCheckIfChanged(cell2dStatic & cell, int i_sn_prev) {
+void projCheckIfChanged(cell2dStatic & cell, cell2dStatic & nextTCell,
+		int i_sn_prev) {
 	if (i_sn_prev != i_sn) {
 		for (int j = 0; j < max_j; j++) {
 			/* Return cell to its original shape */
@@ -49,6 +50,7 @@ void projCheckIfChanged(cell2dStatic & cell, int i_sn_prev) {
 			double tempArray[5];
 			pre_cell_geometry(tempArray, cell.at(i_sn_prev-1).at(j), i_sn_prev-1, j);
 			gasCell * oldCell = &cell.at(i_sn_prev-1).at(j);
+			gasCell * oldTCell = &nextTCell.at(i_sn_prev-1).at(j);
 			gasCell * newCell = &cell.at(i_sn-1).at(j);
 
 			oldCell->A[0] = tempArray[0];
@@ -56,6 +58,11 @@ void projCheckIfChanged(cell2dStatic & cell, int i_sn_prev) {
 			oldCell->A[2] = tempArray[2];
 			oldCell->A[3] = tempArray[3];
 			oldCell->A[4] = tempArray[4];
+			oldTCell->A[0] = tempArray[0];
+			oldTCell->A[1] = tempArray[1];
+			oldTCell->A[2] = tempArray[2];
+			oldTCell->A[3] = tempArray[3];
+			oldTCell->A[4] = tempArray[4];
 
 			newCell->P[0] = oldCell->P[0];
 			newCell->P[1] = oldCell->P[1];
@@ -64,6 +71,16 @@ void projCheckIfChanged(cell2dStatic & cell, int i_sn_prev) {
 			newCell->P[4] = oldCell->P[4];
 			newCell->rho = oldCell->rho;
 			newCell->e = oldCell->e;
+			newCell->bar_Vx[0] = oldCell->bar_Vx[0];
+			newCell->bar_Vx[1] = oldCell->bar_Vx[1];
+			newCell->bar_Vx[2] = oldCell->bar_Vx[2];
+			newCell->bar_Vx[3] = oldCell->bar_Vx[3];
+			newCell->bar_Vx[4] = oldCell->bar_Vx[4];
+			newCell->bar_Vr[0] = oldCell->bar_Vr[0];
+			newCell->bar_Vr[1] = oldCell->bar_Vr[1];
+			newCell->bar_Vr[2] = oldCell->bar_Vr[2];
+			newCell->bar_Vr[3] = oldCell->bar_Vr[3];
+			newCell->bar_Vr[4] = oldCell->bar_Vr[4];
 			newCell->Vx[0] = oldCell->Vx[0];
 			newCell->Vx[1] = oldCell->Vx[1];
 			newCell->Vx[2] = oldCell->Vx[2];
@@ -77,62 +94,51 @@ void projCheckIfChanged(cell2dStatic & cell, int i_sn_prev) {
 			newCell->final_z = oldCell->final_z;
 			newCell->final_psi = oldCell->final_psi;
 
-			/* Extrapolation */
-//			gasCell * secondCell = &cell.at(i_sn_prev-2).at(j);
-//			newCell->P[0] = secondCell->P[0] + 2.0/1.5 * (oldCell->P[0] - secondCell->P[0]);
-//			newCell->P[1] = secondCell->P[1] + 2.0/1.5 * (oldCell->P[1] - secondCell->P[1]);
-//			newCell->P[2] = secondCell->P[2] + 2.0/1.5 * (oldCell->P[2] - secondCell->P[2]);
-//			newCell->P[3] = secondCell->P[3] + 2.0/1.5 * (oldCell->P[3] - secondCell->P[3]);
-//			newCell->P[4] = secondCell->P[4] + 2.0/1.5 * (oldCell->P[4] - secondCell->P[4]);
-//			newCell->rho = secondCell->rho + 2.0/1.5 * (oldCell->rho - secondCell->rho);
-//			newCell->e = secondCell->e + 2.0/1.5 * (oldCell->e - secondCell->e);
-//			newCell->Vx[0] = secondCell->Vx[0] + 2.0/1.5 * (oldCell->Vx[0] - secondCell->Vx[0]);
-//			newCell->Vx[1] = secondCell->Vx[1] + 2.0/1.5 * (oldCell->Vx[1] - secondCell->Vx[1]);
-//			newCell->Vx[2] = secondCell->Vx[2] + 2.0/1.5 * (oldCell->Vx[2] - secondCell->Vx[2]);
-//			newCell->Vx[3] = secondCell->Vx[3] + 2.0/1.5 * (oldCell->Vx[3] - secondCell->Vx[3]);
-//			newCell->Vx[4] = secondCell->Vx[4] + 2.0/1.5 * (oldCell->Vx[4] - secondCell->Vx[4]);
-//			newCell->Vr[0] = secondCell->Vr[0] + 2.0/1.5 * (oldCell->Vr[0] - secondCell->Vr[0]);
-//			newCell->Vr[1] = secondCell->Vr[1] + 2.0/1.5 * (oldCell->Vr[1] - secondCell->Vr[1]);
-//			newCell->Vr[2] = secondCell->Vr[2] + 2.0/1.5 * (oldCell->Vr[2] - secondCell->Vr[2]);
-//			newCell->Vr[3] = secondCell->Vr[3] + 2.0/1.5 * (oldCell->Vr[3] - secondCell->Vr[3]);
-//			newCell->Vr[4] = secondCell->Vr[4] + 2.0/1.5 * (oldCell->Vr[4] - secondCell->Vr[4]);
-//			newCell->final_z = oldCell->final_z;
-//			newCell->final_psi = oldCell->final_psi;
-
-//			oldCell->P[0] = secondCell->P[0] + 1.0/1.5 * (oldCell->P[0] - secondCell->P[0]);
-//			oldCell->P[1] = secondCell->P[1] + 1.0/1.5 * (oldCell->P[1] - secondCell->P[1]);
-//			oldCell->P[2] = secondCell->P[2] + 1.0/1.5 * (oldCell->P[2] - secondCell->P[2]);
-//			oldCell->P[3] = secondCell->P[3] + 1.0/1.5 * (oldCell->P[3] - secondCell->P[3]);
-//			oldCell->P[4] = secondCell->P[4] + 1.0/1.5 * (oldCell->P[4] - secondCell->P[4]);
-//			oldCell->rho = secondCell->rho + 1.0/1.5 * (oldCell->rho - secondCell->rho);
-//			oldCell->e = secondCell->e + 1.0/1.5 * (oldCell->e - secondCell->e);
-//			oldCell->Vx[0] = secondCell->Vx[0] + 1.0/1.5 * (oldCell->Vx[0] - secondCell->Vx[0]);
-//			oldCell->Vx[1] = secondCell->Vx[1] + 1.0/1.5 * (oldCell->Vx[1] - secondCell->Vx[1]);
-//			oldCell->Vx[2] = secondCell->Vx[2] + 1.0/1.5 * (oldCell->Vx[2] - secondCell->Vx[2]);
-//			oldCell->Vx[3] = secondCell->Vx[3] + 1.0/1.5 * (oldCell->Vx[3] - secondCell->Vx[3]);
-//			oldCell->Vx[4] = secondCell->Vx[4] + 1.0/1.5 * (oldCell->Vx[4] - secondCell->Vx[4]);
-//			oldCell->Vr[0] = secondCell->Vr[0] + 1.0/1.5 * (oldCell->Vr[0] - secondCell->Vr[0]);
-//			oldCell->Vr[1] = secondCell->Vr[1] + 1.0/1.5 * (oldCell->Vr[1] - secondCell->Vr[1]);
-//			oldCell->Vr[2] = secondCell->Vr[2] + 1.0/1.5 * (oldCell->Vr[2] - secondCell->Vr[2]);
-//			oldCell->Vr[3] = secondCell->Vr[3] + 1.0/1.5 * (oldCell->Vr[3] - secondCell->Vr[3]);
-//			oldCell->Vr[4] = secondCell->Vr[4] + 1.0/1.5 * (oldCell->Vr[4] - secondCell->Vr[4]);
-//			oldCell->P[0] = secondCell->P[0];
-//			oldCell->P[1] = secondCell->P[1];
-//			oldCell->P[2] = secondCell->P[2];
-//			oldCell->P[3] = secondCell->P[3];
-//			oldCell->P[4] = secondCell->P[4];
-//			oldCell->rho = secondCell->rho;
-//			oldCell->e = secondCell->e;
-//			oldCell->Vx[0] = secondCell->Vx[0];
-//			oldCell->Vx[1] = secondCell->Vx[1];
-//			oldCell->Vx[2] = secondCell->Vx[2];
-//			oldCell->Vx[3] = secondCell->Vx[3];
-//			oldCell->Vx[4] = secondCell->Vx[4];
-//			oldCell->Vr[0] = secondCell->Vr[0];
-//			oldCell->Vr[1] = secondCell->Vr[1];
-//			oldCell->Vr[2] = secondCell->Vr[2];
-//			oldCell->Vr[3] = secondCell->Vr[3];
-//			oldCell->Vr[4] = secondCell->Vr[4];
+			/* Weights */
+//			double weightP = 0.4999;
+//			double weightRho = 0.4999;
+//			double weightE = 0.4999;
+//			double weightV = 0.6;
+//
+//			newCell->P[0] = 2*weightP*oldCell->P[0];
+//			newCell->P[1] = 2*weightP*oldCell->P[1];
+//			newCell->P[2] = 2*weightP*oldCell->P[2];
+//			newCell->P[3] = 2*weightP*oldCell->P[3];
+//			newCell->P[4] = 2*weightP*oldCell->P[4];
+//			newCell->rho = 2*weightRho*oldCell->rho;
+//			newCell->e = 2*weightE*oldCell->e;
+//			newCell->Vx[0] = 2*weightV*oldCell->Vx[0];
+//			newCell->Vx[1] = 2*weightV*oldCell->Vx[1];
+//			newCell->Vx[2] = 2*weightV*oldCell->Vx[2];
+//			newCell->Vx[3] = 2*weightV*oldCell->Vx[3];
+//			newCell->Vx[4] = 2*weightV*oldCell->Vx[4];
+//			newCell->Vr[0] = 2*weightV*oldCell->Vr[0];
+//			newCell->Vr[1] = 2*weightV*oldCell->Vr[1];
+//			newCell->Vr[2] = 2*weightV*oldCell->Vr[2];
+//			newCell->Vr[3] = 2*weightV*oldCell->Vr[3];
+//			newCell->Vr[4] = 2*weightV*oldCell->Vr[4];
+//			newCell->final_z = 2*weightP*oldCell->final_z;
+//			newCell->final_psi = 2*weightP*oldCell->final_psi;
+//
+//			oldCell->P[0] = 2*(1 - weightP)*oldCell->P[0];
+//			oldCell->P[1] = 2*(1 - weightP)*oldCell->P[1];
+//			oldCell->P[2] = 2*(1 - weightP)*oldCell->P[2];
+//			oldCell->P[3] = 2*(1 - weightP)*oldCell->P[3];
+//			oldCell->P[4] = 2*(1 - weightP)*oldCell->P[4];
+//			oldCell->rho = 2*(1 - weightRho)*oldCell->rho;
+//			oldCell->e = 2*(1 - weightE)*oldCell->e;
+//			oldCell->Vx[0] = 2*(1 - weightV)*oldCell->Vx[0];
+//			oldCell->Vx[1] = 2*(1 - weightV)*oldCell->Vx[1];
+//			oldCell->Vx[2] = 2*(1 - weightV)*oldCell->Vx[2];
+//			oldCell->Vx[3] = 2*(1 - weightV)*oldCell->Vx[3];
+//			oldCell->Vx[4] = 2*(1 - weightV)*oldCell->Vx[4];
+//			oldCell->Vr[0] = 2*(1 - weightV)*oldCell->Vr[0];
+//			oldCell->Vr[1] = 2*(1 - weightV)*oldCell->Vr[1];
+//			oldCell->Vr[2] = 2*(1 - weightV)*oldCell->Vr[2];
+//			oldCell->Vr[3] = 2*(1 - weightV)*oldCell->Vr[3];
+//			oldCell->Vr[4] = 2*(1 - weightV)*oldCell->Vr[4];
+//			oldCell->final_z = 2*(1 - weightP)*oldCell->final_z;
+//			oldCell->final_psi = 2*(1 - weightP)*oldCell->final_psi;
 		}
 	}
 }
@@ -177,6 +183,11 @@ void projParCalc(cell2d & cell, int i_sn_prev, int var) {
 				barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
 				Qi = (cell.at(n-1).at(i_sn-2).at(j).A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 			}
+
+//			Qi = M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+//			barQi = (1 + curCell->A[0] - cell.at(n-1).at(i_sn-1).at(j).A[0]) * Qi;
+//			if (i_sn_prev != i_sn)
+//				barQi = (2 + curCell->A[0] - cell.at(n-1).at(i_sn-2).at(j).A[0]) * Qi;
 
 			// Local speed of sound
 			double ai = sqrt(k * curCell->P[0] / curCell->rho);
@@ -230,7 +241,7 @@ void projCalc(cell2d & cell, int var) {
 	int i_sn_prev = i_sn;
 	projPCalc(cell.at(n), P_sn, top_j, bottom_j);
 	projSpeedPositionCalc(cell.at(n), P_sn, top_j, bottom_j);
-	projCheckIfChanged(cell.at(n), i_sn_prev);
+	projCheckIfChanged(cell.at(n), cell.at(n+1), i_sn_prev);
 	projBorderMove(cell.at(n));
 	projParCalc(cell, i_sn_prev, var);
 }

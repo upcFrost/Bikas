@@ -39,9 +39,6 @@ void euler_proj_broder(double array[5], int j, double Xsn, double dx, double dr)
 	array[2] = 0;
 	array[3] = 1 + fmod(Xsn, dx) / dx;
 	array[4] = 1 + fmod(Xsn, dx) / dx;
-
-	if (j == max_j - 2) array[4] = 0;
-	if (j == axis_j) array[3] = 0;
 }
 
  /* Vx calculation on euler stage */
@@ -59,7 +56,7 @@ double euler_bar_Vx(cell2d& cell, int n, int i, int j,
 	BorderCond brd[10];
 	calculateBorder(n, cell[n], NEEDED_COND, brd);
 
-//    double P_i12 = (brd[P_POS].i1j + brd[P_POS].ij)/2 *
+//  double P_i12 = (brd[P_POS].i1j + brd[P_POS].ij)/2 *
 //    		(1 - (k-1)*(brd[VX_POS].i1j - brd[VX_POS].ij)*dt/dx);
 //	double P_i_12 = (brd[P_POS].i_1j + brd[P_POS].ij)/2 *
 //			(1 - (k-1)*(brd[VX_POS].ij - brd[VX_POS].i_1j)*dt/dx);
@@ -436,34 +433,34 @@ double lagrange_e(gasCell * prevCell, gasCell * cell) {
 }
 
 /* Density on lagrange stage */
-double lagrange_rho(gasCell * cell, gasCell * prevCell, int i, int j, double dt, double dx, double dr) {
+double lagrange_rho(gasCell * curCell, gasCell * prevCell, int i, int j, double dt, double dx, double dr) {
     double result;
-    if (fabs(cell->dM[1]) > pow(10.0,-15) ||
-    		fabs(cell->dM[2]) > pow(10.0,-15) ||
-    		fabs(cell->dM[3]) > pow(10.0,-15) ||
-    		fabs(cell->dM[4]) > pow(10.0,-15)) {
-	result = cell->rho +
+    if (fabs(curCell->dM[1]) > pow(10.0,-15) ||
+    		fabs(curCell->dM[2]) > pow(10.0,-15) ||
+    		fabs(curCell->dM[3]) > pow(10.0,-15) ||
+    		fabs(curCell->dM[4]) > pow(10.0,-15)) {
+	result = curCell->rho +
 		(
-            (2*cell->D[1] - 1)*cell->dM[1] +
-            (2*cell->D[3] - 1)*cell->dM[3] +
-            (2*cell->D[2] - 1)*cell->dM[2] +
-            (2*cell->D[4] - 1)*cell->dM[4]
+            (2*curCell->D[1] - 1)*curCell->dM[1] +
+            (2*curCell->D[3] - 1)*curCell->dM[3] +
+            (2*curCell->D[2] - 1)*curCell->dM[2] +
+            (2*curCell->D[4] - 1)*curCell->dM[4]
         ) /
-        (cell->A[0] * dx * fabs(j-axis_j-0.5) * pow(dr,2))
+        (curCell->A[0] * dx * fabs(j-axis_j-0.5) * pow(dr,2))
         ;
     } else {
-    	result = cell->rho;
+    	result = curCell->rho;
     }
 	if (result < 0) {
 		cout << "rho < 0" << endl
 			<< "i = " << i << endl
 			<< "j = " << j << endl
-			<< "rho = " << cell->rho << endl
-			<< "A[0] = " << cell->A[0] << endl
-			<< "dM[1] = " << cell->dM[1]*dt << endl
-			<< "dM[2] = " << cell->dM[2]*dt << endl
-			<< "dM[3] = " << cell->dM[3]*dt << endl
-			<< "dM[4] = " << cell->dM[4]*dt << endl
+			<< "rho = " << curCell->rho << endl
+			<< "A[0] = " << curCell->A[0] << endl
+			<< "dM[1] = " << curCell->dM[1]*dt << endl
+			<< "dM[2] = " << curCell->dM[2]*dt << endl
+			<< "dM[3] = " << curCell->dM[3]*dt << endl
+			<< "dM[4] = " << curCell->dM[4]*dt << endl
 			<< "dx = " << dx << endl
 			<< "dr = " << dr << endl
 			<< "dt = " << dt << endl << endl;
@@ -495,6 +492,9 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 	double Vx_i12 = (brd[BAR_VX_POS].i1j + brd[BAR_VX_POS].ij)/2;
 	double Vr_j_12 = (brd[BAR_VR_POS].ij_1 + brd[BAR_VR_POS].ij)/2;
 	double Vr_j12 = (brd[BAR_VR_POS].ij1 + brd[BAR_VR_POS].ij)/2;
+
+	if (i == i_sn-1 && j == 10)
+		printf("123");
 
 	/** First order **/
 	bool ruleVx1 = Vx_i_12 > 0 ? true : false;
@@ -535,12 +535,16 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 	array[7] = ruleVr1 ? 1 : 0;
 	array[8] = ruleVr2 ? 0 : 1;
 
-    if (i == 101 && j == 31) {
-    	gasCell cell0 = cell[n][i][j-2];
-		gasCell cell1 = cell[n][i][j-1];
+    if (i == i_sn-1 && j == 31 && i_sn == 112) {
+    	gasCell cell0 = cell[n][i-2][j-2];
+		gasCell cell1 = cell[n][i-1][j-1];
 		gasCell cell2 = cell[n][i][j];
 		printf("123");
 	}
+    double debugArray[21];
+    for (int idx = 0; idx < 21; idx++) {
+    	debugArray[idx] = array[idx];
+    }
 
 	/** Central **/
 //	array[1] = brd[RHO_POS].i_1j * brd[BAR_VX_POS].i_1j * (fabs(j-axis_j-0.5)) * pow(dr,2) * dt;
@@ -718,34 +722,28 @@ double new_final_psi (cell2d& cell, int i, int j, int n,
 }
 
 
-
-
-
-
-
-
 /* Final stage P calculation */
-double final_calc_p(gasCell * prevCell, gasCell * cell, int var) {
+double final_calc_p(gasCell * prevCell, gasCell * curCell, int var) {
 	double result = 0;
 	switch (var) {
 	case IDEAL_GAS:
-		result = (cell->e - (pow(cell->Vx[0],2)+pow(cell->Vr[0],2))/2 ) * (k-1) /
-			(1/cell->rho);
+		result = (curCell->e - (pow(curCell->Vx[0],2)+pow(curCell->Vr[0],2))/2 ) * (k-1) /
+			(1/curCell->rho);
 		break;
 
 	case ABEL_DUPRE:
-		result = (cell->e - (pow(cell->Vx[0],2)+pow(cell->Vr[0],2))/2 ) * (k-1) /
-			(1/cell->rho - alpha_k);
+		result = (curCell->e - (pow(curCell->Vx[0],2)+pow(curCell->Vr[0],2))/2 ) * (k-1) /
+			(1/curCell->rho - alpha_k);
 		break;
 
 	case POWDER_EQ:
-		result = (cell->e - (pow(cell->Vx[0],2)+pow(cell->Vr[0],2))/2 - f/(k-1)*(1-cell->final_psi)) * (k-1) /
-			(1/cell->rho - (1 - cell->final_psi)/delta - alpha_k * cell->final_psi);
+		result = (curCell->e - (pow(curCell->Vx[0],2)+pow(curCell->Vr[0],2))/2 - f/(k-1)*(1-curCell->final_psi)) * (k-1) /
+			(1/curCell->rho - (1 - curCell->final_psi)/delta - alpha_k * curCell->final_psi);
 		break;
 
 	case PISTON:
-		result = PISTON_B * cell->rho * (cell->rho - PISTON_RHO) /
-			pow(PISTON_C - cell->rho/PISTON_RHO, 2);
+		result = PISTON_B * curCell->rho * (curCell->rho - PISTON_RHO) /
+			pow(PISTON_C - curCell->rho/PISTON_RHO, 2);
 		break;
 
 	default:
@@ -763,15 +761,15 @@ double final_calc_p(gasCell * prevCell, gasCell * cell, int var) {
 		broken_dt = true;
 		cout << "P < 0" << endl;
 		cout << "alpha_k = " << alpha_k << endl;
-		cout << "E = " << cell->e << endl
-			<< "Internal energy = " << cell->e  * (k-1) * cell->rho << endl
-			<< "rho = " << cell->rho << endl
-			<< "final_psi = " << cell->final_psi << endl
+		cout << "E = " << curCell->e << endl
+			<< "Internal energy = " << curCell->e  * (k-1) * curCell->rho << endl
+			<< "rho = " << curCell->rho << endl
+			<< "final_psi = " << curCell->final_psi << endl
 			<< "delta = " << delta << endl
-			<< "alpha = " << cell->alpha << endl
-			<< "m*dt = " << cell->m*dt << endl
-			<< "Vx[0] = " << cell->Vx[0] << endl
-			<< "Vr[0] = " << cell->Vr[0] << endl;
+			<< "alpha = " << curCell->alpha << endl
+			<< "m*dt = " << curCell->m*dt << endl
+			<< "Vx[0] = " << curCell->Vx[0] << endl
+			<< "Vr[0] = " << curCell->Vr[0] << endl;
 		getchar();
 	}
 	return result;

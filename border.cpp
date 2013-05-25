@@ -34,7 +34,6 @@ void pre_cell_geometry(double array[5], gasCell cell, int i, int j) {
 		array[2] = cell.r_2 * (j-1+cell.r_2/2) / (j-0.5);
 		array[3] = 1;
 		array[4] = 0;
-	    printf("Cell at (%d, %d) with type 1; A[1] = %4.4f, A[2] = %4.4f, A[3] = %4.4f, A[4] = %4.4f\n", i,j,array[1],array[2],array[3],array[4]);
 	    break;
 
 	case 2:
@@ -56,7 +55,6 @@ void pre_cell_geometry(double array[5], gasCell cell, int i, int j) {
 	    array[2] = 0;
 	    array[3] = cell.x_1;
 	    array[4] = cell.x_2;
-	    printf("Cell at (%d, %d) with type 3; A[1] = %4.4f, A[2] = %4.4f, A[3] = %4.4f, A[4] = %4.4f\n", i,j,array[1],array[2],array[3],array[4]);
 	    break;
 
 	case 4:
@@ -118,7 +116,6 @@ void pre_cell_geometry(double array[5], gasCell cell, int i, int j) {
 	    array[2] = 0;
 	    array[3] = cell.x_1;
 	    array[4] = 0;
-	    printf("Cell at (%d, %d) with type 10; A[1] = %4.4f, A[2] = %4.4f, A[3] = %4.4f, A[4] = %4.4f\n", i,j,array[1],array[2],array[3],array[4]);
 	    break;
 
 	case 11:
@@ -149,7 +146,7 @@ void pre_cell_geometry(double array[5], gasCell cell, int i, int j) {
 		array[0] = 1;
 		array[1] = 1;
 		array[2] = 1;
-		array[3] = 1;
+		array[3] = 0;
 		array[4] = 1;
 		break;
 

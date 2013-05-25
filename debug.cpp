@@ -158,13 +158,14 @@ void debug_dM_rho_output(int n, int nArray, int *i, int *j, cell2d cell)
 void debug_Vx_Vr_P_A_barVx_output(int n, int nArray, int *i, int *j, cell2d cell)
 {
 	for (int iter = 0; iter < nArray; iter++) {
-		gasCell * curCell = &cell.at(n).at(i[iter]).at(j[iter]);
+		gasCell * curCell = &cell.at(n+1).at(i[iter]).at(j[iter]);
+		gasCell * prevCell = &cell.at(n).at(i[iter]).at(j[iter]);
 		std::cout << "For i = " << i[iter] << ", j = " << j[iter] << std::endl <<
-			"Vx = {" << curCell->Vx[1] << ", " << curCell->Vx[2] << ", " << curCell->Vx[3] << ", " << curCell->Vx[4] << "}" << std::endl <<
-			"Vr = {" << curCell->Vr[1] << ", " << curCell->Vr[2] << ", " << curCell->Vr[3] << ", " << curCell->Vr[4] << "}" << std::endl <<
+			"Vx = " << curCell->Vx[0] << std::endl <<
+			"Vr = " << curCell->Vr[0] << std::endl <<
 			"P = {" << curCell->P[0] << ", "  << curCell->P[1] << ", " << curCell->P[2] << ", " << curCell->P[3] << ", " << curCell->P[4] << "}" << std::endl <<
 			"A = {" << curCell->A[1] << ", " << curCell->A[2] << ", " << curCell->A[3] << ", " << curCell->A[4] << "}" << std::endl <<
-			"bar_Vx = " << curCell->bar_Vx[0] << ", bar_Vr = " << curCell->bar_Vr[0] << ", bar_e = " << curCell->bar_e << std::endl << std::endl;
+			"bar_Vx = " << prevCell->bar_Vx[0] << ", bar_Vr = " << prevCell->bar_Vr[0] << ", bar_e = " << prevCell->bar_e << std::endl << std::endl;
 	}
 	std::cout << std::endl;
 }

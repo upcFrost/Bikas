@@ -6,6 +6,7 @@ LDLIBS=-L. -L./lib -L/usr/lib -lvtkCommon -lvtkGraphics \
 INCLUDES=-I. -I./include 
 
 ifeq ($(OS),Windows_NT)
+	CFLAGS+=-static
 	INCLUDES+=-I"C:\Program Files (x86)\VTK\include\vtk-5.10" 
 	LDLIBS+=-L"C:\Program Files (x86)\VTK\lib\vtk-5.10"
 	TARGET=main.exe
