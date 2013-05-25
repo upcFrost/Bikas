@@ -54,7 +54,7 @@ double euler_bar_Vx(cell2d& cell, int n, int i, int j,
 	NEEDED_COND += VX_PAR;
 	NEEDED_COND += VR_PAR;
 	BorderCond brd[10];
-	calculateBorder(n, cell[n], NEEDED_COND, brd);
+	calculateBorder(n, cell[n], NEEDED_COND, brd, i, j);
 
 //  double P_i12 = (brd[P_POS].i1j + brd[P_POS].ij)/2 *
 //    		(1 - (k-1)*(brd[VX_POS].i1j - brd[VX_POS].ij)*dt/dx);
@@ -150,7 +150,7 @@ double euler_bar_Vr(cell2d& cell, int n, int i, int j,
 	NEEDED_COND += VX_PAR;
 	NEEDED_COND += VR_PAR;
 	BorderCond brd[10];
-	calculateBorder(n, cell[n], NEEDED_COND, brd);
+	calculateBorder(n, cell[n], NEEDED_COND, brd, i, j);
 	BorderCond borderArray[8];
 	borderArray[0] = brd[0];
 	borderArray[1] = brd[1];
@@ -161,10 +161,12 @@ double euler_bar_Vr(cell2d& cell, int n, int i, int j,
 	borderArray[6] = brd[6];
 	borderArray[7] = brd[7];
 
-    //~ double P_j12 = (P_j1 + P)/2 * (1 - (k-1)*(Vr_j1 - Vr)*dt/dr);
-	//~ double P_j_12 = (P_j_1 + P)/2 * (1 - (k-1)*(Vr - Vr_j_1)*dt/dr);
-	double P_j12 = (brd[P_POS].ij1 + brd[P_POS].ij)/2;
-	double P_j_12 = (brd[P_POS].ij_1 + brd[P_POS].ij)/2;
+    double P_j12 = (brd[P_POS].ij1 + brd[P_POS].ij)/2 *
+    		(1 - (k-1)*(brd[VR_POS].ij1 - brd[VR_POS].ij)*dt/dr);
+	double P_j_12 = (brd[P_POS].ij_1 + brd[P_POS].ij)/2 *
+			(1 - (k-1)*(brd[VR_POS].ij - brd[VR_POS].ij_1)*dt/dr);
+//	double P_j12 = (brd[P_POS].ij1 + brd[P_POS].ij)/2;
+//	double P_j_12 = (brd[P_POS].ij_1 + brd[P_POS].ij)/2;
 
 	switch (var) {
 	case FIRST_ORDER:
@@ -278,7 +280,7 @@ double euler_bar_e(cell2d& cell, int n, int i, int j,
 	NEEDED_COND += VX_PAR;
 	NEEDED_COND += VR_PAR;
 	BorderCond brd[10];
-	calculateBorder(n, cell[n], NEEDED_COND, brd);
+	calculateBorder(n, cell[n], NEEDED_COND, brd, i, j);
 
 	double P_i12 = (brd[P_POS].i1j + brd[P_POS].ij)/2;
 	double P_i_12 = (brd[P_POS].i_1j + brd[P_POS].ij)/2;
@@ -486,7 +488,7 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 	NEEDED_COND += BAR_VX_PAR;
 	NEEDED_COND += BAR_VR_PAR;
 	BorderCond brd[10];
-	calculateBorder(n, cell[n], NEEDED_COND, brd);
+	calculateBorder(n, cell[n], NEEDED_COND, brd, i, j);
 
 	double Vx_i_12 = (brd[BAR_VX_POS].i_1j + brd[BAR_VX_POS].ij)/2;
 	double Vx_i12 = (brd[BAR_VX_POS].i1j + brd[BAR_VX_POS].ij)/2;
@@ -535,9 +537,9 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 	array[7] = ruleVr1 ? 1 : 0;
 	array[8] = ruleVr2 ? 0 : 1;
 
-    if (i == i_sn-1 && j == 31 && i_sn == 112) {
-    	gasCell cell0 = cell[n][i-2][j-2];
-		gasCell cell1 = cell[n][i-1][j-1];
+    if (curCell.type == 22 && curCell.Vr[0] > 0) {
+    	gasCell cell0 = cell[n][i][j-2];
+		gasCell cell1 = cell[n][i][j-1];
 		gasCell cell2 = cell[n][i][j];
 		printf("123");
 	}
@@ -652,7 +654,7 @@ double new_final_z (cell2d& cell, int i, int j, int n,
 	NEEDED_COND += BAR_VR_PAR;
 	NEEDED_COND += Z_PAR;
 	BorderCond brd[10];
-	calculateBorder(n, cell[n], NEEDED_COND, brd);
+	calculateBorder(n, cell[n], NEEDED_COND, brd, i, j);
 
     double result = curCell.bar_z * curCell.rho / cell[n+1][i][j].rho
     +
@@ -692,7 +694,7 @@ double new_final_psi (cell2d& cell, int i, int j, int n,
 	NEEDED_COND += BAR_VR_PAR;
 	NEEDED_COND += PSI_PAR;
 	BorderCond brd[10];
-	calculateBorder(n, cell[n], NEEDED_COND, brd);
+	calculateBorder(n, cell[n], NEEDED_COND, brd, i, j);
 
 	double result = curCell.bar_psi * curCell.rho / cell[n+1][i][j].rho
 	    +
@@ -750,13 +752,6 @@ double final_calc_p(gasCell * prevCell, gasCell * curCell, int var) {
 		break;
 	}
 
-	if (i == 111 && j == 15) {
-		printf("123");
-	}
-	if (i == 110 && j == 15) {
-		printf("123");
-	}
-
 	if (result < 0) {
 		broken_dt = true;
 		cout << "P < 0" << endl;
@@ -786,7 +781,7 @@ double final_calc_Vx(cell2d& cell, int i, int j, int n,
 	NEEDED_COND += BAR_VX_PAR;
 	NEEDED_COND += BAR_VR_PAR;
 	BorderCond brd[10];
-	calculateBorder(n, cell[n], NEEDED_COND, brd);
+	calculateBorder(n, cell[n], NEEDED_COND, brd, i, j);
 
     double result = curCell.bar_Vx[0] * brd[RHO_POS].ij / cell[n+1][i][j].rho
     +
@@ -829,7 +824,7 @@ double final_calc_Vr(cell2d& cell, int i, int j, int n,
 	NEEDED_COND += BAR_VX_PAR;
 	NEEDED_COND += BAR_VR_PAR;
 	BorderCond brd[10];
-	calculateBorder(n, cell[n], NEEDED_COND, brd);
+	calculateBorder(n, cell[n], NEEDED_COND, brd, i, j);
 
     double result = curCell.bar_Vr[0] * brd[RHO_POS].ij / cell[n+1][i][j].rho
     +
@@ -866,7 +861,7 @@ double final_calc_e(cell2d& cell, int i, int j, int n,
 	NEEDED_COND += BAR_VX_PAR;
 	NEEDED_COND += BAR_E_PAR;
 	BorderCond brd[10];
-	calculateBorder(n, cell[n], NEEDED_COND, brd);
+	calculateBorder(n, cell[n], NEEDED_COND, brd, i, j);
 
     double result = curCell.bar_e * brd[RHO_POS].ij / cell[n+1][i][j].rho
     +
@@ -954,13 +949,13 @@ double final_calc_e(cell2d& cell, int i, int j, int n,
     return result;
 }
 
-double smooth_Vr(cell2d * cell) {
+double smooth_Vr(cell2d * cell, int i, int j) {
 	double result;
 
 	unsigned NEEDED_COND = 0;
 	NEEDED_COND += VR_PAR;
 	BorderCond brd[10];
-	calculateBorder(n, (*cell)[n], NEEDED_COND, brd);
+	calculateBorder(n, (*cell)[n], NEEDED_COND, brd,i,j);
 
 	result = 0.05 * brd[VR_POS].i_1j_1 + 0.05 * brd[VR_POS].ij_1 + 0.05 * brd[VR_POS].i1j_1 +
 			0.05 * brd[VR_POS].i_1j + 0.6 * brd[VR_POS].ij + 0.05 * brd[VR_POS].i1j +

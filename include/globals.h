@@ -61,7 +61,7 @@ static const int POWDER_EQ			= 2;
 static const int PISTON				= 3;
 
 
-extern int n, i, j, max_i, max_j, I_k, i_v, j_v, i_sn, j_sn, i_sn_0, P_f;
+extern int n, max_i, max_j, I_k, i_v, j_v, i_sn, j_sn, i_sn_0, P_f;
 extern double delta, delta_0, dx, dr, dt, p0, lambda, kappa, k, m_sn, max_z,max_z_0, f;
 extern double V0, P_atm, rho_atm, P_v;
 extern double dM0;

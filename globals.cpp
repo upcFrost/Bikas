@@ -3,8 +3,6 @@
 
 bool broken_dt = false;
 int n = 0;
-int i = 0;
-int j = 0;
 int max_i = 0;
 int max_j = 0;
 int I_k = 1.69*pow(10,6);

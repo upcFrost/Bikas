@@ -157,8 +157,8 @@ void OutputPVD(cell2d cell, std::string filename) {
 }
 
 void outputCSV(cell2d cell, std::ofstream & outputGas) {
-	for (i = 0; i < max_i; i++) {
-		for (j = 0; j < max_j; j++) {
+	for (int i = 0; i < max_i; i++) {
+		for (int j = 0; j < max_j; j++) {
 			outputGas << std::setiosflags(std::ios::fixed) << std::setprecision(10)
 				<< t.at(n) << "," 
 				<< i << "," 

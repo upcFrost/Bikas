@@ -303,7 +303,7 @@ void getLineAngle(cell2d cell, int i, int j, int n, Line2D& line,
 
 
 
-void setVertices(int weightCell, Point2D vertices[4], bool debug) {
+void setVertices(int weightCell, Point2D vertices[4], bool debug, int i, int j) {
 	int curI = i;
 	int curJ = j;
 	if (weightCell == 0) {
@@ -337,7 +337,7 @@ void setVertices(int weightCell, Point2D vertices[4], bool debug) {
 }
 
 void getMirrorVerts(Point2D vertices[4], Int2D vertices_ij[4], 
-	Line2D line, LineAngle2D angle, bool debug) {
+	Line2D line, LineAngle2D angle, bool debug, int i, int j) {
 		
 	for (unsigned int idx = 0; idx < 4; idx++) {
 		double dist = (
@@ -430,7 +430,7 @@ std::vector <TPoint2D> getExtPoints(Point2D vertices[4], Int2D vertices_ij[4]) {
 
 
 Int2D getMaxDifference(unsigned int max_i_point[2], unsigned int max_j_point[2],
-		Int2D vertices_ij[4], bool debug) {
+		Int2D vertices_ij[4], bool debug, int i, int j) {
 			
 	Int2D max_diff;
 	max_diff.i = -1;
@@ -698,21 +698,21 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 	
 	for (unsigned int weightCell = 0; weightCell < 3; weightCell++) {
 		// First, we'll set original cell's vertices
-		setVertices(weightCell, vertices, debug);
+		setVertices(weightCell, vertices, debug, i, j);
 		
 		// Determining line begin-end points and angle
 		getLineAngle(cell, i, j, n, line, angle, debug);
 		cell.at(n).at(i).at(j).angle = angle;
 		
 		// Getting mirrored over line vertices array
-		getMirrorVerts(vertices, vertices_ij, line, angle, debug);
+		getMirrorVerts(vertices, vertices_ij, line, angle, debug, i, j);
 		
 		// Getting all points of intersection between mirrored cell and grid
 		points = getExtPoints(vertices, vertices_ij);
 		
 		// Getting maximum i and j difference between mirrored vertices
 		max_diff = getMaxDifference(max_i_point, max_j_point,
-			vertices_ij, debug);
+			vertices_ij, debug, i, j);
 			
 		// Cleaning points from doubles (occures sometimes)
 		points = clearDoubles(points);
@@ -806,7 +806,8 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 
 
 
-void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl, BorderCond result[10]) {
+void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl,
+		BorderCond result[10], int i, int j) {
 
 	/* Dummy cells calc */
 	int type = cell[i][j].type;

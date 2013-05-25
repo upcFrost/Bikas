@@ -64,6 +64,6 @@ double new_final_z(cell2d& cell, int i, int j, int n, double dx, double dr,
 double new_final_psi(cell2d& cell, int i, int j, int n, double dx, double dr,
 		double dt);
 
-double smooth_Vr(cell2d * cell);
+double smooth_Vr(cell2d * cell, int i, int j);
 
 #endif	/* FUNCTIONS_H */

@@ -98,7 +98,7 @@ void initCellVector(cell2d & cell) {
 	cell.resize(1);
 	cell[n].resize(max_i);
 
-	for (i = 0; i < max_i; i++)
+	for (int i = 0; i < max_i; i++)
 	{
 	    cell[n][i].resize(max_j);
 	}
@@ -108,6 +108,8 @@ void populateCellVector(std::ifstream & inputFile, cell2d & cell, int var) {
 	std::string line;
 	std::string tmpLine;
 	int charNum = 0;
+	int i = 0;
+	int j = 0;
 
 	/* Skip header line */
 	std::getline(inputFile, line);

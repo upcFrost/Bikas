@@ -38,6 +38,13 @@ void finishInit(double e_0) {
 			"axis_j: %d\n\n",
 			P_v, e_0, psi_0, f, I_k, m_sn, k, kappa,
 			lambda, d, S, S_km, V_km, omega, delta_0, axis_j);
+
+	int numThreads = 0;
+#pragma omp parallel
+	{
+		numThreads = omp_get_num_threads();
+	}
+	printf("OpenMP loaded, number of threads: %d\n", numThreads);
 }
 
 
@@ -89,7 +96,7 @@ int main(int argc, char** argv) {
 		
 		/* Set A for projectile border - needed if starting with non-full cell */
 	    double arrayT[5] = {0};
-	    for (j = 2; j < max_j-2; j++) {
+	    for (int j = 2; j < max_j-2; j++) {
 		    euler_proj_broder(arrayT, j, x_sn.back(), dx, dr);
 			// For n
 			cell.at(n).at(i_sn-1).at(j).A[0] = arrayT[0];
@@ -171,8 +178,9 @@ int main(int argc, char** argv) {
 			
 			/* Euler stage */
 			/** TODO: change i_sn to max_i **/
-			for (i = 1; i < i_sn; i++) {
-				for (j = 1; j < max_j-1; j++) {
+#pragma omp parallel for num_threads(4)
+			for (int i = 1; i < i_sn; i++) {
+				for (int j = 1; j < max_j-1; j++) {
 					if (cell.at(n).at(i).at(j).type != 18) {
 						gasCell * curCell = &cell.at(n).at(i).at(j);
 
@@ -186,8 +194,9 @@ int main(int argc, char** argv) {
 			}
 			
 			/* Lagrange stage */
-			for (i = 1; i < i_sn; i++) {
-				for (j = 1; j < max_j-1; j++) {
+#pragma omp parallel for num_threads(4)
+			for (int i = 1; i < i_sn; i++) {
+				for (int j = 1; j < max_j-1; j++) {
 					if (cell.at(n).at(i).at(j).type != 18) {
 						gasCell * curCell = &cell.at(n).at(i).at(j);
 						gasCell * nextTCell = &cell.at(n+1).at(i).at(j);
@@ -200,14 +209,16 @@ int main(int argc, char** argv) {
 							curCell->dM[iter] = fabs(array[iter]);
 							curCell->D[iter] = array[4+iter];
 						}
-						nextTCell->rho = lagrange_rho(&cell.at(n).at(i).at(j),&cell.at(n-1).at(i).at(j),i,j,dt,dx,dr);
+						nextTCell->rho = lagrange_rho(&cell.at(n).at(i).at(j),
+								&cell.at(n-1).at(i).at(j),i,j,dt,dx,dr);
 					}
 				}
 			}
 			
 			/* Final stage */
-			for (i = 1; i < i_sn; i++) {
-				for (j = 1; j < max_j-1; j++) {
+#pragma omp parallel for num_threads(4)
+			for (int i = 1; i < i_sn; i++) {
+				for (int j = 1; j < max_j-1; j++) {
 					if (cell.at(n).at(i).at(j).type != 18) {
 						gasCell * nextTCell = &cell.at(n+1).at(i).at(j);
 						
@@ -359,9 +370,9 @@ int main(int argc, char** argv) {
 			t.push_back(t.at(t.size()-1) + dt);
 			vector <double> array;
 			vector <double> minimum;
-			for (i = 0; i < max_i; i++) {
+			for (int i = 0; i < max_i; i++) {
 				array.resize(max_j);
-				for (j = 0; j < max_j; j++) {
+				for (int j = 0; j < max_j; j++) {
 					array[j] = fmin(dx,dr) / ( sqrt( fabs (
 							k * cell.at(n+1).at(i).at(j).P[0] /
 							cell.at(n+1).at(i).at(j).rho))
@@ -400,7 +411,8 @@ int main(int argc, char** argv) {
 			
 			
 			/* Output to file */
-			if (fabs(t.back() - timestep) > pow(10.0,-5) || need_out) {
+			if (iteration % 10 == 0) {
+//			if (fabs(t.back() - timestep) > pow(10.0,-5) || need_out) {
 				timestep = t.back();
 				
 				/* Dynamics - to csv */
