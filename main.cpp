@@ -154,7 +154,7 @@ int main(int argc, char** argv) {
 		double speed = 0;
 		bool need_out;
 		int iteration = 0;
-		//~ while (x_sn.at(x_sn.size()-1) < (max_i-8)*dx) {
+//		while (x_sn.at(x_sn.size()-1) < (max_i-8)*dx) {
 		while (iteration < iter_count) {
 			/** Test - Riemann problem 2 **/
 			//~ if (iteration == 10) x_sn.back() += dx * 0.05;
@@ -178,7 +178,7 @@ int main(int argc, char** argv) {
 			
 			/* Euler stage */
 			/** TODO: change i_sn to max_i **/
-#pragma omp parallel for num_threads(4)
+#pragma omp parallel for num_threads(4) schedule(dynamic,1) collapse(2)
 			for (int i = 1; i < i_sn; i++) {
 				for (int j = 1; j < max_j-1; j++) {
 					if (cell.at(n).at(i).at(j).type != 18) {
@@ -194,7 +194,7 @@ int main(int argc, char** argv) {
 			}
 			
 			/* Lagrange stage */
-#pragma omp parallel for num_threads(4)
+#pragma omp parallel for num_threads(4) schedule(dynamic,1) collapse(2)
 			for (int i = 1; i < i_sn; i++) {
 				for (int j = 1; j < max_j-1; j++) {
 					if (cell.at(n).at(i).at(j).type != 18) {
@@ -216,7 +216,7 @@ int main(int argc, char** argv) {
 			}
 			
 			/* Final stage */
-#pragma omp parallel for num_threads(4)
+#pragma omp parallel for num_threads(4) schedule(dynamic,1) collapse(2)
 			for (int i = 1; i < i_sn; i++) {
 				for (int j = 1; j < max_j-1; j++) {
 					if (cell.at(n).at(i).at(j).type != 18) {
@@ -373,14 +373,18 @@ int main(int argc, char** argv) {
 			for (int i = 0; i < max_i; i++) {
 				array.resize(max_j);
 				for (int j = 0; j < max_j; j++) {
-					array[j] = fmin(dx,dr) / ( sqrt( fabs (
-							k * cell.at(n+1).at(i).at(j).P[0] /
-							cell.at(n+1).at(i).at(j).rho))
-							+
-							sqrt(pow(cell.at(n+1).at(i).at(j).Vx[0],2) + pow(cell.at(n+1).at(i).at(j).Vr[0],2))
-						);
-//					array[j] = fabs(dx/cell.at(n+1).at(i).at(j).Vx[0]) + fabs(dr/cell.at(n+1).at(i).at(j).Vr[0]);
-//					if (array[j] < 0) array[j] = pow(10,-6);
+					if (cell.at(n).at(i).at(j).A[0] != 0) {
+						gasCell * c_0 = &cell.at(n).at(i).at(j);
+						gasCell * curCell = &cell.at(n+1).at(i).at(j);
+						array[j] = fmin(dx*c_0->A[0],dr*c_0->A[0]) /
+							(
+								sqrt( fabs (k * curCell->P[0] /	curCell->rho))
+								+
+								sqrt(pow(curCell->Vx[0],2) + pow(curCell->Vr[0],2))
+							);
+					} else {
+						array[j] = 1;
+					}
 				}
 				minimum.push_back(*min_element(array.begin(), array.end()));
 			}
@@ -405,7 +409,7 @@ int main(int argc, char** argv) {
 				dt = next;
 			}
 			
-			if (dt > 0.5*pow(10.0,-4)/scaleT) dt = 0.5*pow(10.0,-4)/scaleT;
+			if (dt > Ku*pow(10.0,-6)/scaleT) dt = Ku*pow(10.0,-6)/scaleT;
 			cout << "\r Num: " << iteration << ", dt: " << dt << ", speed: " << speed << " sec / 1000 iter, x_sn: " << x_sn.at(x_sn.size()-1) << ", Ak: " << cell.at(n-1).at(i_sn-1).at(4).A[0]/cell.at(n).at(i_sn-1).at(4).A[0];
 			
 			
