@@ -126,14 +126,7 @@ double euler_bar_Vx(cell2d& cell, int n, int i, int j,
 		break;
 	}
 
-
-    if (i == 101 && j == 31) {
-    	gasCell cell0 = cell[n][i][j-2];
-		gasCell cell1 = cell[n][i][j-1];
-		gasCell cell2 = cell[n][i][j];
-		printf("123");
-	}
-    if (fabs(result-brd[VX_POS].ij) < pow(10.0,-14)) result = brd[VX_POS].ij;
+    if (fabs(result-brd[VX_POS].ij) < pow(10.0,-12)) result = brd[VX_POS].ij;
 	return result;
 }
 
@@ -161,12 +154,12 @@ double euler_bar_Vr(cell2d& cell, int n, int i, int j,
 	borderArray[6] = brd[6];
 	borderArray[7] = brd[7];
 
-    double P_j12 = (brd[P_POS].ij1 + brd[P_POS].ij)/2 *
-    		(1 - (k-1)*(brd[VR_POS].ij1 - brd[VR_POS].ij)*dt/dr);
-	double P_j_12 = (brd[P_POS].ij_1 + brd[P_POS].ij)/2 *
-			(1 - (k-1)*(brd[VR_POS].ij - brd[VR_POS].ij_1)*dt/dr);
-//	double P_j12 = (brd[P_POS].ij1 + brd[P_POS].ij)/2;
-//	double P_j_12 = (brd[P_POS].ij_1 + brd[P_POS].ij)/2;
+//    double P_j12 = (brd[P_POS].ij1 + brd[P_POS].ij)/2 *
+//    		(1 - (k-1)*(brd[VR_POS].ij1 - brd[VR_POS].ij)*dt/dr);
+//	double P_j_12 = (brd[P_POS].ij_1 + brd[P_POS].ij)/2 *
+//			(1 - (k-1)*(brd[VR_POS].ij - brd[VR_POS].ij_1)*dt/dr);
+	double P_j12 = (brd[P_POS].ij1 + brd[P_POS].ij)/2;
+	double P_j_12 = (brd[P_POS].ij_1 + brd[P_POS].ij)/2;
 
 	switch (var) {
 	case FIRST_ORDER:
@@ -243,7 +236,7 @@ double euler_bar_Vr(cell2d& cell, int n, int i, int j,
     /** Cleaning noise **/
     //~ if (fabs(curCell.P[4] - curCell.P[3]) < pow(10,-5)/scaleV) result = curCell.Vr[0];
 
-	if (fabs(result-curCell.Vr[0]) < pow(10.0,-14)) result = curCell.Vr[0];
+	if (fabs(result-curCell.Vr[0]) < pow(10.0,-12)) result = curCell.Vr[0];
 	return result;
 }
 
@@ -407,7 +400,7 @@ double euler_bar_e(cell2d& cell, int n, int i, int j,
             //~ cell->A[0] * cell->rho
         //~ );
 
-	if (fabs(result-brd[E_POS].ij) < pow(10.0,-14)) result = brd[E_POS].ij;
+	if (fabs(result-brd[E_POS].ij) < pow(10.0,-12)) result = brd[E_POS].ij;
 	if (result == result) { // if not NaN
 		return result;
 	} else {
@@ -495,9 +488,6 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 	double Vr_j_12 = (brd[BAR_VR_POS].ij_1 + brd[BAR_VR_POS].ij)/2;
 	double Vr_j12 = (brd[BAR_VR_POS].ij1 + brd[BAR_VR_POS].ij)/2;
 
-	if (i == i_sn-1 && j == 10)
-		printf("123");
-
 	/** First order **/
 	bool ruleVx1 = Vx_i_12 > 0 ? true : false;
 	bool ruleVx2 = Vx_i12 > 0 ? true : false;
@@ -519,16 +509,20 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 	if (fabs(array[2]) < pow(10.0,-14)) array[2] = 0;
 
 	if (ruleVr1) {
-		array[3] = cell[n][i][j-1].A[4] * brd[RHO_POS].ij_1 * Vr_j_12 * j*dx*dr * dt;
+//		array[3] = cell[n][i][j-1].A[4] * brd[RHO_POS].ij_1 * Vr_j_12 * j*dx*dr * dt;
+		array[3] = cell[n][i][j-1].A[4] * brd[RHO_POS].ij_1 * Vr_j_12 * dx * dt;
 	} else {
-		array[3] = curCell.A[3] * brd[RHO_POS].ij * Vr_j_12 * j*dx*dr * dt;
+//		array[3] = curCell.A[3] * brd[RHO_POS].ij * Vr_j_12 * j*dx*dr * dt;
+		array[3] = curCell.A[3] * brd[RHO_POS].ij * Vr_j_12 * dx * dt;
 	}
 	if (fabs(array[3]) < pow(10.0,-14)) array[3] = 0;
 
 	if (ruleVr2) {
-		array[4] = curCell.A[4] * brd[RHO_POS].ij * Vr_j12 * (j+1)*dx*dr * dt;
+//		array[4] = curCell.A[4] * brd[RHO_POS].ij * Vr_j12 * (j+1)*dx*dr * dt;
+		array[4] = curCell.A[4] * brd[RHO_POS].ij * Vr_j12 * dx * dt;
 	} else {
-		array[4] = cell[n][i][j+1].A[3] * brd[RHO_POS].ij1 * Vr_j12 * (j+1)*dx*dr * dt;
+//		array[4] = cell[n][i][j+1].A[3] * brd[RHO_POS].ij1 * Vr_j12 * (j+1)*dx*dr * dt;
+		array[4] = cell[n][i][j+1].A[3] * brd[RHO_POS].ij1 * Vr_j12 * dx * dt;
 	}
 	if (fabs(array[4]) < pow(10.0,-14)) array[4] = 0;
 
@@ -541,7 +535,6 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
     	gasCell cell0 = cell[n][i][j-2];
 		gasCell cell1 = cell[n][i][j-1];
 		gasCell cell2 = cell[n][i][j];
-		printf("123");
 	}
     double debugArray[21];
     for (int idx = 0; idx < 21; idx++) {
@@ -807,9 +800,6 @@ double final_calc_Vx(cell2d& cell, int i, int j, int n,
 		printf("Vx is NaN!");
 		getchar();
 	}
-	if (i == i_sn-1 && j == 10) {
-		printf("123");
-	}
     return result;
 }
 
@@ -883,12 +873,6 @@ double final_calc_e(cell2d& cell, int i, int j, int n,
 	    (1-curCell.D[4]) * curCell.bar_e * curCell.dM[4] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
 	)
     ;
-    if (i == 101 && j == 31) {
-    	gasCell cell0 = cell[n][i][j-2];
-		gasCell cell1 = cell[n][i][j-1];
-		gasCell cell2 = cell[n][i][j];
-		printf("123");
-	}
 	if (result < 0) {
 		cout << "E < 0" << endl;
 		cout << "i = " << i << endl

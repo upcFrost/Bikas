@@ -164,7 +164,7 @@ void projBorderMove(cell2dStatic & cell) {
 	}
 }
 
-void projParCalc(cell2d & cell, int i_sn_prev, int var) {
+void projParCalc(cell2d & cell, int i_sn_prev, int var, bool debug) {
 	for (int j = 0; j < max_j; j++) {
 		if (cell.at(n).at(i_sn-1).at(j).type != 18) {
 			gasCell * curCell = &cell.at(n).at(i_sn-1).at(j);
@@ -173,13 +173,19 @@ void projParCalc(cell2d & cell, int i_sn_prev, int var) {
 			double newP = 0;
 
 			if (i_sn_prev == i_sn) {
-				if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
-				if (j == 2) printf("Prev A[0] = %16.16f\n",cell.at(n-1).at(i_sn-1).at(j).A[0]);
+				if (debug) {
+					if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
+					if (j == 2) printf("Prev A[0] = %16.16f\n",
+							cell.at(n-1).at(i_sn-1).at(j).A[0]);
+				}
 				barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
 				Qi = (cell.at(n-1).at(i_sn-1).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 			} else {
-				if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
-				if (j == 2) printf("Prev A[0] = %16.16f\n",cell.at(n-1).at(i_sn-2).at(j).A[0]);
+				if (debug) {
+					if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
+					if (j == 2) printf("Prev A[0] = %16.16f\n",
+							cell.at(n-1).at(i_sn-2).at(j).A[0]);
+				}
 				barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
 				Qi = (cell.at(n-1).at(i_sn-2).at(j).A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 			}
@@ -220,13 +226,15 @@ void projParCalc(cell2d & cell, int i_sn_prev, int var) {
 			}
 
 			/** DEBUG **/
-			if (j == 2) printf("Old rho = %8.8f\n", curCell->rho);
-			if (j == 2) printf("Qi = %10.10f\n",Qi);
-			if (j == 2) printf("barQi = %10.10f\n",barQi);
-			if (j == 2) printf("delta rho = %10.10f\n",curCell->rho - newRho);
-			if (j == 2) printf("delta P = %10.10f\n",curCell->P[0] - newP);
-			if (j == 2) debug_projectile_par(i_sn, j, borderP, newRho,
-					newVx, newE, newP, curCell->final_psi, x_sn.back());
+			if (debug) {
+				if (j == 2) printf("Old rho = %8.8f\n", curCell->rho);
+				if (j == 2) printf("Qi = %10.10f\n",Qi);
+				if (j == 2) printf("barQi = %10.10f\n",barQi);
+				if (j == 2) printf("delta rho = %10.10f\n",curCell->rho - newRho);
+				if (j == 2) printf("delta P = %10.10f\n",curCell->P[0] - newP);
+				if (j == 2) debug_projectile_par(i_sn, j, borderP, newRho,
+						newVx, newE, newP, curCell->final_psi, x_sn.back());
+			}
 
 			curCell->P[0] = newP;
 			curCell->e = newE;
@@ -236,13 +244,13 @@ void projParCalc(cell2d & cell, int i_sn_prev, int var) {
 	}
 }
 
-void projCalc(cell2d & cell, int var) {
+void projCalc(cell2d & cell, int var, bool debug) {
 	double P_sn = 0; int top_j = 0; int bottom_j = 0;
 	int i_sn_prev = i_sn;
 	projPCalc(cell.at(n), P_sn, top_j, bottom_j);
 	projSpeedPositionCalc(cell.at(n), P_sn, top_j, bottom_j);
 	projCheckIfChanged(cell.at(n), cell.at(n+1), i_sn_prev);
 	projBorderMove(cell.at(n));
-	projParCalc(cell, i_sn_prev, var);
+	projParCalc(cell, i_sn_prev, var, debug);
 }
 

@@ -56,6 +56,7 @@ int main(int argc, char** argv) {
     bool verbose = false;
     int gasVar = IDEAL_GAS;
     double timestep = 0;
+    bool debug = false;
     
     t.resize(1);
     x_sn.resize(1);
@@ -79,7 +80,15 @@ int main(int argc, char** argv) {
     		printf("\nInvalid input, please try again\n");
     		scanf("%d", &gasVar);
     	}
-    	init(inputFile, cell, gasVar);
+
+    	int debugOutput = 0;
+		printf("\nDo you need debug output? (1 - yes, any other digit - no)\n");
+		scanf("%d", &debugOutput);
+		if (debugOutput == 1) {
+			debug = true;
+		}
+
+    	init(inputFile, cell, gasVar, debug);
 
 		/** Test - Riemann problem 1 **/
     	int riemannTest = 0;
@@ -89,6 +98,7 @@ int main(int argc, char** argv) {
     		i_sn = max_i - 10;
     		x_sn.back() = i_sn * dx;
     	}
+
 				
 		/* Prepare output files */
 		prepOutputDynCSV(outputDyn);
@@ -156,12 +166,6 @@ int main(int argc, char** argv) {
 		int iteration = 0;
 //		while (x_sn.at(x_sn.size()-1) < (max_i-8)*dx) {
 		while (iteration < iter_count) {
-			/** Test - Riemann problem 2 **/
-			//~ if (iteration == 10) x_sn.back() += dx * 0.05;
-			//~ if (iteration == 11) x_sn.back() += dx * 0.05;
-			//~ if (iteration == 12) x_sn.back() += dx * 0.05;
-			//~ if (iteration == 13) x_sn.back() += dx * 0.05;
-			
 			need_out = false;
 			if (iteration % 1000 == 0 && iteration > 0) {
 				stop = clock();
@@ -174,7 +178,7 @@ int main(int argc, char** argv) {
 			n = cell.size() - 2;
 			
 			/* Projectile-related calculation */
-			projCalc(cell, gasVar);
+			projCalc(cell, gasVar, debug);
 			
 			/* Euler stage */
 			/** TODO: change i_sn to max_i **/
@@ -374,9 +378,7 @@ int main(int argc, char** argv) {
 				array.resize(max_j);
 				for (int j = 0; j < max_j; j++) {
 					if (cell.at(n).at(i).at(j).A[0] != 0) {
-						gasCell * c_0 = &cell.at(n).at(i).at(j);
 						gasCell * curCell = &cell.at(n+1).at(i).at(j);
-//						array[j] = fmin(dx*c_0->A[0],dr*c_0->A[0]) /
 						array[j] = fmin(dx,dr) /
 							(
 								sqrt( fabs (k * curCell->P[0] /	curCell->rho))
@@ -390,17 +392,18 @@ int main(int argc, char** argv) {
 				minimum.push_back(*min_element(array.begin(), array.end()));
 			}
 			
-			int debug_I = i_sn-1, debug_J = 15;
-			if (true && debug_I != 0 && debug_J != 0) {
-				int nArray = 3; int *iArray = new int[nArray]; int *jArray = new int[nArray];
-				iArray[0] = debug_I-2; jArray[0] = debug_J;
-				iArray[1] = debug_I-1; jArray[1] = debug_J;
-				iArray[2] = debug_I; jArray[2] = debug_J;
-				debug_Vx_Vr_P_A_barVx_output(n, nArray, iArray, jArray, cell);
-				debug_dM_rho_output(n, nArray, iArray, jArray, cell);
-				debug_p_output(n, nArray, iArray, jArray, cell);
-				debug_final_output(n, nArray, iArray, jArray, cell);
-
+			if (debug) {
+				int debug_I = i_sn-1, debug_J = 15;
+				if (true && debug_I != 0 && debug_J != 0) {
+					int nArray = 3; int *iArray = new int[nArray]; int *jArray = new int[nArray];
+					iArray[0] = debug_I-2; jArray[0] = debug_J;
+					iArray[1] = debug_I-1; jArray[1] = debug_J;
+					iArray[2] = debug_I; jArray[2] = debug_J;
+					debug_Vx_Vr_P_A_barVx_output(n, nArray, iArray, jArray, cell);
+					debug_dM_rho_output(n, nArray, iArray, jArray, cell);
+					debug_p_output(n, nArray, iArray, jArray, cell);
+					debug_final_output(n, nArray, iArray, jArray, cell);
+				}
 			}
 
 			double next = Ku * *min_element(minimum.begin(), minimum.end());

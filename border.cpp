@@ -381,7 +381,8 @@ bool onCross(double x, double y) {
 	return (fmod(x+deltaX,dx) < delta && fmod(y+deltaY,dr) < delta);
 }
 
-std::vector <TPoint2D> getExtPoints(Point2D vertices[4], Int2D vertices_ij[4]) {
+std::vector <TPoint2D> getExtPoints(Point2D vertices[4],
+		Int2D vertices_ij[4], bool debug) {
 	/**
 	 * Axis intersections and point types
 	 * 
@@ -397,8 +398,13 @@ std::vector <TPoint2D> getExtPoints(Point2D vertices[4], Int2D vertices_ij[4]) {
 		point.x = vertices[idx1].x; point.y = vertices[idx1].y;
 		point.type = 0;
 		result.push_back(point);
-		std::string cross = onCross(point.x, point.y) ? "true" : "false";
-		printf("onCross returned %s for point %6.6f:%6.6f\n", cross.c_str(), point.x, point.y);
+
+		if (debug) {
+			std::string cross = onCross(point.x, point.y) ? "true" : "false";
+			printf("onCross returned %s for point %6.6f:%6.6f\n",
+					cross.c_str(), point.x, point.y);
+		}
+
 		if (onCross(point.x,point.y)) {
 			continue;
 		}
@@ -566,7 +572,8 @@ std::vector <TPoint2D> getIntPoints(std::vector <TPoint2D> points,
 			for (int j = minJ-1; j <= maxJ+1; j++) {
 				int ans = pnpoly(nvert, vertx, verty, i*dx, j*dr);
 				if (ans == 1) {
-					if (debug) printf("pnpoly returned %d on point %d:%d\n", ans, i, j);
+					if (debug)
+						printf("pnpoly returned %d on point %d:%d\n", ans, i, j);
 					point.x = i*dx; point.y = j*dr; point.type = 2;
 					points.push_back(point);
 				}
@@ -634,8 +641,10 @@ std::vector <TPoint2D> getPointsInCell(unsigned int idx,
 		rule[3] = points.at(idx2).y < (cells.at(idx).j+1)*dr + delta;
 		if (rule[0] && rule[1] && rule[2] && rule[3]) {
 			pointsInCell.push_back(points.at(idx2));
-			if (debug) printf("Cell %u: %4.4f:%4.4f, type %d \n", 
-			    idx,points.at(idx2).x,points.at(idx2).y,points.at(idx2).type);
+			if (debug)
+				printf("Cell %u: %4.4f:%4.4f, type %d \n",
+						idx,points.at(idx2).x,points.at(idx2).y,
+						points.at(idx2).type);
 		}
 	}
 	
@@ -671,11 +680,12 @@ bool DoLineSegmentsIntersect(double x1, double y1, double x2, double y2,
          (d4 == 0 && IsOnSegment(x1, y1, x2, y2, x4, y4));
 }
 
-//TODO: Fix it
 std::vector <TPoint2D> fixIntPointID(std::vector <TPoint2D> pointsInCell,
 		bool debug) {
 	
-	if (debug) printf("We have an internal point!\n");
+	if (debug)
+		printf("We have an internal point!\n");
+
 	unsigned int intIdx = 100;
 	TPoint2D intPoint;
 	for (unsigned int idx2 = 0; idx2 < pointsInCell.size(); idx2++) {
@@ -711,7 +721,8 @@ std::vector <TPoint2D> fixIntPointID(std::vector <TPoint2D> pointsInCell,
 			}
 		}
 		if (!intersect && idx2 != 0) {
-			printf("point will be placed between %u and %u\n", idx2, idx2+1);
+			if (debug)
+				printf("point will be placed between %u and %u\n", idx2, idx2+1);
 			std::vector<TPoint2D>::iterator it = pointsInCell.begin();
 			pointsInCell.erase(it+intIdx);
 			pointsInCell.insert(it+idx2+1, intPoint);
@@ -723,15 +734,17 @@ std::vector <TPoint2D> fixIntPointID(std::vector <TPoint2D> pointsInCell,
 }
 
 
-Vector2dVector triangulateCell(std::vector <TPoint2D> points) {
+Vector2dVector triangulateCell(std::vector <TPoint2D> points, bool debug) {
 	Vector2dVector a;
 	Vector2dVector result;
 
 	for (unsigned int idx = 0; idx < points.size(); idx++) {
 		a.push_back( Vector2d(points.at(idx).x, points.at(idx).y) );
 	}
-	printf("Size of point vector %u\n", a.size());
-	printf("Area from triangulate = %6.6f\n", Triangulate::Area(a));
+	if (debug) {
+		printf("Size of point vector %u\n", (unsigned int) a.size());
+		printf("Area from triangulate = %6.6f\n", Triangulate::Area(a));
+	}
 	Triangulate::Process(a, result);
 	return result;
 }
@@ -897,7 +910,7 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 		getMirrorVerts(vertices, vertices_ij, line, angle, debug, i, j);
 		
 		// Getting all points of intersection between mirrored cell and grid
-		points = getExtPoints(vertices, vertices_ij);
+		points = getExtPoints(vertices, vertices_ij, debug);
 		
 		// Getting maximum i and j difference between mirrored vertices
 		max_diff = getMaxDifference(max_i_point, max_j_point,
@@ -934,9 +947,7 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 				points, cells, debug);
 			if (pointsInCell.size() < 3)
 				continue;
-			// Try to fix IDs
-//			pointsInCell = fixIntPointID(pointsInCell, debug);
-//			std::vector <TPoint2D> testPoints = pointsInCell;
+			// Reorder IDs
 			pointsInCell = fixPointOrder(pointsInCell);
 			if (debug) {
 				printf("test points in order: \n");
@@ -947,7 +958,7 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 			}
 			getchar();
 			// Triangulate
-			Vector2dVector triangles = triangulateCell(pointsInCell);
+			Vector2dVector triangles = triangulateCell(pointsInCell, debug);
 			int tcount = triangles.size()/3;
 			// Now we'll use the result in polygonArea function
 			double area = 0;
@@ -978,20 +989,20 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 			totalWeight += weightPart.weight;
 		}
 //		 Scaling to 1
-		double scale = 1.0/totalWeight;
-		if (weightCell == 0) {
-			for (unsigned int idx = 0; idx < result.x.size(); idx++) {
-				result.x.at(idx).weight *= scale;
-			}
-		} else if (weightCell == 1) {
-			for (unsigned int idx = 0; idx < result.y.size(); idx++) {
-				result.y.at(idx).weight *= scale;
-			}
-		} else if (weightCell == 2) {
-			for (unsigned int idx = 0; idx < result.xy.size(); idx++) {
-				result.xy.at(idx).weight *= scale;
-			}
-		}
+//		double scale = 1.0/totalWeight;
+//		if (weightCell == 0) {
+//			for (unsigned int idx = 0; idx < result.x.size(); idx++) {
+//				result.x.at(idx).weight *= scale;
+//			}
+//		} else if (weightCell == 1) {
+//			for (unsigned int idx = 0; idx < result.y.size(); idx++) {
+//				result.y.at(idx).weight *= scale;
+//			}
+//		} else if (weightCell == 2) {
+//			for (unsigned int idx = 0; idx < result.xy.size(); idx++) {
+//				result.xy.at(idx).weight *= scale;
+//			}
+//		}
 	}
 
 	printf("Weights for cell %d:%d\n",i,j);
@@ -2486,15 +2497,15 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl,
 				result[3].i1j_1 	= cell[i][j].e;
 			}
 			if (isSet_rho) {
-				result[4].i_1j1 = cell[i-1][j+1].rho;
-				result[4].ij1 = cell[i][j+1].rho;
-				result[4].i1j1 = cell[i][j+1].rho;
-				result[4].i_1j = cell[i-1][j].rho;
-				result[4].ij = cell[i][j].rho;
-				result[4].i1j = cell[i][j].rho;
-				result[4].i_1j_1 = cell[i-1][j].rho;
-				result[4].ij_1 = cell[i][j].rho;
-				result[4].i1j_1 = cell[i][j].rho;
+				result[4].i_1j1 	= cell[i-1][j+1].rho;
+				result[4].ij1 		= cell[i][j+1].rho;
+				result[4].i1j1 		= cell[i][j+1].rho;
+				result[4].i_1j 		= cell[i-1][j].rho;
+				result[4].ij 		= cell[i][j].rho;
+				result[4].i1j 		= cell[i][j].rho;
+				result[4].i_1j_1 	= cell[i-1][j].rho;
+				result[4].ij_1 		= cell[i][j].rho;
+				result[4].i1j_1 	= cell[i][j].rho;
 			}
 			if (isSet_barVx) {
 				result[5].i_1j1 	= cell[i-1][j+1].bar_Vx[0];
@@ -2635,45 +2646,45 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl,
 				result[9].i_1j_1 = cell[i-1][j-1].bar_psi;	result[9].ij_1 = cell[i][j-1].bar_psi;	result[9].i1j_1 = cell[i][j-1].bar_psi;
 			}
 
-//			for (unsigned int idx = 0; idx < 10; idx++) {
-//				result[idx].i1j = 0;
-//			}
-//			for (unsigned int idx = 0; idx < cell[i][j].weightVector.x.size(); idx++) {
-//				Int2D weightCell;
-//				double weight = cell[i][j].weightVector.x.at(idx).weight;
-//				weightCell.i = cell[i][j].weightVector.x.at(idx).i;
-//				weightCell.j = cell[i][j].weightVector.x.at(idx).j;
-//				if (isSet_P) {
-//					result[0].i1j += weight*cell[weightCell.i][weightCell.j].P[0];
-//				}
-//				if (isSet_Vx) {
-//					result[1].i1j -= weight*cell[weightCell.i][weightCell.j].Vx[0];
-//				}
-//				if (isSet_Vr) {
-//					result[2].i1j -= weight*cell[weightCell.i][weightCell.j].Vr[0];
-//				}
-//				if (isSet_E) {
-//					result[3].i1j += weight*cell[weightCell.i][weightCell.j].e;
-//				}
-//				if (isSet_rho) {
-//					result[4].i1j += weight*cell[weightCell.i][weightCell.j].rho;
-//				}
-//				if (isSet_barVx) {
-//					result[5].i1j -= weight*cell[weightCell.i][weightCell.j].bar_Vx[0];
-//				}
-//				if (isSet_barVr) {
-//					result[6].i1j -= weight*cell[weightCell.i][weightCell.j].bar_Vr[0];
-//				}
-//				if (isSet_barE) {
-//					result[7].i1j += weight*cell[weightCell.i][weightCell.j].bar_e;
-//				}
-//				if (isSet_z) {
-//					result[8].i1j += weight*cell[weightCell.i][weightCell.j].bar_z;
-//				}
-//				if (isSet_psi) {
-//					result[9].i1j += weight*cell[weightCell.i][weightCell.j].bar_psi;
-//				}
-//			}
+			for (unsigned int idx = 0; idx < 10; idx++) {
+				result[idx].i1j = 0;
+			}
+			for (unsigned int idx = 0; idx < cell[i][j].weightVector.x.size(); idx++) {
+				Int2D weightCell;
+				double weight = cell[i][j].weightVector.x.at(idx).weight;
+				weightCell.i = cell[i][j].weightVector.x.at(idx).i;
+				weightCell.j = cell[i][j].weightVector.x.at(idx).j;
+				if (isSet_P) {
+					result[0].i1j += weight*cell[weightCell.i][weightCell.j].P[0];
+				}
+				if (isSet_Vx) {
+					result[1].i1j -= weight*cell[weightCell.i][weightCell.j].Vx[0];
+				}
+				if (isSet_Vr) {
+					result[2].i1j -= weight*cell[weightCell.i][weightCell.j].Vr[0];
+				}
+				if (isSet_E) {
+					result[3].i1j += weight*cell[weightCell.i][weightCell.j].e;
+				}
+				if (isSet_rho) {
+					result[4].i1j += weight*cell[weightCell.i][weightCell.j].rho;
+				}
+				if (isSet_barVx) {
+					result[5].i1j -= weight*cell[weightCell.i][weightCell.j].bar_Vx[0];
+				}
+				if (isSet_barVr) {
+					result[6].i1j -= weight*cell[weightCell.i][weightCell.j].bar_Vr[0];
+				}
+				if (isSet_barE) {
+					result[7].i1j += weight*cell[weightCell.i][weightCell.j].bar_e;
+				}
+				if (isSet_z) {
+					result[8].i1j += weight*cell[weightCell.i][weightCell.j].bar_z;
+				}
+				if (isSet_psi) {
+					result[9].i1j += weight*cell[weightCell.i][weightCell.j].bar_psi;
+				}
+			}
 
 			for (unsigned int idx = 0; idx < 10; idx++) {
 				result[idx].ij1 = 0;

@@ -104,7 +104,8 @@ void initCellVector(cell2d & cell) {
 	}
 }
 
-void populateCellVector(std::ifstream & inputFile, cell2d & cell, int var) {
+void populateCellVector(std::ifstream & inputFile, cell2d & cell,
+		int var, bool debug) {
 	std::string line;
 	std::string tmpLine;
 	int charNum = 0;
@@ -155,7 +156,7 @@ void populateCellVector(std::ifstream & inputFile, cell2d & cell, int var) {
 		pre_cell_geometry(A, cell.at(n).at(i).at(j), i, j);
 		if (curCell->type == 1 || curCell->type == 3 ||	curCell->type == 8 ||
 				curCell->type == 10 || curCell->type == 22 )	{
-			curCell->weightVector = wightVectorsCalc(cell, i, j, n, true);
+			curCell->weightVector = wightVectorsCalc(cell, i, j, n, debug);
 		}
 		for (unsigned int iter = 0; iter < 5; iter++)
 			curCell->A[iter] = A[iter];
@@ -206,10 +207,10 @@ void populateCellVector(std::ifstream & inputFile, cell2d & cell, int var) {
 	}
 }
 
-void init(std::ifstream & inputFile, cell2d & cell, int var) {
+void init(std::ifstream & inputFile, cell2d & cell, int var, bool debug) {
 	getGlobalVars(inputFile);
 	U_sn.at(0) = 0;
 	scaleGlobalVars();
 	initCellVector(cell);
-	populateCellVector(inputFile, cell, var);
+	populateCellVector(inputFile, cell, var, debug);
 }

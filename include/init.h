@@ -11,7 +11,7 @@
 #include "globals.h"
 #include "border.h"
 
-void init(std::ifstream & inputFile, cell2d & cell, int var);
+void init(std::ifstream & inputFile, cell2d & cell, int var, bool debug);
 
 
 #endif /* INIT_H_ */
