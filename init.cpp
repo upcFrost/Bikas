@@ -155,7 +155,7 @@ void populateCellVector(std::ifstream & inputFile, cell2d & cell, int var) {
 		pre_cell_geometry(A, cell.at(n).at(i).at(j), i, j);
 		if (curCell->type == 1 || curCell->type == 3 ||	curCell->type == 8 ||
 				curCell->type == 10 || curCell->type == 22 )	{
-			curCell->weightVector = wightVectorsCalc(cell, i, j, n, false);
+			curCell->weightVector = wightVectorsCalc(cell, i, j, n, true);
 		}
 		for (unsigned int iter = 0; iter < 5; iter++)
 			curCell->A[iter] = A[iter];

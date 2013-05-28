@@ -171,9 +171,9 @@ double euler_bar_Vr(cell2d& cell, int n, int i, int j,
 	switch (var) {
 	case FIRST_ORDER:
 		/** First order **/
-		result = curCell.Vr[0] - (P_j12 - P_j_12)
-			/ brd[RHO_POS].ij * dt / curCell.A[0] *
-			fmax(curCell.A[4],curCell.A[3]) / dr;
+		result = curCell.Vr[0] -
+			(P_j12 - P_j_12) / dx * fmax(curCell.A[3], curCell.A[4]) * dt
+			/ (curCell.rho * curCell.A[0]);
 		break;
 
 	case SECOND_ORDER:

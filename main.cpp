@@ -376,7 +376,8 @@ int main(int argc, char** argv) {
 					if (cell.at(n).at(i).at(j).A[0] != 0) {
 						gasCell * c_0 = &cell.at(n).at(i).at(j);
 						gasCell * curCell = &cell.at(n+1).at(i).at(j);
-						array[j] = fmin(dx*c_0->A[0],dr*c_0->A[0]) /
+//						array[j] = fmin(dx*c_0->A[0],dr*c_0->A[0]) /
+						array[j] = fmin(dx,dr) /
 							(
 								sqrt( fabs (k * curCell->P[0] /	curCell->rho))
 								+

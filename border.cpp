@@ -23,17 +23,17 @@ void pre_cell_geometry(double array[5], gasCell cell, int i, int j) {
 		break;
 
 	case 1:
-	    //~ array[0] = (2*M_PI * (j*dr + (cell.r_1*dr + cell.r_2*dr)/2) * (cell.r_1*dr + cell.r_2*dr)/2 * dx) / full[0] ;
-	    //~ array[1] = (M_PI * (2*j*dr*cell.r_1*dr + pow(cell.r_1*dr, 2))) / full[1] ;
-	    //~ array[2] = (M_PI * (2*j*dr*cell.r_2*dr + pow(cell.r_2*dr, 2))) / full[2] ;
-	    //~ array[3] = 1;
-	    //~ array[4] = 0;
-	    array[0] = ((j-1)*(cell.r_1+cell.r_2) + cell.r_1*cell.r_2 +
-			pow(cell.r_2-cell.r_1, 2)/3) / (2*j-1);
-		array[1] = cell.r_1 * (j-1+cell.r_1/2) / (j-0.5);
-		array[2] = cell.r_2 * (j-1+cell.r_2/2) / (j-0.5);
-		array[3] = 1;
-		array[4] = 0;
+	    array[0] = (2*M_PI * (j*dr + (cell.r_1*dr + cell.r_2*dr)/2) * (cell.r_1*dr + cell.r_2*dr)/2 * dx) / full[0] ;
+	    array[1] = (M_PI * (2*j*dr*cell.r_1*dr + pow(cell.r_1*dr, 2))) / full[1] ;
+	    array[2] = (M_PI * (2*j*dr*cell.r_2*dr + pow(cell.r_2*dr, 2))) / full[2] ;
+	    array[3] = 1;
+	    array[4] = 0;
+//	    array[0] = ((j-1)*(cell.r_1+cell.r_2) + cell.r_1*cell.r_2 +
+//			pow(cell.r_2-cell.r_1, 2)/3) / (2*j-1);
+//		array[1] = cell.r_1 * (j-1+cell.r_1/2) / (j-0.5);
+//		array[2] = cell.r_2 * (j-1+cell.r_2/2) / (j-0.5);
+//		array[3] = 1;
+//		array[4] = 0;
 	    break;
 
 	case 2:
@@ -45,16 +45,16 @@ void pre_cell_geometry(double array[5], gasCell cell, int i, int j) {
 	    break;
 
 	case 3:
-	    //~ array[0] = (2*M_PI * (j*dr + dr/2) * (cell.x_1*dx + cell.x_2*dx)/2 * dr) / full[0] ;
-	    //~ array[1] = 1;
-	    //~ array[2] = 0;
-	    //~ array[3] = (2*M_PI*j*cell.x_1*dx*dr) / full[3] ;
-	    //~ array[4] = (2*M_PI*(j+1)*cell.x_2*dx*dr) / full[4] ;
-	    array[0] = (j*cell.x_2 + (j-1)*cell.x_1 - (cell.x_2 - cell.x_1)/3) / (2*j-1);
+	    array[0] = (2*M_PI * (j*dr + dr/2) * (cell.x_1*dx + cell.x_2*dx)/2 * dr) / full[0] ;
 	    array[1] = 1;
 	    array[2] = 0;
-	    array[3] = cell.x_1;
-	    array[4] = cell.x_2;
+	    array[3] = (2*M_PI*j*cell.x_1*dx*dr) / full[3] ;
+	    array[4] = (2*M_PI*(j+1)*cell.x_2*dx*dr) / full[4] ;
+//	    array[0] = (j*cell.x_2 + (j-1)*cell.x_1 - (cell.x_2 - cell.x_1)/3) / (2*j-1);
+//	    array[1] = 1;
+//	    array[2] = 0;
+//	    array[3] = cell.x_1;
+//	    array[4] = cell.x_2;
 	    break;
 
 	case 4:
@@ -106,16 +106,16 @@ void pre_cell_geometry(double array[5], gasCell cell, int i, int j) {
 	    break;
 
 	case 10:
-	    //~ array[0] = (2*M_PI*(j*dr + cell.r_1*dr/2) * cell.r_1*dr*cell.x_1*dx / 2) / full[0] ;
-	    //~ array[1] = (M_PI * (2*j*dr*cell.r_1*dr + pow(cell.r_1*dr, 2))) / full[1] ;
-	    //~ array[2] = 0;
-	    //~ array[3] = (2*M_PI*j*cell.x_1*dx*dr) / full[3] ;
-	    //~ array[4] = 0;
-	    array[0] = cell.x_1*cell.r_1*(j-1 + cell.r_1/3) / (2*j-1);
-	    array[1] = cell.r_1 * (j-1 + cell.r_1/2) / (j-0.5);
+	    array[0] = (2*M_PI*(j*dr + cell.r_1*dr/2) * cell.r_1*dr*cell.x_1*dx / 2) / full[0] ;
+	    array[1] = (M_PI * (2*j*dr*cell.r_1*dr + pow(cell.r_1*dr, 2))) / full[1] ;
 	    array[2] = 0;
-	    array[3] = cell.x_1;
+	    array[3] = (2*M_PI*j*cell.x_1*dx*dr) / full[3];
 	    array[4] = 0;
+//	    array[0] = cell.x_1*cell.r_1*(j-1 + cell.r_1/3) / (2*j-1);
+//	    array[1] = cell.r_1 * (j-1 + cell.r_1/2) / (j-0.5);
+//	    array[2] = 0;
+//	    array[3] = cell.x_1;
+//	    array[4] = 0;
 	    break;
 
 	case 11:
@@ -207,12 +207,17 @@ void pre_cell_geometry(double array[5], gasCell cell, int i, int j) {
 		break;
 
 	case 22:
-	    array[0] = ((j-1)*(cell.r_1+cell.r_2) + cell.r_1*cell.r_2 +
-			pow(cell.r_2-cell.r_1, 2)/3) / (2*j-1);
-		array[1] = cell.r_1 * (j-1+cell.r_1/2) / (j-0.5);
+		array[0] = (2*M_PI*(j*dr + cell.r_1*dr/2) * cell.r_1*dr*cell.x_1*dx / 2) / full[0] ;
+		array[1] = (M_PI * (2*j*dr*cell.r_1*dr + pow(cell.r_1*dr, 2))) / full[1] ;
 		array[2] = 0;
-		array[3] = 1;
+		array[3] = (2*M_PI*j*cell.x_1*dx*dr) / full[3];
 		array[4] = 0;
+//	    array[0] = ((j-1)*(cell.r_1+cell.r_2) + cell.r_1*cell.r_2 +
+//			pow(cell.r_2-cell.r_1, 2)/3) / (2*j-1);
+//		array[1] = cell.r_1 * (j-1+cell.r_1/2) / (j-0.5);
+//		array[2] = 0;
+//		array[3] = 1;
+//		array[4] = 0;
 		break;
 
 
@@ -369,7 +374,9 @@ void getMirrorVerts(Point2D vertices[4], Int2D vertices_ij[4],
 	}
 }
 
-
+bool onCross(double x, double y) {
+	return (fmod(x,dx) < pow(10,-10) && fmod(y,dr) < pow(10,-10));
+}
 
 std::vector <TPoint2D> getExtPoints(Point2D vertices[4], Int2D vertices_ij[4]) {
 	/**
@@ -387,6 +394,9 @@ std::vector <TPoint2D> getExtPoints(Point2D vertices[4], Int2D vertices_ij[4]) {
 		point.x = vertices[idx1].x; point.y = vertices[idx1].y;
 		point.type = 0;
 		result.push_back(point);
+		if (onCross(point.x,point.y)) {
+			continue;
+		}
 		if (fabs(fmod(point.x, dx)) < pow(10,-6) && fabs(fmod(point.y, dr)) < pow(10,-6)) continue;
 		int idx2 = idx1 != 3 ? idx1 + 1 : 0;
 		// One intersection point on Y axis
@@ -394,7 +404,9 @@ std::vector <TPoint2D> getExtPoints(Point2D vertices[4], Int2D vertices_ij[4]) {
 			double interX = floor(fmax(vertices[idx1].x,vertices[idx2].x)/dx)*dx;
 			double interY = vertices[idx2].y + (interX - vertices[idx2].x) * (vertices[idx2].y - vertices[idx1].y) / (vertices[idx2].x - vertices[idx1].x);
 			point.x = interX; point.y = interY; point.type = 1;
-			result.push_back(point);
+			if (!onCross(point.x,point.y)) {
+				result.push_back(point);
+			}
 		} else
 		// One intersection point on X axis
 		if (vertices_ij[idx1].i == vertices_ij[idx2].i && vertices_ij[idx1].j != vertices_ij[idx2].j) {
@@ -402,9 +414,11 @@ std::vector <TPoint2D> getExtPoints(Point2D vertices[4], Int2D vertices_ij[4]) {
 			double interY = floor(vertices[idx_max].y/dr)*dr;
 			double interX = vertices[idx2].x + (interY - vertices[idx2].y) * (vertices[idx2].x - vertices[idx1].x) / (vertices[idx2].y - vertices[idx1].y);
 			point.x = interX; point.y = interY; point.type = 1;
-			result.push_back(point);
+			if (!onCross(point.x,point.y)) {
+				result.push_back(point);
+			}
 		} else
-		// If has 2 intersection result - first serve closest (because triangle gen is buggy)
+		// If has 2 intersection result - first serve the closest one (because triangle gen is buggy)
 		if (vertices_ij[idx1].i != vertices_ij[idx2].i && vertices_ij[idx1].j != vertices_ij[idx2].j) {
 			double interX1 = floor(fmax(vertices[idx1].x,vertices[idx2].x)/dx)*dx;
 			double interY1 = vertices[idx2].y + (interX1 - vertices[idx2].x) * (vertices[idx2].y - vertices[idx1].y) / (vertices[idx2].x - vertices[idx1].x);
@@ -412,14 +426,22 @@ std::vector <TPoint2D> getExtPoints(Point2D vertices[4], Int2D vertices_ij[4]) {
 			double interX2 = vertices[idx2].x + (interY2 - vertices[idx2].y) * (vertices[idx2].x - vertices[idx1].x) / (vertices[idx2].y - vertices[idx1].y);
 			if (pow(vertices[idx1].x-interX1,2) + pow(vertices[idx1].y-interY1,2) < pow(vertices[idx1].x-interX2,2) + pow(vertices[idx1].y-interY2,2)) {
 				point.x = interX1; point.y = interY1; point.type = 1;
-				result.push_back(point);
+				if (!onCross(point.x,point.y)) {
+					result.push_back(point);
+				}
 				point.x = interX2; point.y = interY2 ; point.type = 1;
-				result.push_back(point);
+				if (!onCross(point.x,point.y)) {
+					result.push_back(point);
+				}
 			} else {
 				point.x = interX2; point.y = interY2; point.type = 1;
-				result.push_back(point);
+				if (!onCross(point.x,point.y)) {
+					result.push_back(point);
+				}
 				point.x = interX1; point.y = interY1; point.type = 1;
-				result.push_back(point);
+				if (!onCross(point.x,point.y)) {
+					result.push_back(point);
+				}
 			}
 		}
 	}
@@ -469,8 +491,8 @@ std::vector <TPoint2D> clearDoubles(std::vector <TPoint2D> points) {
 		//~ changed = false;
 		//~ for (unsigned int idx = 0; idx < points.size(); idx++) {
 			//~ for (unsigned int idx2 = 0; idx2 < points.size(); idx2++) {
-				//~ if (fabs(points.at(idx2).x - points.at(idx).x) < pow(10,-6) && 
-				    //~ fabs(points.at(idx2).y - points.at(idx).y) < pow(10,-6) && 
+				//~ if (fabs(points.at(idx2).x - points.at(idx).x) < pow(10,-6) &&
+				    //~ fabs(points.at(idx2).y - points.at(idx).y) < pow(10,-6) &&
 				    //~ points.at(idx).type != 2 &&
 				    //~ idx2 != idx) {
 					//~ points.erase(points.begin()+idx2);
@@ -479,15 +501,40 @@ std::vector <TPoint2D> clearDoubles(std::vector <TPoint2D> points) {
 			//~ }
 		//~ }
 	//~ }
-	//~ 
+	//~
 	return points;
 }
 
+double getDiff(std::vector <TPoint2D> points, unsigned int idx1,
+		unsigned int idx2, bool byX) {
+	if (byX) {
+		return floor(points.at(idx1).x/dx) - floor(points.at(idx2).x/dx);
+	} else {
+		return floor(points.at(idx1).y/dr) - floor(points.at(idx2).y/dr);
+	}
+}
+
+/*
+ * nvert: Number of vertices in the polygon. Whether to repeat the first vertex at the end.
+ * vertx, verty: Arrays containing the x- and y-coordinates of the polygon's vertices.
+ * testx, testy: X- and y-coordinate of the test point.
+ */
+
+int pnpoly(int nvert, float *vertx, float *verty, float testx, float testy)
+{
+  int i, j, c = 0;
+  for (i = 0, j = nvert-1; i < nvert; j = i++) {
+    if ( ((verty[i]>testy) != (verty[j]>testy)) &&
+     (testx < (vertx[j]-vertx[i]) * (testy-verty[i]) / (verty[j]-verty[i]) + vertx[i]) )
+       c = !c;
+  }
+  return c;
+}
 
 
 std::vector <TPoint2D> getIntPoints(std::vector <TPoint2D> points,
-		Point2D vertices[4], Int2D max_diff,
-		unsigned int max_i_point[2], unsigned int max_j_point[2]) {
+		Point2D vertices[4], Int2D max_diff, unsigned int max_i_point[2],
+		unsigned int max_j_point[2], bool debug) {
 			
 	TPoint2D point;
 	
@@ -497,39 +544,29 @@ std::vector <TPoint2D> getIntPoints(std::vector <TPoint2D> points,
 		point.x = internalX; point.y = internalY; point.type = 2;
 		points.push_back(point);
 	} else {
-		unsigned int prevPointI[2] = {0};
-		unsigned int nextPointI[2] = {0};
-		unsigned int prevPointJ[2] = {0};
-		unsigned int nextPointJ[2] = {0};
-		prevPointI[0] = max_i_point[0] == 0 ? points.size()-1 : max_i_point[0]-1;
-		prevPointI[1] = max_i_point[1] == 0 ? points.size()-1 : max_i_point[1]-1;
-		nextPointI[0] = max_i_point[0] == points.size()-1 ? 0 : max_i_point[0]+1;
-		nextPointI[1] = max_i_point[1] == points.size()-1 ? 0 : max_i_point[1]+1;
-		prevPointJ[0] = max_j_point[0] == 0 ? points.size()-1 : max_j_point[0]-1;
-		prevPointJ[1] = max_j_point[1] == 0 ? points.size()-1 : max_j_point[1]-1;
-		nextPointJ[0] = max_j_point[0] == points.size()-1 ? 0 : max_j_point[0]+1;
-		nextPointJ[1] = max_j_point[1] == points.size()-1 ? 0 : max_j_point[1]+1;
-		
-		unsigned int max_i_difference = 0;
-		unsigned int max_j_difference = 0;
-		if (fabs(floor(points.at(nextPointI[0]).x/dx) - floor(points.at(max_i_point[1]).x/dx)) > max_i_difference) 
-				max_i_difference = fabs(floor(points.at(nextPointI[0]).x/dx) - floor(points.at(max_i_point[1]).x/dx));
-		if (fabs(floor(points.at(prevPointI[0]).x/dx) - floor(points.at(max_i_point[1]).x/dx)) > max_i_difference) 
-				max_i_difference = fabs(floor(points.at(prevPointI[0]).x/dx) - floor(points.at(max_i_point[1]).x/dx));
-		if (fabs(floor(points.at(nextPointJ[0]).y/dr) - floor(points.at(max_j_point[1]).y/dr)) > max_j_difference) 
-				max_j_difference = fabs(floor(points.at(nextPointJ[0]).y/dr) - floor(points.at(max_j_point[1]).y/dr));
-		if (fabs(floor(points.at(prevPointJ[0]).y/dr) - floor(points.at(max_j_point[1]).y/dr)) > max_j_difference) 
-				max_j_difference = fabs(floor(points.at(prevPointJ[0]).y/dr) - floor(points.at(max_j_point[1]).y/dr));
-		
-		//if (max_i_difference == 1 && max_j_difference == 1) {
-			double internalX = floor(fmax(fmax(vertices[0].x,vertices[1].x),fmax(vertices[2].x,vertices[3].x))/dx)*dx;
-			double internalY = floor(fmax(fmax(vertices[0].y,vertices[1].y),fmax(vertices[2].y,vertices[3].y))/dr)*dr;
-			point.x = internalX; point.y = internalY; point.type = 2;
-			points.push_back(point);
-		//}
-		
-		//~ cout << "max_i_difference = " << max_i_difference << endl;
-		//~ cout << "max_j_difference = " << max_j_difference << endl;
+		int i0 = floor(points.at(max_i_point[0]).x/dx);
+		int i1 = floor(points.at(max_i_point[1]).x/dx);
+		int j0 = floor(points.at(max_j_point[0]).y/dr);
+		int j1 = floor(points.at(max_j_point[1]).y/dr);
+		int minI = i0 < i1 ? i0 : i1;
+		int maxI = i0 > i1 ? i0 : i1;
+		int minJ = j0 < j1 ? j0 : j1;
+		int maxJ= j0 > j1 ? j0 : j1;
+		float vertx[4]; float verty[4]; int nvert = 4;
+		for (int idx = 0; idx < 4; idx++) {
+			vertx[idx] = vertices[idx].x;
+			verty[idx] = vertices[idx].y;
+		}
+		for (int i = minI-1; i <= maxI+1; i++) {
+			for (int j = minJ-1; j <= maxJ+1; j++) {
+				int ans = pnpoly(nvert, vertx, verty, i*dx, j*dr);
+				if (ans == 1) {
+					if (debug) printf("pnpoly returned %d on point %d:%d\n", ans, i, j);
+					point.x = i*dx; point.y = j*dr; point.type = 2;
+					points.push_back(point);
+				}
+			}
+		}
 	}
 	
 	return points;
@@ -600,7 +637,7 @@ std::vector <TPoint2D> getPointsInCell(unsigned int idx,
 	return pointsInCell;
 }
 
-
+//TODO: Fix it
 std::vector <TPoint2D> fixIntPointID(std::vector <TPoint2D> pointsInCell,
 		bool debug) {
 	
@@ -719,7 +756,7 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 		
 		// Getting internal points (grid's own intersections)
 		points = getIntPoints(points, vertices, max_diff, 
-			max_i_point, max_j_point);
+			max_i_point, max_j_point, debug);
 			
 		// Some debug info about our points
 		if (debug) {
@@ -779,21 +816,33 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 			}
 			totalWeight += weightPart.weight;
 		}
-		// Scaling to 1
-		double scale = 1.0/totalWeight;
-		if (weightCell == 0) {
-			for (unsigned int idx = 0; idx < result.x.size(); idx++) {
-				result.x.at(idx).weight *= scale;
-			}
-		} else if (weightCell == 1) {
-			for (unsigned int idx = 0; idx < result.y.size(); idx++) {
-				result.y.at(idx).weight *= scale;
-			}
-		} else if (weightCell == 2) {
-			for (unsigned int idx = 0; idx < result.xy.size(); idx++) {
-				result.xy.at(idx).weight *= scale;
-			}
-		}
+//		 Scaling to 1
+//		double scale = 1.0/totalWeight;
+//		if (weightCell == 0) {
+//			for (unsigned int idx = 0; idx < result.x.size(); idx++) {
+//				result.x.at(idx).weight *= scale;
+//			}
+//		} else if (weightCell == 1) {
+//			for (unsigned int idx = 0; idx < result.y.size(); idx++) {
+//				result.y.at(idx).weight *= scale;
+//			}
+//		} else if (weightCell == 2) {
+//			for (unsigned int idx = 0; idx < result.xy.size(); idx++) {
+//				result.xy.at(idx).weight *= scale;
+//			}
+//		}
+	}
+
+	printf("Weights for cell %d:%d\n",i,j);
+	printf("For x+1\n");
+	for (unsigned int idx = 0; idx < result.x.size(); idx++) {
+		printf("i = %d, j = %d, weight = %10.10f\n",
+				result.x.at(idx).i,result.x.at(idx).j,result.x.at(idx).weight);
+	}
+	printf("For y+1\n");
+	for (unsigned int idx = 0; idx < result.y.size(); idx++) {
+		printf("i = %d, j = %d, weight = %10.10f\n",
+			result.y.at(idx).i,result.y.at(idx).j,result.y.at(idx).weight);
 	}
 
 	if (debug) printf("Total weight parts at %d in cell %d:%d\nby x: %u\nby y: %u\nby xy: %u\n", n,i,j,
