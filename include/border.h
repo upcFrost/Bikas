@@ -3,10 +3,21 @@
 
 #include "types.h"
 #include "globals.h"
+#include "triangulate.h"
 #include <vector>
 #include <stdbool.h>
 
 typedef struct TPoint2D { double x; double y; int type; } TPoint2D;
+
+typedef struct CPoint2D { TPoint2D point; double cot; } CPoint2D;
+
+struct lesserCot
+{
+    inline bool operator() (const CPoint2D& cPoint1, const CPoint2D& cPoint2)
+    {
+        return (cPoint1.cot > cPoint2.cot);
+    }
+};
 
 struct find_type : std::unary_function<TPoint2D, bool> {
     int type;

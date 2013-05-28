@@ -375,7 +375,10 @@ void getMirrorVerts(Point2D vertices[4], Int2D vertices_ij[4],
 }
 
 bool onCross(double x, double y) {
-	return (fmod(x,dx) < pow(10,-10) && fmod(y,dr) < pow(10,-10));
+	double deltaX = pow(10,-6)*dx;
+	double deltaY = pow(10,-6)*dx;
+	double delta = pow(10,-5)*dx;
+	return (fmod(x+deltaX,dx) < delta && fmod(y+deltaY,dr) < delta);
 }
 
 std::vector <TPoint2D> getExtPoints(Point2D vertices[4], Int2D vertices_ij[4]) {
@@ -394,6 +397,8 @@ std::vector <TPoint2D> getExtPoints(Point2D vertices[4], Int2D vertices_ij[4]) {
 		point.x = vertices[idx1].x; point.y = vertices[idx1].y;
 		point.type = 0;
 		result.push_back(point);
+		std::string cross = onCross(point.x, point.y) ? "true" : "false";
+		printf("onCross returned %s for point %6.6f:%6.6f\n", cross.c_str(), point.x, point.y);
 		if (onCross(point.x,point.y)) {
 			continue;
 		}
@@ -637,12 +642,41 @@ std::vector <TPoint2D> getPointsInCell(unsigned int idx,
 	return pointsInCell;
 }
 
+
+static bool IsOnSegment(double xi, double yi, double xj, double yj,
+                        double xk, double yk) {
+  return (xi <= xk || xj <= xk) && (xk <= xi || xk <= xj) &&
+         (yi <= yk || yj <= yk) && (yk <= yi || yk <= yj);
+}
+
+static char ComputeDirection(double xi, double yi, double xj, double yj,
+                             double xk, double yk) {
+  double a = (xk - xi) * (yj - yi);
+  double b = (xj - xi) * (yk - yi);
+  return a < b ? -1 : a > b ? 1 : 0;
+}
+
+/** Do line segments (x1, y1)--(x2, y2) and (x3, y3)--(x4, y4) intersect? */
+bool DoLineSegmentsIntersect(double x1, double y1, double x2, double y2,
+                             double x3, double y3, double x4, double y4) {
+  char d1 = ComputeDirection(x3, y3, x4, y4, x1, y1);
+  char d2 = ComputeDirection(x3, y3, x4, y4, x2, y2);
+  char d3 = ComputeDirection(x1, y1, x2, y2, x3, y3);
+  char d4 = ComputeDirection(x1, y1, x2, y2, x4, y4);
+  return (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) &&
+          ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) ||
+         (d1 == 0 && IsOnSegment(x3, y3, x4, y4, x1, y1)) ||
+         (d2 == 0 && IsOnSegment(x3, y3, x4, y4, x2, y2)) ||
+         (d3 == 0 && IsOnSegment(x1, y1, x2, y2, x3, y3)) ||
+         (d4 == 0 && IsOnSegment(x1, y1, x2, y2, x4, y4));
+}
+
 //TODO: Fix it
 std::vector <TPoint2D> fixIntPointID(std::vector <TPoint2D> pointsInCell,
 		bool debug) {
 	
 	if (debug) printf("We have an internal point!\n");
-	unsigned int intIdx = 0;
+	unsigned int intIdx = 100;
 	TPoint2D intPoint;
 	for (unsigned int idx2 = 0; idx2 < pointsInCell.size(); idx2++) {
 		if (pointsInCell.at(idx2).type == 2) {
@@ -651,52 +685,171 @@ std::vector <TPoint2D> fixIntPointID(std::vector <TPoint2D> pointsInCell,
 			break;
 		}
 	}
-	double minHor = 1000, minVer = 1000;
-	int minHorIdx = 0, minVerIdx = 0;
+	// If none found - return
+	if (intIdx == 100)
+		return pointsInCell;
+
 	for (unsigned int idx2 = 0; idx2 < pointsInCell.size(); idx2++) {
-		if (idx2 != intIdx) {
-			TPoint2D point = pointsInCell.at(idx2);
-			if (debug) printf("Testing point %u\n", idx2);
-			
-			if (fabs(point.x - intPoint.x) < minHor && fabs(point.y - intPoint.y) < pow(10,-6)
-			    && pointsInCell.at(idx2).type == 1) {
-				if (debug) printf("hor = %4.4f\n", point.x - intPoint.x);
-				minHor = point.x - intPoint.x;
-				minHorIdx = idx2;
-			}
-			
-			if (fabs(point.y - intPoint.y) < minVer && fabs(point.x - intPoint.x) < pow(10,-6)
-			    && pointsInCell.at(idx2).type == 1) {
-				if (debug) printf("ver = %4.4f\n", point.x - intPoint.x);
-				minVer = point.y - intPoint.y;
-				minVerIdx = idx2;
+		Point2D l1[2];
+		l1[0].x = pointsInCell.at(intIdx).x;
+		l1[0].y = pointsInCell.at(intIdx).y;
+		l1[1].x = pointsInCell.at(idx2).x;
+		l1[1].y = pointsInCell.at(idx2).y;
+		bool intersect = false;
+		for (unsigned int idx3 = 0; idx3 < pointsInCell.size(); idx3++) {
+			for (unsigned int idx4 = 0; idx4 < pointsInCell.size(); idx4++) {
+				if (idx3 != idx4 && idx3 != intIdx && idx3 != idx2
+						&& idx4 != intIdx && idx4 != idx2) {
+					Point2D l2[2];
+					l2[0].x = pointsInCell.at(idx3).x;
+					l2[0].y = pointsInCell.at(idx3).y;
+					l2[1].x = pointsInCell.at(idx4).x;
+					l2[1].y = pointsInCell.at(idx4).y;
+					intersect = DoLineSegmentsIntersect(l1[0].x,l1[0].y,l1[1].x,l1[1].y,
+							l2[0].x,l2[0].y,l2[1].x,l2[1].y);
+				}
 			}
 		}
-	}
-	if (debug) 
-		printf("Closest points to internal: hor %4.4f:%4.4f, ver %4.4f:%4.4f\n\n", 
-			pointsInCell.at(minHorIdx).x,pointsInCell.at(minHorIdx).y,
-			pointsInCell.at(minVerIdx).x,pointsInCell.at(minVerIdx).y);
-	
-	if (minVerIdx != 0 && minHorIdx != 0) {
-	std::vector<TPoint2D>::iterator it = pointsInCell.begin();
-	pointsInCell.erase(it+intIdx);
-		if (minVerIdx > minHorIdx) {
-			pointsInCell.insert(it+minVerIdx, intPoint);
-		} else {
-			pointsInCell.insert(it+minHorIdx, intPoint);
+		if (!intersect && idx2 != 0) {
+			printf("point will be placed between %u and %u\n", idx2, idx2+1);
+			std::vector<TPoint2D>::iterator it = pointsInCell.begin();
+			pointsInCell.erase(it+intIdx);
+			pointsInCell.insert(it+idx2+1, intPoint);
+			break;
 		}
 	}
-	
-	if (debug) printf("Points in current cell in order: ");
-	for (unsigned int idx2 = 0; idx2 < pointsInCell.size(); idx2++) {
-		if (debug) printf("%4.4f:%4.4f, ",
-			pointsInCell.at(idx2).x, pointsInCell.at(idx2).y);
-	}
-	if (debug) printf("\n");
 	
 	return pointsInCell;
 }
+
+
+Vector2dVector triangulateCell(std::vector <TPoint2D> points) {
+	Vector2dVector a;
+	Vector2dVector result;
+
+	for (unsigned int idx = 0; idx < points.size(); idx++) {
+		a.push_back( Vector2d(points.at(idx).x, points.at(idx).y) );
+	}
+	printf("Size of point vector %u\n", a.size());
+	printf("Area from triangulate = %6.6f\n", Triangulate::Area(a));
+	Triangulate::Process(a, result);
+	return result;
+}
+
+double triangleArea(double dX0, double dY0, double dX1, double dY1, double dX2, double dY2)
+{
+    double dArea = ((dX1 - dX0)*(dY2 - dY0) - (dX2 - dX0)*(dY1 - dY0))/2.0;
+    return (dArea > 0.0) ? dArea : -dArea;
+}
+
+
+
+
+
+
+
+ /**
+     *  Returns a convex hull given an unordered array of points.
+     */
+//    public static function convexHull(data:Array):Array
+//    {
+//        return findHull( order(data) );
+//    }
+    /**
+     *  Orders an array of points counterclockwise.
+     */
+std::vector <TPoint2D> fixPointOrder(std::vector <TPoint2D> points) {
+        // first run through all the points and find the upper left
+	TPoint2D p = points.front();
+	int n = points.size();
+	for (int i = 1; i < n; i++) {
+		if (points.at(i).y > p.y)
+		{
+			p = points.at(i);
+		}
+		else if (points.at(i).y == p.y && points.at(i).x < p.x)
+		{
+			p = points.at(i);
+		}
+	}
+	printf("Top left point is at %6.6f:%6.6f\n", p.x, p.y);
+	// next find all the cotangents of the angles made by the point P and the
+	// other points
+	std::vector <CPoint2D> sorted;
+	// we need arrays for positive and negative values, because Array.sort
+	// will put sort the negatives backwards.
+	std::vector <CPoint2D> pos;
+	std::vector <CPoint2D> neg;
+	// add points back in order
+	for (int i = 0; i < n; i++)
+	{
+		double a = points.at(i).x - p.x - 0.00001*dx;
+		double b = points.at(i).y - p.y - 0.00001*dr;
+		double cot = b/a;
+		if (cot < 0) {
+			CPoint2D cPoint;
+			cPoint.point = points.at(i);
+			cPoint.cot = cot;
+			neg.push_back(cPoint);
+		} else {
+			CPoint2D cPoint;
+			cPoint.point = points.at(i);
+			cPoint.cot = cot;
+			pos.push_back(cPoint);
+		}
+	}
+	// sort the arrays
+	std::sort(pos.begin(), pos.end(), lesserCot());
+	std::sort(neg.begin(), neg.end(), lesserCot());
+	neg.insert(neg.end(), pos.begin(), pos.end());
+	sorted = neg;
+
+	std::vector <TPoint2D> ordered;
+	ordered.push_back(p);
+	for (int i = 0; i < n; i++)
+	{
+		if (p.x == sorted.at(i).point.x && p.y == sorted.at(i).point.y)
+			continue;
+		ordered.push_back(sorted.at(i).point);
+	}
+	return ordered;
+}
+/**
+ *
+ */
+double direction(TPoint2D p1, TPoint2D p2, TPoint2D p3) {
+	// > 0  is right turn
+	// == 0 is collinear
+	// < 0  is left turn
+	// we only want right turns, usually we want right turns, but
+	// flash's grid is flipped on y.
+	return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
+}
+/**
+ *  Given an array of points ordered counterclockwise, findHull will
+ *  filter the points and return an array containing the vertices of a
+ *  convex polygon that envelopes those points.
+ */
+std::vector <TPoint2D> findHull(std::vector <TPoint2D> points) {
+	int n = points.size();
+	std::vector <TPoint2D> hull;
+	hull.push_back(points.at(0)); // add the pivot
+	hull.push_back(points.at(1)); // makes first vector
+
+	if (n > 3) {
+		for (int i = 2; i < n; i++)	{
+			while (direction(hull.at(hull.size() - 2), hull.at(hull.size() - 1), points.at(i)) >= 0)
+				hull.pop_back();
+			hull.push_back(points.at(i));
+		}
+	}
+
+	return hull;
+}
+
+
+
+
 
 
 
@@ -730,7 +883,6 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 	unsigned int max_j_point[2] = {0};
 	Int2D max_diff;
 	double origArea = dx*dr;
-	double area;
 	std::vector <Int2D> cells;
 	
 	for (unsigned int weightCell = 0; weightCell < 3; weightCell++) {
@@ -780,25 +932,34 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 			// We'll use center of each of those cells to determine how much points we have in each cell
 			std::vector <TPoint2D> pointsInCell = getPointsInCell(idx, 
 				points, cells, debug);
-			// If we have internal point - fix ID
-			if (std::find_if(pointsInCell.begin(), pointsInCell.end(), 
-					find_type(2)) != pointsInCell.end()) {
-				pointsInCell = fixIntPointID(pointsInCell, debug);
+			if (pointsInCell.size() < 3)
+				continue;
+			// Try to fix IDs
+//			pointsInCell = fixIntPointID(pointsInCell, debug);
+//			std::vector <TPoint2D> testPoints = pointsInCell;
+			pointsInCell = fixPointOrder(pointsInCell);
+			if (debug) {
+				printf("test points in order: \n");
+				for (unsigned int testIdx = 0; testIdx < pointsInCell.size(); testIdx++) {
+					printf("%10.10f:%10.10f\n",pointsInCell.at(testIdx).x,
+							pointsInCell.at(testIdx).y);
+				}
 			}
-			// Some nice debug
-			if (debug) printf("PointsArray size: %u\n", 
-				(unsigned int)pointsInCell.size());
-			// Now we'll use the following arrays in polygonArea function
-			double XPointsArray[pointsInCell.size()];
-			double YPointsArray[pointsInCell.size()];
-			for (unsigned int idx2 = 0; idx2 < pointsInCell.size(); idx2++) {
-				XPointsArray[idx2] = pointsInCell.at(idx2).x;
-				YPointsArray[idx2] = pointsInCell.at(idx2).y;
-				if (debug) printf("Point %4.4f:%4.4f;  ",
-					XPointsArray[idx2],YPointsArray[idx2]);
+			getchar();
+			// Triangulate
+			Vector2dVector triangles = triangulateCell(pointsInCell);
+			int tcount = triangles.size()/3;
+			// Now we'll use the result in polygonArea function
+			double area = 0;
+			for (int i=0; i<tcount; i++)
+			{
+			  const Vector2d &p1 = triangles[i*3+0];
+			  const Vector2d &p2 = triangles[i*3+1];
+			  const Vector2d &p3 = triangles[i*3+2];
+			  printf("Triangle %d => (%6.6f,%6.6f) (%6.6f,%6.6f) (%6.6f,%6.6f)\n",i+1,p1.GetX(),p1.GetY(),p2.GetX(),p2.GetY(),p3.GetX(),p3.GetY());
+			  area += fabs(triangleArea(p1.GetX(), p1.GetY(), p2.GetX(), p2.GetY(),
+					  p3.GetX(), p3.GetY()));
 			}
-			area = fabs(polygonArea(XPointsArray, YPointsArray, 
-				pointsInCell.size()));
 			if (debug) printf("Polygon area: %8.8f\n", area);
 			// Populating weightPart and pushing it to the cell's weightVector
 			WeightPart weightPart;
@@ -817,32 +978,34 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 			totalWeight += weightPart.weight;
 		}
 //		 Scaling to 1
-//		double scale = 1.0/totalWeight;
-//		if (weightCell == 0) {
-//			for (unsigned int idx = 0; idx < result.x.size(); idx++) {
-//				result.x.at(idx).weight *= scale;
-//			}
-//		} else if (weightCell == 1) {
-//			for (unsigned int idx = 0; idx < result.y.size(); idx++) {
-//				result.y.at(idx).weight *= scale;
-//			}
-//		} else if (weightCell == 2) {
-//			for (unsigned int idx = 0; idx < result.xy.size(); idx++) {
-//				result.xy.at(idx).weight *= scale;
-//			}
-//		}
+		double scale = 1.0/totalWeight;
+		if (weightCell == 0) {
+			for (unsigned int idx = 0; idx < result.x.size(); idx++) {
+				result.x.at(idx).weight *= scale;
+			}
+		} else if (weightCell == 1) {
+			for (unsigned int idx = 0; idx < result.y.size(); idx++) {
+				result.y.at(idx).weight *= scale;
+			}
+		} else if (weightCell == 2) {
+			for (unsigned int idx = 0; idx < result.xy.size(); idx++) {
+				result.xy.at(idx).weight *= scale;
+			}
+		}
 	}
 
 	printf("Weights for cell %d:%d\n",i,j);
 	printf("For x+1\n");
 	for (unsigned int idx = 0; idx < result.x.size(); idx++) {
-		printf("i = %d, j = %d, weight = %10.10f\n",
-				result.x.at(idx).i,result.x.at(idx).j,result.x.at(idx).weight);
+		printf("i = %d, j = %d, area = %10.10f, weight = %10.10f\n",
+				result.x.at(idx).i,result.x.at(idx).j,result.x.at(idx).weight*origArea,
+				result.x.at(idx).weight);
 	}
 	printf("For y+1\n");
 	for (unsigned int idx = 0; idx < result.y.size(); idx++) {
-		printf("i = %d, j = %d, weight = %10.10f\n",
-			result.y.at(idx).i,result.y.at(idx).j,result.y.at(idx).weight);
+		printf("i = %d, j = %d, area = %10.10f, weight = %10.10f\n",
+			result.y.at(idx).i,result.y.at(idx).j,result.y.at(idx).weight*origArea,
+			result.y.at(idx).weight);
 	}
 
 	if (debug) printf("Total weight parts at %d in cell %d:%d\nby x: %u\nby y: %u\nby xy: %u\n", n,i,j,
