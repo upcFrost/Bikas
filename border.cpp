@@ -937,7 +937,8 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 		cells = makeCells(vertices_ij, max_i_point, max_j_point, debug); 
 		
 		// Debug for making a good text ;)
-		if (debug) printf("\nNow will arrange points in those cells\n");
+		if (debug)
+			printf("\nNow will arrange points in those cells\n");
 		
 		// Main loop where each cell's weight is calculated
 		double totalWeight = 0;
@@ -967,7 +968,9 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 			  const Vector2d &p1 = triangles[i*3+0];
 			  const Vector2d &p2 = triangles[i*3+1];
 			  const Vector2d &p3 = triangles[i*3+2];
-			  printf("Triangle %d => (%6.6f,%6.6f) (%6.6f,%6.6f) (%6.6f,%6.6f)\n",i+1,p1.GetX(),p1.GetY(),p2.GetX(),p2.GetY(),p3.GetX(),p3.GetY());
+			  if (debug)
+				  printf("Triangle %d => (%6.6f,%6.6f) (%6.6f,%6.6f) (%6.6f,%6.6f)\n",
+						  i+1,p1.GetX(),p1.GetY(),p2.GetX(),p2.GetY(),p3.GetX(),p3.GetY());
 			  area += fabs(triangleArea(p1.GetX(), p1.GetY(), p2.GetX(), p2.GetY(),
 					  p3.GetX(), p3.GetY()));
 			}
@@ -977,8 +980,8 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 			weightPart.weight = area / origArea;
 			weightPart.i = cells.at(idx).i;
 			weightPart.j = cells.at(idx).j;
-			if (debug) printf("Weight of this cell: %4.4f\n\n\n", 
-				weightPart.weight);
+			if (debug)
+				printf("Weight of this cell: %4.4f\n\n\n",weightPart.weight);
 			if (weightCell == 0) {
 				result.x.push_back(weightPart);
 			} else if (weightCell == 1) {

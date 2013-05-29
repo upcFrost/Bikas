@@ -164,8 +164,8 @@ int main(int argc, char** argv) {
 		double speed = 0;
 		bool need_out;
 		int iteration = 0;
-//		while (x_sn.at(x_sn.size()-1) < (max_i-8)*dx) {
-		while (iteration < iter_count) {
+		while (x_sn.at(x_sn.size()-1) < (max_i-8)*dx) {
+//		while (iteration < iter_count) {
 			need_out = false;
 			if (iteration % 1000 == 0 && iteration > 0) {
 				stop = clock();
