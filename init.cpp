@@ -86,8 +86,8 @@ void scaleGlobalVars() {
 	P_v = P_v / scaleP;
 	dx = dx / scaleD;
 	dr = dr / scaleD;
-	delta_0 = delta_0 / scaleR;
-	delta = delta / scaleR;
+	delta_0 = delta_0 / scaleRho;
+	delta = delta / scaleRho;
 	dt = dt / scaleT;
 	I_k = I_k / scaleIK;
 	f = f / scaleFF;

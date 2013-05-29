@@ -754,13 +754,6 @@ double triangleArea(double dX0, double dY0, double dX1, double dY1, double dX2, 
     double dArea = ((dX1 - dX0)*(dY2 - dY0) - (dX2 - dX0)*(dY1 - dY0))/2.0;
     return (dArea > 0.0) ? dArea : -dArea;
 }
-
-
-
-
-
-
-
  /**
      *  Returns a convex hull given an unordered array of points.
      */
@@ -771,7 +764,7 @@ double triangleArea(double dX0, double dY0, double dX1, double dY1, double dX2, 
     /**
      *  Orders an array of points counterclockwise.
      */
-std::vector <TPoint2D> fixPointOrder(std::vector <TPoint2D> points) {
+std::vector <TPoint2D> fixPointOrder(std::vector <TPoint2D> points, bool debug) {
         // first run through all the points and find the upper left
 	TPoint2D p = points.front();
 	int n = points.size();
@@ -785,7 +778,8 @@ std::vector <TPoint2D> fixPointOrder(std::vector <TPoint2D> points) {
 			p = points.at(i);
 		}
 	}
-	printf("Top left point is at %6.6f:%6.6f\n", p.x, p.y);
+	if (debug)
+		printf("Top left point is at %6.6f:%6.6f\n", p.x, p.y);
 	// next find all the cotangents of the angles made by the point P and the
 	// other points
 	std::vector <CPoint2D> sorted;
@@ -859,13 +853,6 @@ std::vector <TPoint2D> findHull(std::vector <TPoint2D> points) {
 
 	return hull;
 }
-
-
-
-
-
-
-
 
 
 WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
@@ -949,15 +936,15 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 			if (pointsInCell.size() < 3)
 				continue;
 			// Reorder IDs
-			pointsInCell = fixPointOrder(pointsInCell);
+			pointsInCell = fixPointOrder(pointsInCell, debug);
 			if (debug) {
 				printf("test points in order: \n");
 				for (unsigned int testIdx = 0; testIdx < pointsInCell.size(); testIdx++) {
 					printf("%10.10f:%10.10f\n",pointsInCell.at(testIdx).x,
 							pointsInCell.at(testIdx).y);
 				}
-			}
 			getchar();
+			}
 			// Triangulate
 			Vector2dVector triangles = triangulateCell(pointsInCell, debug);
 			int tcount = triangles.size()/3;

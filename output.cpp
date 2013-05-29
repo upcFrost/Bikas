@@ -57,52 +57,52 @@ void OutputPVD(cell2d cell, std::string filename) {
 				gasCell c_i_1j_1 = cell.at(n).at(i-1).at(j-1).type != 18 ?
 					cell.at(n).at(i-1).at(j-1) : c_i_1;
 				
-				IDs[0] = points->InsertNextPoint (i*dx, j*dr, 0 );
-				outputP->InsertNextValue ( (c_0.P[0]+c_i_1j_1.P[0]+c_i_1.P[0]+c_j_1.P[0])/4 );
-				outputE->InsertNextValue ( (c_0.e+c_i_1j_1.e+c_i_1.e+c_j_1.e)/4 );
-				outputRho->InsertNextValue ( (c_0.rho+c_i_1j_1.rho+c_i_1.rho+c_j_1.rho)/4 );
+				IDs[0] = points->InsertNextPoint (i*dx*scaleD, j*dr*scaleD, 0 );
+				outputP->InsertNextValue ( (c_0.P[0]+c_i_1j_1.P[0]+c_i_1.P[0]+c_j_1.P[0])/4 * scaleP);
+				outputE->InsertNextValue ( (c_0.e+c_i_1j_1.e+c_i_1.e+c_j_1.e)/4 * scaleE );
+				outputRho->InsertNextValue ( (c_0.rho+c_i_1j_1.rho+c_i_1.rho+c_j_1.rho)/4 * scaleRho);
 				outputZ->InsertNextValue ( (c_0.final_z+c_i_1j_1.final_z+c_i_1.final_z+c_j_1.final_z)/4 );
-				outputV->InsertNextTuple3 ( (c_0.Vx[0]+c_i_1j_1.Vx[0]+c_i_1.Vx[0]+c_j_1.Vx[0])/4, 
-					(c_0.Vr[0]+c_i_1j_1.Vr[0]+c_i_1.Vr[0]+c_j_1.Vr[0])/4, 0 );
+				outputV->InsertNextTuple3 ( (c_0.Vx[0]+c_i_1j_1.Vx[0]+c_i_1.Vx[0]+c_j_1.Vx[0])/4  * scaleV,
+					(c_0.Vr[0]+c_i_1j_1.Vr[0]+c_i_1.Vr[0]+c_j_1.Vr[0])/4 * scaleV, 0 );
 				//~ strips->InsertCellPoint(IDs[0]);
 				
-				IDs[1] = points->InsertNextPoint ((i+c_0.x_1)*dx, j*dr, 0 );
-				outputP->InsertNextValue ( (c_0.P[0]+c_i1j_1.P[0]+c_i1.P[0]+c_j_1.P[0])/4 );
-				outputE->InsertNextValue ( (c_0.e+c_i1j_1.e+c_i1.e+c_j_1.e)/4 );
-				outputRho->InsertNextValue ( (c_0.rho+c_i1j_1.rho+c_i1.rho+c_j_1.rho)/4 );
+				IDs[1] = points->InsertNextPoint ((i+c_0.x_1)*dx*scaleD, j*dr*scaleD, 0 );
+				outputP->InsertNextValue ( (c_0.P[0]+c_i1j_1.P[0]+c_i1.P[0]+c_j_1.P[0])/4 * scaleP );
+				outputE->InsertNextValue ( (c_0.e+c_i1j_1.e+c_i1.e+c_j_1.e)/4 * scaleE );
+				outputRho->InsertNextValue ( (c_0.rho+c_i1j_1.rho+c_i1.rho+c_j_1.rho)/4 * scaleRho );
 				outputZ->InsertNextValue ( (c_0.final_z+c_i1j_1.final_z+c_i1.final_z+c_j_1.final_z)/4 );
-				outputV->InsertNextTuple3 ( (c_0.Vx[0]+c_i1j_1.Vx[0]+c_i1.Vx[0]+c_j_1.Vx[0])/4, 
-					(c_0.Vr[0]+c_i1j_1.Vr[0]+c_i1.Vr[0]+c_j_1.Vr[0])/4, 0 );
+				outputV->InsertNextTuple3 ( (c_0.Vx[0]+c_i1j_1.Vx[0]+c_i1.Vx[0]+c_j_1.Vx[0])/4 * scaleV,
+					(c_0.Vr[0]+c_i1j_1.Vr[0]+c_i1.Vr[0]+c_j_1.Vr[0])/4 * scaleV, 0 );
 				//~ strips->InsertCellPoint(IDs[1]);
 				
-				IDs[2] = points->InsertNextPoint (i*dx, (j+c_0.r_1)*dr, 0 );
-				outputP->InsertNextValue ( (c_0.P[0]+c_i_1j1.P[0]+c_i_1.P[0]+c_j1.P[0])/4 );
-				outputE->InsertNextValue ( (c_0.e+c_i_1j1.e+c_i_1.e+c_j1.e)/4 );
-				outputRho->InsertNextValue ( (c_0.rho+c_i_1j1.rho+c_i_1.rho+c_j1.rho)/4 );
+				IDs[2] = points->InsertNextPoint (i*dx*scaleD, (j+c_0.r_1)*dr*scaleD, 0 );
+				outputP->InsertNextValue ( (c_0.P[0]+c_i_1j1.P[0]+c_i_1.P[0]+c_j1.P[0])/4 * scaleP );
+				outputE->InsertNextValue ( (c_0.e+c_i_1j1.e+c_i_1.e+c_j1.e)/4 * scaleE );
+				outputRho->InsertNextValue ( (c_0.rho+c_i_1j1.rho+c_i_1.rho+c_j1.rho)/4 * scaleRho );
 				outputZ->InsertNextValue ( (c_0.final_z+c_i_1j1.final_z+c_i_1.final_z+c_j1.final_z)/4 );
-				outputV->InsertNextTuple3 ( (c_0.Vx[0]+c_i_1j1.Vx[0]+c_i_1.Vx[0]+c_j1.Vx[0])/4, 
-					(c_0.Vr[0]+c_i_1j1.Vr[0]+c_i_1.Vr[0]+c_j1.Vr[0])/4, 0 );
+				outputV->InsertNextTuple3 ( (c_0.Vx[0]+c_i_1j1.Vx[0]+c_i_1.Vx[0]+c_j1.Vx[0])/4 * scaleV,
+					(c_0.Vr[0]+c_i_1j1.Vr[0]+c_i_1.Vr[0]+c_j1.Vr[0])/4 * scaleV, 0 );
 				//~ strips->InsertCellPoint(IDs[2]);
 				
 				if (c_0.r_2 != 0 && c_0.x_2 != 0) {
-					IDs[3] = points->InsertNextPoint ((i+c_0.x_2)*dx, (j+c_0.r_2)*dr, 0 );
-					outputP->InsertNextValue ( (c_0.P[0]+c_i1j1.P[0]+c_i1.P[0]+c_j1.P[0])/4 );
-					outputE->InsertNextValue ( (c_0.e+c_i1j1.e+c_i1.e+c_j1.e)/4 );
-					outputRho->InsertNextValue ( (c_0.rho+c_i1j1.rho+c_i1.rho+c_j1.rho)/4 );
+					IDs[3] = points->InsertNextPoint ((i+c_0.x_2)*dx*scaleD, (j+c_0.r_2)*dr*scaleD, 0 );
+					outputP->InsertNextValue ( (c_0.P[0]+c_i1j1.P[0]+c_i1.P[0]+c_j1.P[0])/4 * scaleP );
+					outputE->InsertNextValue ( (c_0.e+c_i1j1.e+c_i1.e+c_j1.e)/4 * scaleE );
+					outputRho->InsertNextValue ( (c_0.rho+c_i1j1.rho+c_i1.rho+c_j1.rho)/4 * scaleRho );
 					outputZ->InsertNextValue ( (c_0.final_z+c_i1j1.final_z+c_i1.final_z+c_j1.final_z)/4 );
-					outputV->InsertNextTuple3 ( (c_0.Vx[0]+c_i1j1.Vx[0]+c_i1.Vx[0]+c_j1.Vx[0])/4, 
-						(c_0.Vr[0]+c_i1j1.Vr[0]+c_i1.Vr[0]+c_j1.Vr[0])/4, 0 );
+					outputV->InsertNextTuple3 ( (c_0.Vx[0]+c_i1j1.Vx[0]+c_i1.Vx[0]+c_j1.Vx[0])/4 * scaleV,
+						(c_0.Vr[0]+c_i1j1.Vr[0]+c_i1.Vr[0]+c_j1.Vr[0])/4 * scaleV, 0 );
 					//~ strips->InsertCellPoint(IDs[3]);
 					allCorners = true;
 				}
 				
-				IDs[4] = points->InsertNextPoint ((i+(c_0.x_1+c_0.x_2)/4)*dx, 
-					(j+(c_0.r_1+c_0.r_2)/4)*dr, 0 );
-				outputP->InsertNextValue ( c_0.P[0] );
-				outputE->InsertNextValue ( c_0.e );
-				outputRho->InsertNextValue ( c_0.rho );
+				IDs[4] = points->InsertNextPoint ((i+(c_0.x_1+c_0.x_2)/4)*dx*scaleD,
+					(j+(c_0.r_1+c_0.r_2)/4)*dr*scaleD, 0 );
+				outputP->InsertNextValue ( c_0.P[0] * scaleP );
+				outputE->InsertNextValue ( c_0.e * scaleE );
+				outputRho->InsertNextValue ( c_0.rho * scaleRho );
 				outputZ->InsertNextValue ( c_0.final_z );
-				outputV->InsertNextTuple3 ( c_0.Vx[0], c_0.Vr[0], 0 );
+				outputV->InsertNextTuple3 ( c_0.Vx[0] * scaleV, c_0.Vr[0] * scaleV, 0 );
 				//~ strips->InsertCellPoint(IDs[5]);
 				
 				strips->InsertNextCell(3);
@@ -202,10 +202,10 @@ void prepOutputGasCSV(std::ofstream & outputGas, bool verbose) {
 
 void outputDynCSV(std::ofstream & outputDyn, double t, int i_sn, double x_sn, double U_sn, double boltP, double projP) {
 	outputDyn << std::setiosflags(std::ios::fixed) << std::setprecision(10)
-		<< t << ","
+		<< t * scaleT << ","
 		<< i_sn << ","
-		<< x_sn << ","
-		<< U_sn << ","
-		<< boltP << ","
-		<< projP << std::endl;
+		<< x_sn * scaleD << ","
+		<< U_sn * scaleV << ","
+		<< boltP * scaleP << ","
+		<< projP * scaleP << std::endl;
 }
