@@ -979,20 +979,20 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 			totalWeight += weightPart.weight;
 		}
 //		 Scaling to 1
-//		double scale = 1.0/totalWeight;
-//		if (weightCell == 0) {
-//			for (unsigned int idx = 0; idx < result.x.size(); idx++) {
-//				result.x.at(idx).weight *= scale;
-//			}
-//		} else if (weightCell == 1) {
-//			for (unsigned int idx = 0; idx < result.y.size(); idx++) {
-//				result.y.at(idx).weight *= scale;
-//			}
-//		} else if (weightCell == 2) {
-//			for (unsigned int idx = 0; idx < result.xy.size(); idx++) {
-//				result.xy.at(idx).weight *= scale;
-//			}
-//		}
+		double scale = 1.0/totalWeight;
+		if (weightCell == 0) {
+			for (unsigned int idx = 0; idx < result.x.size(); idx++) {
+				result.x.at(idx).weight *= scale;
+			}
+		} else if (weightCell == 1) {
+			for (unsigned int idx = 0; idx < result.y.size(); idx++) {
+				result.y.at(idx).weight *= scale;
+			}
+		} else if (weightCell == 2) {
+			for (unsigned int idx = 0; idx < result.xy.size(); idx++) {
+				result.xy.at(idx).weight *= scale;
+			}
+		}
 	}
 
 	printf("Weights for cell %d:%d\n",i,j);

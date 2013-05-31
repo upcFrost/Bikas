@@ -42,7 +42,7 @@ void finishInit(double e_0) {
 	int numThreads = 0;
 #pragma omp parallel
 	{
-		numThreads = omp_get_num_threads();
+//		numThreads = omp_get_num_threads();
 	}
 	printf("OpenMP loaded, number of threads: %d\n", numThreads);
 }
