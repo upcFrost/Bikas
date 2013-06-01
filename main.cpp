@@ -56,6 +56,7 @@ int main(int argc, char** argv) {
     bool verbose = false;
     int gasVar = IDEAL_GAS;
     double timestep = 0;
+    bool havePiston = false;
     bool debug = false;
     
     t.resize(1);
@@ -81,6 +82,14 @@ int main(int argc, char** argv) {
     		scanf("%d", &gasVar);
     	}
 
+    	int ifPiston = 0;
+    	printf("Is plastic piston present?\n"
+				"1 - yes, any other digit - no\n");
+		scanf("%d", &ifPiston);
+		if (ifPiston == 1) {
+			havePiston = true;
+		}
+
     	int debugOutput = 0;
 		printf("\nDo you need debug output? (1 - yes, any other digit - no)\n");
 		scanf("%d", &debugOutput);
@@ -88,7 +97,7 @@ int main(int argc, char** argv) {
 			debug = true;
 		}
 
-    	init(inputFile, cell, gasVar, debug);
+    	init(inputFile, cell, gasVar, havePiston, debug);
 
 		/** Test - Riemann problem 1 **/
     	int riemannTest = 0;
@@ -105,8 +114,8 @@ int main(int argc, char** argv) {
 		prepOutputGasCSV(outputGas,  verbose);
 		
 		/* Set A for projectile border - needed if starting with non-full cell */
-	    double arrayT[5] = {0};
 	    for (int j = 2; j < max_j-2; j++) {
+	    	double arrayT[5] = {0};
 		    euler_proj_broder(arrayT, j, x_sn.back(), dx, dr);
 			// For n
 			cell.at(n).at(i_sn-1).at(j).A[0] = arrayT[0];
@@ -117,6 +126,32 @@ int main(int argc, char** argv) {
 			if (j == max_j - 2) cell.at(n).at(i_sn-1).at(j).A[4] = 0;
 			if (j == 2) cell.at(n).at(i_sn-1).at(j).A[3] = 0;
 		}
+	    if (havePiston) {
+			for (int j = 2; j < max_j-2; j++) {
+				double arrayT[5] = {0};
+				euler_proj_broder(arrayT, j, x_pist.back(), dx, dr);
+				// For n
+				cell.at(n).at(i_pist-1).at(j).A[0] = arrayT[0];
+				cell.at(n).at(i_pist-1).at(j).A[1] = arrayT[1];
+				cell.at(n).at(i_pist-1).at(j).A[2] = arrayT[2];
+				cell.at(n).at(i_pist-1).at(j).A[3] = arrayT[3];
+				cell.at(n).at(i_pist-1).at(j).A[4] = arrayT[4];
+				if (cell.at(n).at(i_pist-1).at(j+1).type == 18) cell.at(n).at(i_pist-1).at(j).A[4] = 0;
+				if (cell.at(n).at(i_pist-1).at(j-1).type == 18) cell.at(n).at(i_pist-1).at(j).A[3] = 0;
+			}
+			for (int j = 2; j < max_j-2; j++) {
+				double arrayT[5] = {0};
+				euler_pist_broder(arrayT, j, x_pist.back(), dx, dr);
+				// For n
+				cell.at(n).at(i_pist).at(j).A[0] = arrayT[0];
+				cell.at(n).at(i_pist).at(j).A[1] = arrayT[1];
+				cell.at(n).at(i_pist).at(j).A[2] = arrayT[2];
+				cell.at(n).at(i_pist).at(j).A[3] = arrayT[3];
+				cell.at(n).at(i_pist).at(j).A[4] = arrayT[4];
+				if (cell.at(n).at(i_pist).at(j+1).type == 18) cell.at(n).at(i_pist).at(j).A[4] = 0;
+				if (cell.at(n).at(i_pist).at(j-1).type == 18) cell.at(n).at(i_pist).at(j).A[3] = 0;
+			}
+	    }
 		
 		
 		/* Add one more position as as ending */
@@ -164,8 +199,8 @@ int main(int argc, char** argv) {
 		double speed = 0;
 		bool need_out;
 		int iteration = 0;
-		while (x_sn.at(x_sn.size()-1) < (max_i-8)*dx) {
-//		while (iteration < iter_count) {
+//		while (x_sn.at(x_sn.size()-1) < (max_i-8)*dx) {
+		while (iteration < iter_count) {
 			need_out = false;
 			if (iteration % 1000 == 0 && iteration > 0) {
 				stop = clock();
@@ -178,7 +213,87 @@ int main(int argc, char** argv) {
 			n = cell.size() - 2;
 			
 			/* Projectile-related calculation */
-			projCalc(cell, gasVar, debug);
+			if (havePiston) {
+				int i_pist_prev = i_pist;
+				projCalc(cell, gasVar, i_pist, false, debug);
+				double arrayT[5] = {0};
+				for (int j = 0; j < max_j; j++) {
+					if (cell.at(n).at(i_pist).at(j).type != 18) {
+						euler_pist_broder(arrayT, j, x_pist.back(), dx, dr);
+						// For n
+						for (int iter = 0; iter < 5; iter++) {
+							cell.at(n).at(i_pist).at(j).A[iter] = arrayT[iter];
+						}
+						if (cell.at(n).at(i_pist).at(j+1).type == 18) cell.at(n).at(i_pist).at(j).A[4] = 0;
+						if (cell.at(n).at(i_pist).at(j-1).type == 18) cell.at(n).at(i_pist).at(j).A[3] = 0;
+
+						for (int iter = 0; iter < 5; iter++) {
+							if (cell.at(n).at(i_pist).at(j).A[iter] >= 2) {
+								cell.at(n).at(i_pist).at(j).A[iter] -= 1;
+							}
+						}
+					}
+				}
+				for (int j = 0; j < max_j; j++) {
+					if (cell.at(n).at(i_pist).at(j).type != 18) {
+						gasCell * curCell = &cell.at(n).at(i_pist).at(j);
+						double barQi;
+						double Qi;
+
+						if (i_pist_prev == i_pist) {
+							if (debug) {
+								if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
+								if (j == 2) printf("Prev A[0] = %16.16f\n",
+										cell.at(n-1).at(i_pist).at(j).A[0]);
+							}
+							barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
+							Qi = (cell.at(n-1).at(i_pist).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+						} else {
+							if (debug) {
+								if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
+								if (j == 2) printf("Prev A[0] = %16.16f\n",
+										cell.at(n-1).at(i_pist).at(j).A[0]);
+							}
+							barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
+							Qi = (cell.at(n-1).at(i_pist).at(j).A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+						}
+
+			//			Qi = M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+			//			barQi = (1 + curCell->A[0] - cell.at(n-1).at(i_sn-1).at(j).A[0]) * Qi;
+			//			if (i_sn_prev != i_sn)
+			//				barQi = (2 + curCell->A[0] - cell.at(n-1).at(i_sn-2).at(j).A[0]) * Qi;
+
+						// Local speed of sound
+						double ai = sqrt(k * curCell->P[0] / curCell->rho);
+						// Pressure at the border
+						double borderP = curCell->P[0] + ai*curCell->rho *
+								(U_pist.back() - curCell->Vx[0]);
+						// Density at the center of the cell
+						double newRho = curCell->rho * Qi / barQi;
+						// Gas velocity at the center of the cell
+						double newVx = curCell->rho / newRho * Qi / barQi * curCell->Vx[0] +
+								(borderP - curCell->P[0]) / newRho / barQi *
+								dt * M_PI*(2*(j-axis_j)+1)*pow(dr,2);
+						// Gas full energy at the center of the cell
+						double newE = curCell->e + borderP * (Qi - barQi) / curCell->rho / Qi;
+						// Gas pressure at the center of the cell
+						double newP = PISTON_B * newRho/PISTON_RHO * (newRho/PISTON_RHO - 1) /
+							pow(PISTON_C - newRho/PISTON_RHO, 2);
+
+						if (j == 10) {
+							printf("123");
+						}
+
+						curCell->P[0] = newP;
+						curCell->e = newE;
+						curCell->Vx[0] = newVx;
+						curCell->rho = newRho;
+					}
+				}
+				projCalc(cell, PISTON, i_sn, true, debug);
+			} else {
+				projCalc(cell, gasVar, i_sn, true, debug);
+			}
 			
 			/* Euler stage */
 			/** TODO: change i_sn to max_i **/
@@ -186,6 +301,7 @@ int main(int argc, char** argv) {
 			for (int i = 1; i < i_sn; i++) {
 				for (int j = 1; j < max_j-1; j++) {
 					if (cell.at(n).at(i).at(j).type != 18) {
+
 						gasCell * curCell = &cell.at(n).at(i).at(j);
 
 						curCell->bar_z = euler_z(&cell, &cell.at(n).at(i).at(j), n, i, j);
@@ -202,6 +318,7 @@ int main(int argc, char** argv) {
 			for (int i = 1; i < i_sn; i++) {
 				for (int j = 1; j < max_j-1; j++) {
 					if (cell.at(n).at(i).at(j).type != 18) {
+
 						gasCell * curCell = &cell.at(n).at(i).at(j);
 						gasCell * nextTCell = &cell.at(n+1).at(i).at(j);
 
@@ -224,6 +341,7 @@ int main(int argc, char** argv) {
 			for (int i = 1; i < i_sn; i++) {
 				for (int j = 1; j < max_j-1; j++) {
 					if (cell.at(n).at(i).at(j).type != 18) {
+
 						gasCell * nextTCell = &cell.at(n+1).at(i).at(j);
 						
 						nextTCell->Vx[0] = final_calc_Vx(cell,i,j,n,dx,dr,dt);
@@ -233,8 +351,13 @@ int main(int argc, char** argv) {
 						nextTCell->final_psi = new_final_psi(cell,i,j,n,dx,dr,dt);
 						
 						// Post-final stage
-						nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
+						if (i < i_pist || !havePiston) {
+							nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
 								gasVar);
+						} else if (i >= i_pist && i <= i_sn && havePiston) {
+							nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
+								PISTON);
+						}
 					}
 				}
 			}
@@ -419,7 +542,7 @@ int main(int argc, char** argv) {
 			
 			
 			/* Output to file */
-			if (iteration % 10 == 0) {
+			if (iteration % 1 == 0) {
 //			if (fabs(t.back() - timestep) > pow(10.0,-5) || need_out) {
 				timestep = t.back();
 				

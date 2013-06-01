@@ -16,7 +16,7 @@ double pre_alpha(gasCell cell, int i, int i_p, double delta_0, double delta) {
 		return 1;
 }
 
-void getGlobalVars(std::ifstream & inputFile) {
+void getGlobalVars(std::ifstream & inputFile, bool havePiston) {
 	std::string line;
 	std::string tmpLine;
 
@@ -71,6 +71,13 @@ void getGlobalVars(std::ifstream & inputFile) {
 		case 13:
 			x_sn.at(0) = atof(tmpLine.c_str());
 			break;
+		case 14:
+			if (havePiston) {
+				if (x_pist.size() == 0)
+					x_pist.push_back(0);
+				x_pist.at(0) = atof(tmpLine.c_str());
+			}
+			break;
 		default:
 			break;
 		}
@@ -78,8 +85,9 @@ void getGlobalVars(std::ifstream & inputFile) {
 	}
 }
 
-void scaleGlobalVars() {
+void scaleGlobalVars(bool havePiston) {
 	x_sn.at(0) = x_sn.at(0) / scaleD;
+	if (havePiston) x_pist.at(0) = x_pist.at(0) / scaleD;
 	m_sn = m_sn / scaleM;
 	P_f = P_f / scaleP;
 	P_atm = P_atm / scaleP;
@@ -105,7 +113,7 @@ void initCellVector(cell2d & cell) {
 }
 
 void populateCellVector(std::ifstream & inputFile, cell2d & cell,
-		int var, bool debug) {
+		int var, bool havePiston, bool debug) {
 	std::string line;
 	std::string tmpLine;
 	int charNum = 0;
@@ -162,10 +170,16 @@ void populateCellVector(std::ifstream & inputFile, cell2d & cell,
 			curCell->A[iter] = A[iter];
 		i_sn = floor(x_sn.at(0)/dx);
 		i_sn_0 = i_sn;
+		if (havePiston) {
+			i_pist = floor(x_pist.at(0)/dx);
+			i_pist_0 = i_pist;
+			if (U_pist.size() == 0)
+				U_pist.push_back(0);
+		}
 		max_z_0 = max_z;
 
 		/* Set gas init parameters */
-		if (i < i_sn) {
+		if ((i < i_pist && havePiston) || (i < i_sn && !havePiston)) {
 			for (int iter = 0; iter < 5; iter++) curCell->P[iter] = P_v;
 			for (int iter = 0; iter < 5; iter++) curCell->Vx[iter] = 0;
 			for (int iter = 0; iter < 5; iter++) curCell->Vr[iter] = 0;
@@ -194,6 +208,20 @@ void populateCellVector(std::ifstream & inputFile, cell2d & cell,
 			default:
 				break;
 			}
+		} else if (i < i_sn && havePiston) {
+//			curCell->rho = (PISTON_RHO / scaleRho);
+			curCell->rho = 931.779;
+			for (int iter = 0; iter < 5; iter++) curCell->P[iter] = PISTON_B *
+					curCell->rho/PISTON_RHO * (curCell->rho/PISTON_RHO - 1) /
+					pow(PISTON_C - curCell->rho/PISTON_RHO, 2);;
+			for (int iter = 0; iter < 5; iter++) curCell->Vx[iter] = 0;
+			for (int iter = 0; iter < 5; iter++) curCell->Vr[iter] = 0;
+			for (int iter = 0; iter < 5; iter++) curCell->bar_Vx[iter] = 0;
+			for (int iter = 0; iter < 5; iter++) curCell->bar_Vr[iter] = 0;
+			for (int iter = 0; iter < 5; iter++) curCell->dM[iter] = 0;
+			curCell->e = cell.at(n).at(i).at(j).P[0] / (k-1) / (PISTON_RHO/ scaleRho);
+			curCell->final_psi = 1;
+			curCell->final_z = 1;
 		} else {
 			for (int iter = 0; iter < 5; iter++) curCell->P[iter] = P_atm;
 			for (int iter = 0; iter < 5; iter++) curCell->Vx[iter] = 0;
@@ -207,10 +235,11 @@ void populateCellVector(std::ifstream & inputFile, cell2d & cell,
 	}
 }
 
-void init(std::ifstream & inputFile, cell2d & cell, int var, bool debug) {
-	getGlobalVars(inputFile);
+void init(std::ifstream & inputFile, cell2d & cell, int var,
+		bool havePiston, bool debug) {
+	getGlobalVars(inputFile, havePiston);
 	U_sn.at(0) = 0;
-	scaleGlobalVars();
+	scaleGlobalVars(havePiston);
 	initCellVector(cell);
-	populateCellVector(inputFile, cell, var, debug);
+	populateCellVector(inputFile, cell, var, havePiston, debug);
 }

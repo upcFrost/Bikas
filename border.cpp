@@ -754,6 +754,14 @@ double triangleArea(double dX0, double dY0, double dX1, double dY1, double dX2, 
     double dArea = ((dX1 - dX0)*(dY2 - dY0) - (dX2 - dX0)*(dY1 - dY0))/2.0;
     return (dArea > 0.0) ? dArea : -dArea;
 }
+
+/**
+ *  The Graham scan is a method of computing the convex hull of a finite set of points
+ *  in the plane with time complexity O(n log n). It is named after Ronald Graham, who
+ *  published the original algorithm in 1972. The algorithm finds all vertices of
+ *  the convex hull ordered along its boundary. It may also be easily modified to report
+ *  all input points that lie on the boundary of their convex hull.
+ */
  /**
      *  Returns a convex hull given an unordered array of points.
      */
@@ -1024,7 +1032,7 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl,
 
 	/* Dummy cells calc */
 	int type = cell[i][j].type;
-	if (i == i_sn - 1) {
+	if (i == i_pist-1 || i == i_sn-1) {
 		if (type == 13) {
 			type = 20;
 		} else if (type == 14) {
@@ -1033,13 +1041,13 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl,
 			type = 19;
 		}
 	}
-	if (i == i_sn) {
+	if (i == i_pist || i == i_sn) {
 		if (type == 13) {
-			type = 20;
+			type = 15;
 		} else if (type == 14) {
-			type = 21;
+			type = 16;
 		} else if (type == 0) {
-			type = 19;
+			type = 17;
 		}
 	}
 

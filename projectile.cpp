@@ -8,14 +8,14 @@
 #include "projectile.h"
 
 void projPCalc(cell2dStatic & cell, double & P_sn,
-		int & top_j, int & bottom_j) {
+		int & top_j, int & bottom_j, int borderI) {
 	double count = 0;
 
 	for (int j = 0; j < max_j; j++) {
-		if (cell.at(i_sn-1).at(j).type != 18) {
+		if (cell.at(borderI-1).at(j).type != 18) {
 			count++;
 			top_j = j;
-			P_sn += cell.at(i_sn-1).at(j).P[0];
+			P_sn += cell.at(borderI-1).at(j).P[0];
 		} else {
 			if (bottom_j == 0) bottom_j++;
 		}
@@ -34,24 +34,31 @@ void projPCalc(cell2dStatic & cell, double & P_sn,
 }
 
 void projSpeedPositionCalc(cell2dStatic & cell, double P_sn,
-		int top_j, int bottom_j) {
-	U_sn.push_back(euler_Usn(P_sn, M_PI*pow(top_j*dr,2) - M_PI*pow(bottom_j*dr,2),
+		int top_j, int bottom_j, bool PROJECTILE) {
+	if (PROJECTILE) {
+		U_sn.push_back(euler_Usn(P_sn, M_PI*pow(top_j*dr,2) - M_PI*pow(bottom_j*dr,2),
 			0, dt, U_sn.back()));
-	x_sn.push_back(euler_Xsn(x_sn.back(), U_sn.back()));
-	i_sn = floor(x_sn.back() / dx);
+		x_sn.push_back(euler_Xsn(x_sn.back(), U_sn.back()));
+		i_sn = floor(x_sn.back() / dx);
+	} else {
+		U_pist.push_back(euler_Usn(P_sn, M_PI*pow(top_j*dr,2) - M_PI*pow(bottom_j*dr,2),
+			0, dt, U_pist.back()));
+		x_pist.push_back(euler_Xsn(x_pist.back(), U_pist.back()));
+		i_pist = floor(x_pist.back() / dx);
+	}
 }
 
 void projCheckIfChanged(cell2dStatic & cell, cell2dStatic & nextTCell,
-		int i_sn_prev) {
-	if (i_sn_prev != i_sn) {
+		int borderI_prev, int borderI) {
+	if (borderI_prev != borderI) {
 		for (int j = 0; j < max_j; j++) {
 			/* Return cell to its original shape */
 			// For n
 			double tempArray[5];
-			pre_cell_geometry(tempArray, cell.at(i_sn_prev-1).at(j), i_sn_prev-1, j);
-			gasCell * oldCell = &cell.at(i_sn_prev-1).at(j);
-			gasCell * oldTCell = &nextTCell.at(i_sn_prev-1).at(j);
-			gasCell * newCell = &cell.at(i_sn-1).at(j);
+			pre_cell_geometry(tempArray, cell.at(borderI_prev-1).at(j), borderI_prev-1, j);
+			gasCell * oldCell = &cell.at(borderI_prev-1).at(j);
+			gasCell * oldTCell = &nextTCell.at(borderI_prev-1).at(j);
+			gasCell * newCell = &cell.at(borderI-1).at(j);
 
 			oldCell->A[0] = tempArray[0];
 			oldCell->A[1] = tempArray[1];
@@ -93,101 +100,55 @@ void projCheckIfChanged(cell2dStatic & cell, cell2dStatic & nextTCell,
 			newCell->Vr[4] = oldCell->Vr[4];
 			newCell->final_z = oldCell->final_z;
 			newCell->final_psi = oldCell->final_psi;
-
-			/* Weights */
-//			double weightP = 0.4999;
-//			double weightRho = 0.4999;
-//			double weightE = 0.4999;
-//			double weightV = 0.6;
-//
-//			newCell->P[0] = 2*weightP*oldCell->P[0];
-//			newCell->P[1] = 2*weightP*oldCell->P[1];
-//			newCell->P[2] = 2*weightP*oldCell->P[2];
-//			newCell->P[3] = 2*weightP*oldCell->P[3];
-//			newCell->P[4] = 2*weightP*oldCell->P[4];
-//			newCell->rho = 2*weightRho*oldCell->rho;
-//			newCell->e = 2*weightE*oldCell->e;
-//			newCell->Vx[0] = 2*weightV*oldCell->Vx[0];
-//			newCell->Vx[1] = 2*weightV*oldCell->Vx[1];
-//			newCell->Vx[2] = 2*weightV*oldCell->Vx[2];
-//			newCell->Vx[3] = 2*weightV*oldCell->Vx[3];
-//			newCell->Vx[4] = 2*weightV*oldCell->Vx[4];
-//			newCell->Vr[0] = 2*weightV*oldCell->Vr[0];
-//			newCell->Vr[1] = 2*weightV*oldCell->Vr[1];
-//			newCell->Vr[2] = 2*weightV*oldCell->Vr[2];
-//			newCell->Vr[3] = 2*weightV*oldCell->Vr[3];
-//			newCell->Vr[4] = 2*weightV*oldCell->Vr[4];
-//			newCell->final_z = 2*weightP*oldCell->final_z;
-//			newCell->final_psi = 2*weightP*oldCell->final_psi;
-//
-//			oldCell->P[0] = 2*(1 - weightP)*oldCell->P[0];
-//			oldCell->P[1] = 2*(1 - weightP)*oldCell->P[1];
-//			oldCell->P[2] = 2*(1 - weightP)*oldCell->P[2];
-//			oldCell->P[3] = 2*(1 - weightP)*oldCell->P[3];
-//			oldCell->P[4] = 2*(1 - weightP)*oldCell->P[4];
-//			oldCell->rho = 2*(1 - weightRho)*oldCell->rho;
-//			oldCell->e = 2*(1 - weightE)*oldCell->e;
-//			oldCell->Vx[0] = 2*(1 - weightV)*oldCell->Vx[0];
-//			oldCell->Vx[1] = 2*(1 - weightV)*oldCell->Vx[1];
-//			oldCell->Vx[2] = 2*(1 - weightV)*oldCell->Vx[2];
-//			oldCell->Vx[3] = 2*(1 - weightV)*oldCell->Vx[3];
-//			oldCell->Vx[4] = 2*(1 - weightV)*oldCell->Vx[4];
-//			oldCell->Vr[0] = 2*(1 - weightV)*oldCell->Vr[0];
-//			oldCell->Vr[1] = 2*(1 - weightV)*oldCell->Vr[1];
-//			oldCell->Vr[2] = 2*(1 - weightV)*oldCell->Vr[2];
-//			oldCell->Vr[3] = 2*(1 - weightV)*oldCell->Vr[3];
-//			oldCell->Vr[4] = 2*(1 - weightV)*oldCell->Vr[4];
-//			oldCell->final_z = 2*(1 - weightP)*oldCell->final_z;
-//			oldCell->final_psi = 2*(1 - weightP)*oldCell->final_psi;
 		}
 	}
 }
 
-void projBorderMove(cell2dStatic & cell) {
+void projBorderMove(cell2dStatic & cell, int borderI) {
 	double arrayT[5] = {0};
 	for (int j = 0; j < max_j; j++) {
-		if (cell.at(i_sn-1).at(j).type != 18) {
+		if (cell.at(borderI-1).at(j).type != 18) {
 			euler_proj_broder(arrayT, j, x_sn.back(), dx, dr);
 			// For n
 			for (int iter = 0; iter < 5; iter++) {
-				cell.at(i_sn-1).at(j).A[iter] = arrayT[iter];
+				cell.at(borderI-1).at(j).A[iter] = arrayT[iter];
 			}
-			if (cell.at(i_sn-1).at(j+1).type == 18) cell.at(i_sn-1).at(j).A[4] = 0;
-			if (cell.at(i_sn-1).at(j-1).type == 18) cell.at(i_sn-1).at(j).A[3] = 0;
+			if (cell.at(borderI-1).at(j+1).type == 18) cell.at(borderI-1).at(j).A[4] = 0;
+			if (cell.at(borderI-1).at(j-1).type == 18) cell.at(borderI-1).at(j).A[3] = 0;
 
 			for (int iter = 0; iter < 5; iter++) {
-				if (cell.at(i_sn-1).at(j).A[iter] >= 2) {
-					cell.at(i_sn-1).at(j).A[iter] -= 1;
+				if (cell.at(borderI-1).at(j).A[iter] >= 2) {
+					cell.at(borderI-1).at(j).A[iter] -= 1;
 				}
 			}
 		}
 	}
 }
 
-void projParCalc(cell2d & cell, int i_sn_prev, int var, bool debug) {
+void projParCalc(cell2d & cell, int borderI_prev, int borderI, int var, bool debug) {
 	for (int j = 0; j < max_j; j++) {
-		if (cell.at(n).at(i_sn-1).at(j).type != 18) {
-			gasCell * curCell = &cell.at(n).at(i_sn-1).at(j);
+		if (cell.at(n).at(borderI-1).at(j).type != 18) {
+			gasCell * curCell = &cell.at(n).at(borderI-1).at(j);
 			double barQi;
 			double Qi;
 			double newP = 0;
 
-			if (i_sn_prev == i_sn) {
+			if (borderI_prev == borderI) {
 				if (debug) {
 					if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
 					if (j == 2) printf("Prev A[0] = %16.16f\n",
-							cell.at(n-1).at(i_sn-1).at(j).A[0]);
+							cell.at(n-1).at(borderI-1).at(j).A[0]);
 				}
 				barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
-				Qi = (cell.at(n-1).at(i_sn-1).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+				Qi = (cell.at(n-1).at(borderI-1).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 			} else {
 				if (debug) {
 					if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
 					if (j == 2) printf("Prev A[0] = %16.16f\n",
-							cell.at(n-1).at(i_sn-2).at(j).A[0]);
+							cell.at(n-1).at(borderI-2).at(j).A[0]);
 				}
 				barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
-				Qi = (cell.at(n-1).at(i_sn-2).at(j).A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+				Qi = (cell.at(n-1).at(borderI-2).at(j).A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 			}
 
 //			Qi = M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
@@ -221,6 +182,11 @@ void projParCalc(cell2d & cell, int i_sn_prev, int var, bool debug) {
 							alpha_k * curCell->final_psi);
 				break;
 
+			case PISTON:
+				newP = PISTON_B * newRho/PISTON_RHO * (newRho/PISTON_RHO - 1) /
+					pow(PISTON_C - newRho/PISTON_RHO, 2);
+				break;
+
 			default:
 				break;
 			}
@@ -232,7 +198,7 @@ void projParCalc(cell2d & cell, int i_sn_prev, int var, bool debug) {
 				if (j == 2) printf("barQi = %10.10f\n",barQi);
 				if (j == 2) printf("delta rho = %10.10f\n",curCell->rho - newRho);
 				if (j == 2) printf("delta P = %10.10f\n",curCell->P[0] - newP);
-				if (j == 2) debug_projectile_par(i_sn, j, borderP, newRho,
+				if (j == 2) debug_projectile_par(borderI, j, borderP, newRho,
 						newVx, newE, newP, curCell->final_psi, x_sn.back());
 			}
 
@@ -244,13 +210,14 @@ void projParCalc(cell2d & cell, int i_sn_prev, int var, bool debug) {
 	}
 }
 
-void projCalc(cell2d & cell, int var, bool debug) {
+void projCalc(cell2d & cell, int var, int borderI,
+		bool PROJECTILE, bool debug) {
 	double P_sn = 0; int top_j = 0; int bottom_j = 0;
-	int i_sn_prev = i_sn;
-	projPCalc(cell.at(n), P_sn, top_j, bottom_j);
-	projSpeedPositionCalc(cell.at(n), P_sn, top_j, bottom_j);
-	projCheckIfChanged(cell.at(n), cell.at(n+1), i_sn_prev);
-	projBorderMove(cell.at(n));
-	projParCalc(cell, i_sn_prev, var, debug);
+	int borderI_prev = borderI;
+	projPCalc(cell.at(n), P_sn, top_j, bottom_j, borderI);
+	projSpeedPositionCalc(cell.at(n), P_sn, top_j, bottom_j, PROJECTILE);
+	projCheckIfChanged(cell.at(n), cell.at(n+1), borderI_prev, borderI);
+	projBorderMove(cell.at(n), borderI);
+	projParCalc(cell, borderI_prev, borderI, var, debug);
 }
 

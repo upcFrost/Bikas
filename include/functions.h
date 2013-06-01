@@ -15,6 +15,9 @@ double euler_Xsn(double x_prev, double U_new);
 void euler_proj_broder(double array[5], int j, double Xsn, double dx,
 		double dr);
 
+void euler_pist_broder(double array[5], int j, double Xpist, double dx,
+		double dr);
+
 double euler_bar_Vx(cell2d& cell, int n, int i, int j, double dt, double dx,
 		double dr, int var);
 

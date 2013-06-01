@@ -14,6 +14,7 @@
 #include "functions.h"
 #include "debug.h"
 
-void projCalc(cell2d & cell, int var, bool debug);
+void projCalc(cell2d & cell, int var, int borderI,
+		bool PROJECTILE, bool debug);
 
 #endif /* PROJECTILE_H_ */

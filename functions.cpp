@@ -41,10 +41,35 @@ void euler_proj_broder(double array[5], int j, double Xsn, double dx, double dr)
 	array[4] = 1 + fmod(Xsn, dx) / dx;
 }
 
+/* Euler stage piston right border calculation */
+void euler_pist_broder(double array[5], int j, double Xpist, double dx, double dr) {
+
+	double full[5];
+	full[0] = M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+	full[1] = M_PI*(2*(j-axis_j)+1)*pow(dr,2);
+	full[2] = M_PI*(2*(j-axis_j)+1)*pow(dr,2);
+	full[3] = 2*M_PI*(j-axis_j)*dr*dx;
+	full[4] = 2*M_PI*(j-axis_j+1)*dr*dx;
+
+//	array[0] = 1 + M_PI*(2*(j-axis_j)+1)*pow(dr,2)*fmod(Xsn, dx) / full[0];
+//	array[1] = 1;
+//	array[2] = 0;
+//	array[3] = 1 + 2*M_PI * (j-axis_j)*dr * fmod(Xsn, dx) / full[3];
+//	array[4] = 1 + 2*M_PI * (j-axis_j+1)*dr * fmod(Xsn, dx) / full[4];
+	array[0] = 1 - fmod(Xpist, dx)/dx;
+	array[1] = 0;
+	array[2] = 1;
+	array[3] = 1 - fmod(Xpist, dx) / dx;
+	array[4] = 1 - fmod(Xpist, dx) / dx;
+}
+
  /* Vx calculation on euler stage */
 double euler_bar_Vx(cell2d& cell, int n, int i, int j,
 		double dt, double dx, double dr, int var) {
 
+	if (i == 153 && j == 10) {
+		printf("123");
+	}
 	gasCell curCell = cell[n][i][j];
 	double result = 0;
 
@@ -124,6 +149,13 @@ double euler_bar_Vx(cell2d& cell, int n, int i, int j,
 
 	default:
 		break;
+	}
+
+	if ((i == i_pist || i == i_pist+1) && j == 10) {
+		gasCell * cell1 = &cell[n][i][j];
+		gasCell * cell2 = &cell[n][i+1][j];
+		gasCell * cell3 = &cell[n][i+2][j];
+		printf("123");
 	}
 
     if (fabs(result-brd[VX_POS].ij) < pow(10.0,-12)) result = brd[VX_POS].ij;
@@ -446,6 +478,11 @@ double lagrange_rho(gasCell * curCell, gasCell * prevCell, int i, int j, double 
     } else {
     	result = curCell->rho;
     }
+
+    if ((i == i_pist || i == i_pist+1) && j == 10) {
+		printf("123");
+	}
+
 	if (result < 0) {
 		cout << "rho < 0" << endl
 			<< "i = " << i << endl
@@ -531,15 +568,16 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 	array[7] = ruleVr1 ? 1 : 0;
 	array[8] = ruleVr2 ? 0 : 1;
 
-    if (curCell.type == 22 && curCell.Vr[0] > 0) {
-    	gasCell cell0 = cell[n][i][j-2];
-		gasCell cell1 = cell[n][i][j-1];
-		gasCell cell2 = cell[n][i][j];
+	double debugArray[21];
+	for (int idx = 0; idx < 21; idx++) {
+		debugArray[idx] = array[idx];
 	}
-    double debugArray[21];
-    for (int idx = 0; idx < 21; idx++) {
-    	debugArray[idx] = array[idx];
-    }
+	if ((i == i_pist || i == i_pist+1) && j == 10) {
+		gasCell * cell1 = &cell[n][i][j];
+		gasCell * cell2 = &cell[n][i+1][j];
+		gasCell * cell3 = &cell[n][i+2][j];
+		printf("123");
+	}
 
 	/** Central **/
 //	array[1] = brd[RHO_POS].i_1j * brd[BAR_VX_POS].i_1j * (fabs(j-axis_j-0.5)) * pow(dr,2) * dt;
@@ -747,7 +785,7 @@ double final_calc_p(gasCell * prevCell, gasCell * curCell, int var) {
 		break;
 
 	case PISTON:
-		result = PISTON_B * curCell->rho * (curCell->rho - PISTON_RHO) /
+		result = PISTON_B * curCell->rho/PISTON_RHO * (curCell->rho/PISTON_RHO - 1) /
 			pow(PISTON_C - curCell->rho/PISTON_RHO, 2);
 		break;
 
