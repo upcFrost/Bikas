@@ -171,7 +171,13 @@ void populateCellVector(std::ifstream & inputFile, cell2d & cell,
 		i_sn = floor(x_sn.at(0)/dx);
 		i_sn_0 = i_sn;
 		if (havePiston) {
-			i_pist = floor(x_pist.at(0)/dx);
+			if (fmod(x_pist.back(),dx) < 0.75*dx) {
+				i_pist = floor(x_pist.back() / dx);
+				mergedI = false;
+			} else {
+				i_pist = floor(x_pist.back() / dx) + 1;
+				mergedI = true;
+			}
 			i_pist_0 = i_pist;
 			if (U_pist.size() == 0)
 				U_pist.push_back(0);

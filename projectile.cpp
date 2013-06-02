@@ -34,17 +34,25 @@ void projPCalc(cell2dStatic & cell, double & P_sn,
 }
 
 void projSpeedPositionCalc(cell2dStatic & cell, double P_sn,
-		int top_j, int bottom_j, bool PROJECTILE) {
+		int top_j, int bottom_j, bool PROJECTILE, int & borderI) {
 	if (PROJECTILE) {
 		U_sn.push_back(euler_Usn(P_sn, M_PI*pow(top_j*dr,2) - M_PI*pow(bottom_j*dr,2),
 			0, dt, U_sn.back()));
 		x_sn.push_back(euler_Xsn(x_sn.back(), U_sn.back()));
 		i_sn = floor(x_sn.back() / dx);
+		borderI = i_sn;
 	} else {
 		U_pist.push_back(euler_Usn(P_sn, M_PI*pow(top_j*dr,2) - M_PI*pow(bottom_j*dr,2),
 			0, dt, U_pist.back()));
 		x_pist.push_back(euler_Xsn(x_pist.back(), U_pist.back()));
-		i_pist = floor(x_pist.back() / dx);
+		if (fmod(x_pist.back(),dx) < 0.75*dx) {
+			i_pist = floor(x_pist.back() / dx);
+			mergedI = false;
+		} else {
+			i_pist = floor(x_pist.back() / dx) + 1;
+			mergedI = true;
+		}
+		borderI = i_pist;
 	}
 }
 
@@ -224,9 +232,82 @@ void projCalc(cell2d & cell, int var, int borderI,
 	double P_sn = 0; int top_j = 0; int bottom_j = 0;
 	int borderI_prev = borderI;
 	projPCalc(cell.at(n), P_sn, top_j, bottom_j, borderI);
-	projSpeedPositionCalc(cell.at(n), P_sn, top_j, bottom_j, PROJECTILE);
+	projSpeedPositionCalc(cell.at(n), P_sn, top_j, bottom_j, PROJECTILE, borderI);
 	projCheckIfChanged(cell.at(n), cell.at(n+1), borderI_prev, borderI);
 	projBorderMove(cell.at(n), borderI, PROJECTILE);
 	projParCalc(cell, borderI_prev, borderI, var, PROJECTILE, debug);
 }
 
+void pistonCalc(cell2d & cell, int borderI_prev, int borderI, bool debug) {
+	double arrayT[5] = {0};
+	borderI_prev = borderI;
+
+	for (int j = 0; j < max_j; j++) {
+		if (cell.at(n).at(borderI).at(j).type != 18) {
+			euler_pist_broder(arrayT, j, x_pist.back(), dx, dr);
+			// For n
+			for (int iter = 0; iter < 5; iter++) {
+				cell.at(n).at(borderI).at(j).A[iter] = arrayT[iter];
+			}
+			if (cell.at(n).at(borderI).at(j+1).type == 18) cell.at(n).at(borderI).at(j).A[4] = 0;
+			if (cell.at(n).at(borderI).at(j-1).type == 18) cell.at(n).at(borderI).at(j).A[3] = 0;
+
+			for (int iter = 0; iter < 5; iter++) {
+				if (cell.at(n).at(borderI).at(j).A[iter] >= 2) {
+					cell.at(n).at(borderI).at(j).A[iter] -= 1;
+				}
+			}
+		}
+	}
+	for (int j = 0; j < max_j; j++) {
+		if (cell.at(n).at(borderI).at(j).type != 18) {
+			gasCell * curCell = &cell.at(n).at(borderI).at(j);
+			double barQi;
+			double Qi;
+
+			if (borderI_prev == borderI) {
+				if (debug) {
+					if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
+					if (j == 2) printf("Prev A[0] = %16.16f\n",
+							cell.at(n-1).at(borderI).at(j).A[0]);
+				}
+				barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
+				Qi = (cell.at(n-1).at(borderI).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+			} else {
+				if (debug) {
+					if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
+					if (j == 2) printf("Prev A[0] = %16.16f\n",
+							cell.at(n-1).at(borderI).at(j).A[0]);
+				}
+				barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
+				Qi = (cell.at(n-1).at(borderI-1).at(j).A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+			}
+
+			// Local speed of sound
+			double ai = sqrt(k * curCell->P[0] / curCell->rho);
+			// Pressure at the border
+			double borderP = curCell->P[0] + ai*curCell->rho *
+					(U_pist.back() - curCell->Vx[0]);
+			// Density at the center of the cell
+			double newRho = curCell->rho * Qi / barQi;
+			// Gas velocity at the center of the cell
+			double newVx = curCell->rho / newRho * Qi / barQi * curCell->Vx[0] +
+					(borderP - curCell->P[0]) / newRho / barQi *
+					dt * M_PI*(2*(j-axis_j)+1)*pow(dr,2);
+			// Gas full energy at the center of the cell
+			double newE = curCell->e + borderP * (Qi - barQi) / curCell->rho / Qi;
+			// Gas pressure at the center of the cell
+			double newP = PISTON_B * newRho/PISTON_RHO * (newRho/PISTON_RHO - 1) /
+				pow(PISTON_C - newRho/PISTON_RHO, 2);
+
+			if (j == 10) {
+				printf("123");
+			}
+
+			curCell->P[0] = newP;
+			curCell->e = newE;
+			curCell->Vx[0] = newVx;
+			curCell->rho = newRho;
+		}
+	}
+}

@@ -2,6 +2,7 @@
 #include <cmath>
 
 bool broken_dt = false;
+bool mergedI = false;
 int n = 0;
 int max_i = 0;
 int max_j = 0;

@@ -16,5 +16,7 @@
 
 void projCalc(cell2d & cell, int var, int borderI,
 		bool PROJECTILE, bool debug);
+void pistonCalc(cell2d & cell, int borderI_prev,
+		int borderI, bool debug);
 
 #endif /* PROJECTILE_H_ */

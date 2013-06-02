@@ -56,11 +56,11 @@ void euler_pist_broder(double array[5], int j, double Xpist, double dx, double d
 //	array[2] = 0;
 //	array[3] = 1 + 2*M_PI * (j-axis_j)*dr * fmod(Xsn, dx) / full[3];
 //	array[4] = 1 + 2*M_PI * (j-axis_j+1)*dr * fmod(Xsn, dx) / full[4];
-	array[0] = 1 - fmod(Xpist, dx)/dx;
+	array[0] = !mergedI ? 1 - fmod(Xpist, dx)/dx : 2 - fmod(Xpist, dx)/dx;
 	array[1] = 0;
 	array[2] = 1;
-	array[3] = 1 - fmod(Xpist, dx) / dx;
-	array[4] = 1 - fmod(Xpist, dx) / dx;
+	array[3] = !mergedI ? 1 - fmod(Xpist, dx) / dx : 2 - fmod(Xpist, dx)/dx;
+	array[4] = !mergedI ? 1 - fmod(Xpist, dx) / dx : 2 - fmod(Xpist, dx)/dx;
 }
 
  /* Vx calculation on euler stage */
@@ -151,12 +151,12 @@ double euler_bar_Vx(cell2d& cell, int n, int i, int j,
 		break;
 	}
 
-	if ((i == i_pist || i == i_pist+1) && j == 10) {
-		gasCell * cell1 = &cell[n][i][j];
-		gasCell * cell2 = &cell[n][i+1][j];
-		gasCell * cell3 = &cell[n][i+2][j];
-		printf("123");
-	}
+//	if ((i == i_pist || i == i_pist+1) && j == 10) {
+//		gasCell * cell1 = &cell[n][i][j];
+//		gasCell * cell2 = &cell[n][i+1][j];
+//		gasCell * cell3 = &cell[n][i+2][j];
+//		printf("123");
+//	}
 
     if (fabs(result-brd[VX_POS].ij) < pow(10.0,-12)) result = brd[VX_POS].ij;
 	return result;
@@ -568,16 +568,16 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 	array[7] = ruleVr1 ? 1 : 0;
 	array[8] = ruleVr2 ? 0 : 1;
 
-	double debugArray[21];
-	for (int idx = 0; idx < 21; idx++) {
-		debugArray[idx] = array[idx];
-	}
-	if ((i == i_pist || i == i_pist+1) && j == 10) {
-		gasCell * cell1 = &cell[n][i][j];
-		gasCell * cell2 = &cell[n][i+1][j];
-		gasCell * cell3 = &cell[n][i+2][j];
-		printf("123");
-	}
+//	double debugArray[21];
+//	for (int idx = 0; idx < 21; idx++) {
+//		debugArray[idx] = array[idx];
+//	}
+//	if ((i == i_pist || i == i_pist+1) && j == 10) {
+//		gasCell * cell1 = &cell[n][i][j];
+//		gasCell * cell2 = &cell[n][i+1][j];
+//		gasCell * cell3 = &cell[n][i+2][j];
+//		printf("123");
+//	}
 
 	/** Central **/
 //	array[1] = brd[RHO_POS].i_1j * brd[BAR_VX_POS].i_1j * (fabs(j-axis_j-0.5)) * pow(dr,2) * dt;
@@ -766,7 +766,7 @@ double new_final_psi (cell2d& cell, int i, int j, int n,
 
 
 /* Final stage P calculation */
-double final_calc_p(gasCell * prevCell, gasCell * curCell, int var) {
+double final_calc_p(gasCell * prevCell, gasCell * curCell, int var, int i) {
 	double result = 0;
 	switch (var) {
 	case IDEAL_GAS:
@@ -800,6 +800,7 @@ double final_calc_p(gasCell * prevCell, gasCell * curCell, int var) {
 		cout << "E = " << curCell->e << endl
 			<< "Internal energy = " << curCell->e  * (k-1) * curCell->rho << endl
 			<< "rho = " << curCell->rho << endl
+			<< "i = " << i << endl
 			<< "final_psi = " << curCell->final_psi << endl
 			<< "delta = " << delta << endl
 			<< "alpha = " << curCell->alpha << endl

@@ -66,6 +66,7 @@ extern double delta, delta_0, dx, dr, dt, p0, lambda, kappa, k, m_sn, max_z,max_
 extern double V0, P_atm, rho_atm, P_v;
 extern double dM0;
 extern bool broken_dt;
+extern bool mergedI;
 extern std::vector <double> t;
 extern std::vector <double> x_sn;
 extern std::vector <double> x_pist;

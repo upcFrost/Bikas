@@ -216,74 +216,9 @@ int main(int argc, char** argv) {
 			if (havePiston) {
 				int i_pist_prev = i_pist;
 				projCalc(cell, gasVar, i_pist, false, debug);
-				double arrayT[5] = {0};
-				for (int j = 0; j < max_j; j++) {
-					if (cell.at(n).at(i_pist).at(j).type != 18) {
-						euler_pist_broder(arrayT, j, x_pist.back(), dx, dr);
-						// For n
-						for (int iter = 0; iter < 5; iter++) {
-							cell.at(n).at(i_pist).at(j).A[iter] = arrayT[iter];
-						}
-						if (cell.at(n).at(i_pist).at(j+1).type == 18) cell.at(n).at(i_pist).at(j).A[4] = 0;
-						if (cell.at(n).at(i_pist).at(j-1).type == 18) cell.at(n).at(i_pist).at(j).A[3] = 0;
-
-						for (int iter = 0; iter < 5; iter++) {
-							if (cell.at(n).at(i_pist).at(j).A[iter] >= 2) {
-								cell.at(n).at(i_pist).at(j).A[iter] -= 1;
-							}
-						}
-					}
-				}
-				for (int j = 0; j < max_j; j++) {
-					if (cell.at(n).at(i_pist).at(j).type != 18) {
-						gasCell * curCell = &cell.at(n).at(i_pist).at(j);
-						double barQi;
-						double Qi;
-
-						if (i_pist_prev == i_pist) {
-							if (debug) {
-								if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
-								if (j == 2) printf("Prev A[0] = %16.16f\n",
-										cell.at(n-1).at(i_pist).at(j).A[0]);
-							}
-							barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
-							Qi = (cell.at(n-1).at(i_pist).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
-						} else {
-							if (debug) {
-								if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
-								if (j == 2) printf("Prev A[0] = %16.16f\n",
-										cell.at(n-1).at(i_pist).at(j).A[0]);
-							}
-							barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
-							Qi = (cell.at(n-1).at(i_pist-1).at(j).A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
-						}
-
-						// Local speed of sound
-						double ai = sqrt(k * curCell->P[0] / curCell->rho);
-						// Pressure at the border
-						double borderP = curCell->P[0] + ai*curCell->rho *
-								(U_pist.back() - curCell->Vx[0]);
-						// Density at the center of the cell
-						double newRho = curCell->rho * Qi / barQi;
-						// Gas velocity at the center of the cell
-						double newVx = curCell->rho / newRho * Qi / barQi * curCell->Vx[0] +
-								(borderP - curCell->P[0]) / newRho / barQi *
-								dt * M_PI*(2*(j-axis_j)+1)*pow(dr,2);
-						// Gas full energy at the center of the cell
-						double newE = curCell->e + borderP * (Qi - barQi) / curCell->rho / Qi;
-						// Gas pressure at the center of the cell
-						double newP = PISTON_B * newRho/PISTON_RHO * (newRho/PISTON_RHO - 1) /
-							pow(PISTON_C - newRho/PISTON_RHO, 2);
-
-						if (j == 10) {
-							printf("123");
-						}
-
-						curCell->P[0] = newP;
-						curCell->e = newE;
-						curCell->Vx[0] = newVx;
-						curCell->rho = newRho;
-					}
+				pistonCalc(cell, i_pist_prev, i_pist, debug);
+				if (iteration == 395) {
+					printf("123");
 				}
 				projCalc(cell, PISTON, i_sn, true, debug);
 			} else {
@@ -348,10 +283,10 @@ int main(int argc, char** argv) {
 						// Post-final stage
 						if (i < i_pist || !havePiston) {
 							nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
-								gasVar);
+								gasVar, i);
 						} else if (i >= i_pist && i <= i_sn && havePiston) {
 							nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
-								PISTON);
+								PISTON, i);
 						}
 					}
 				}

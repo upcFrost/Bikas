@@ -55,7 +55,7 @@ double final_calc_z(cell2d * previousCell, gasCell * cell, int n, int i, int j);
 double final_calc_psi(cell2d * previousCell, gasCell * cell, int n, int i,
 		int j);
 
-double final_calc_p(gasCell * prevCell, gasCell * cell, int var);
+double final_calc_p(gasCell * prevCell, gasCell * cell, int var, int i);
 
 double euler_z(cell2d * previousCell, gasCell * cell, int n, int i, int j);
 
