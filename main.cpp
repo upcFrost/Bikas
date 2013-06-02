@@ -255,7 +255,7 @@ int main(int argc, char** argv) {
 										cell.at(n-1).at(i_pist).at(j).A[0]);
 							}
 							barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
-							Qi = (cell.at(n-1).at(i_pist).at(j).A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+							Qi = (cell.at(n-1).at(i_pist-1).at(j).A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 						}
 
 			//			Qi = M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
