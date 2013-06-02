@@ -104,11 +104,14 @@ void projCheckIfChanged(cell2dStatic & cell, cell2dStatic & nextTCell,
 	}
 }
 
-void projBorderMove(cell2dStatic & cell, int borderI) {
+void projBorderMove(cell2dStatic & cell, int borderI, bool PROJECTILE) {
 	double arrayT[5] = {0};
 	for (int j = 0; j < max_j; j++) {
 		if (cell.at(borderI-1).at(j).type != 18) {
-			euler_proj_broder(arrayT, j, x_sn.back(), dx, dr);
+			if (PROJECTILE)
+				euler_proj_broder(arrayT, j, x_sn.back(), dx, dr);
+			else
+				euler_proj_broder(arrayT, j, x_pist.back(), dx, dr);
 			// For n
 			for (int iter = 0; iter < 5; iter++) {
 				cell.at(borderI-1).at(j).A[iter] = arrayT[iter];
@@ -125,7 +128,8 @@ void projBorderMove(cell2dStatic & cell, int borderI) {
 	}
 }
 
-void projParCalc(cell2d & cell, int borderI_prev, int borderI, int var, bool debug) {
+void projParCalc(cell2d & cell, int borderI_prev, int borderI, int var,
+		bool PROJECTILE, bool debug) {
 	for (int j = 0; j < max_j; j++) {
 		if (cell.at(n).at(borderI-1).at(j).type != 18) {
 			gasCell * curCell = &cell.at(n).at(borderI-1).at(j);
@@ -159,8 +163,13 @@ void projParCalc(cell2d & cell, int borderI_prev, int borderI, int var, bool deb
 			// Local speed of sound
 			double ai = sqrt(k * curCell->P[0] / curCell->rho);
 			// Pressure at the border
-			double borderP = curCell->P[0] + ai*curCell->rho *
+			double borderP;
+			if (PROJECTILE)
+				borderP= curCell->P[0] + ai*curCell->rho *
 					(U_sn.back() - curCell->Vx[0]);
+			else
+				borderP= curCell->P[0] + ai*curCell->rho *
+					(U_pist.back() - curCell->Vx[0]);
 			// Density at the center of the cell
 			double newRho = curCell->rho * Qi / barQi;
 			// Gas velocity at the center of the cell
@@ -217,7 +226,7 @@ void projCalc(cell2d & cell, int var, int borderI,
 	projPCalc(cell.at(n), P_sn, top_j, bottom_j, borderI);
 	projSpeedPositionCalc(cell.at(n), P_sn, top_j, bottom_j, PROJECTILE);
 	projCheckIfChanged(cell.at(n), cell.at(n+1), borderI_prev, borderI);
-	projBorderMove(cell.at(n), borderI);
-	projParCalc(cell, borderI_prev, borderI, var, debug);
+	projBorderMove(cell.at(n), borderI, PROJECTILE);
+	projParCalc(cell, borderI_prev, borderI, var, PROJECTILE, debug);
 }
 

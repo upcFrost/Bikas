@@ -258,11 +258,6 @@ int main(int argc, char** argv) {
 							Qi = (cell.at(n-1).at(i_pist-1).at(j).A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 						}
 
-			//			Qi = M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
-			//			barQi = (1 + curCell->A[0] - cell.at(n-1).at(i_sn-1).at(j).A[0]) * Qi;
-			//			if (i_sn_prev != i_sn)
-			//				barQi = (2 + curCell->A[0] - cell.at(n-1).at(i_sn-2).at(j).A[0]) * Qi;
-
 						// Local speed of sound
 						double ai = sqrt(k * curCell->P[0] / curCell->rho);
 						// Pressure at the border
@@ -312,7 +307,7 @@ int main(int argc, char** argv) {
 					}
 				}
 			}
-			
+
 			/* Lagrange stage */
 #pragma omp parallel for num_threads(4) schedule(dynamic,1) collapse(2)
 			for (int i = 1; i < i_sn; i++) {
@@ -335,7 +330,7 @@ int main(int argc, char** argv) {
 					}
 				}
 			}
-			
+
 			/* Final stage */
 #pragma omp parallel for num_threads(4) schedule(dynamic,1) collapse(2)
 			for (int i = 1; i < i_sn; i++) {
