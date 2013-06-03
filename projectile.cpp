@@ -105,6 +105,7 @@ void projCheckIfChanged(cell2dStatic & cell, cell2dStatic & nextTCell,
 
 			if (borderI == i_pist) {
 				gasCell * empty = &cell.at(borderI).at(j);
+				gasCell * nextTEmpty = &nextTCell.at(borderI).at(j);
 				empty->P[0] = 0;
 				empty->P[1] = 0;
 				empty->P[2] = 0;
@@ -134,6 +135,35 @@ void projCheckIfChanged(cell2dStatic & cell, cell2dStatic & nextTCell,
 				empty->Vr[4] = 0;
 				empty->final_z = 0;
 				empty->final_psi = 0;
+				nextTEmpty->P[0] = 0;
+				nextTEmpty->P[1] = 0;
+				nextTEmpty->P[2] = 0;
+				nextTEmpty->P[3] = 0;
+				nextTEmpty->P[4] = 0;
+				nextTEmpty->rho = 0;
+				nextTEmpty->e = 0;
+				nextTEmpty->bar_Vx[0] = 0;
+				nextTEmpty->bar_Vx[1] = 0;
+				nextTEmpty->bar_Vx[2] = 0;
+				nextTEmpty->bar_Vx[3] = 0;
+				nextTEmpty->bar_Vx[4] = 0;
+				nextTEmpty->bar_Vr[0] = 0;
+				nextTEmpty->bar_Vr[1] = 0;
+				nextTEmpty->bar_Vr[2] = 0;
+				nextTEmpty->bar_Vr[3] = 0;
+				nextTEmpty->bar_Vr[4] = 0;
+				nextTEmpty->Vx[0] = 0;
+				nextTEmpty->Vx[1] = 0;
+				nextTEmpty->Vx[2] = 0;
+				nextTEmpty->Vx[3] = 0;
+				nextTEmpty->Vx[4] = 0;
+				nextTEmpty->Vr[0] = 0;
+				nextTEmpty->Vr[1] = 0;
+				nextTEmpty->Vr[2] = 0;
+				nextTEmpty->Vr[3] = 0;
+				nextTEmpty->Vr[4] = 0;
+				nextTEmpty->final_z = 0;
+				nextTEmpty->final_psi = 0;
 			}
 		}
 	}
@@ -295,7 +325,7 @@ void pistonCalc(cell2d & cell, int borderI_prev, int borderI, bool debug) {
 			barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
 			Qi = (cell.at(n-1).at(borderI+1).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 
-			if (barQi > Qi) Qi++;
+			if (barQi > Qi) Qi = (cell.at(n-1).at(borderI+1).at(j).A[0]+1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 
 			// Local speed of sound
 			double ai = sqrt(k * curCell->P[0] / curCell->rho);
