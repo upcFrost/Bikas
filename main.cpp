@@ -76,7 +76,7 @@ int main(int argc, char** argv) {
 	pvdGas << "<VTKFile type=\"Collection\" version=\"0.1\" byte_order=\"LittleEndian\">" << endl <<
 	"	<Collection>" << endl;
 	
-#ifdef OS_WINDOWS
+#ifdef _WIN32
 	system("mkdir ./result");
 #else
 	system("mkdir ./result");

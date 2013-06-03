@@ -38,7 +38,6 @@ void OutputPVD(cell2d cell, std::string filename) {
 				//~ } else {
 					//~ strips->InsertNextCell(4);
 				//~ }
-				
 				gasCell c_0 = cell.at(n).at(i).at(j);
 				gasCell c_i1 = cell.at(n).at(i+1).at(j).type != 18 ? 
 					cell.at(n).at(i+1).at(j) : cell.at(n).at(i).at(j);

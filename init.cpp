@@ -112,8 +112,8 @@ void initCellVector(cell2d & cell) {
 	}
 }
 
-gasCell setEmptyCell() {
-	gasCell empty;
+gasCell setEmptyCell(gasCell & cell) {
+	gasCell empty = cell;
 	empty.P[0] = 0;
 	empty.P[1] = 0;
 	empty.P[2] = 0;
@@ -274,7 +274,7 @@ void populateCellVector(std::ifstream & inputFile, cell2d & cell,
 		}
 
 		if (i == i_pist) {
-			cell.at(n).at(i_pist).at(j) = setEmptyCell();
+			cell.at(n).at(i_pist).at(j) = setEmptyCell(cell.at(n).at(i_pist).at(j));
 		}
 	}
 }
