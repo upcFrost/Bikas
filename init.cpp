@@ -238,6 +238,39 @@ void populateCellVector(std::ifstream & inputFile, cell2d & cell,
 			curCell->final_psi = 1;
 			curCell->final_z = 1;
 		}
+
+		if (i == i_pist) {
+			gasCell * empty = &cell.at(n).at(i_pist).at(j);
+			empty->P[0] = 0;
+			empty->P[1] = 0;
+			empty->P[2] = 0;
+			empty->P[3] = 0;
+			empty->P[4] = 0;
+			empty->rho = 0;
+			empty->e = 0;
+			empty->bar_Vx[0] = 0;
+			empty->bar_Vx[1] = 0;
+			empty->bar_Vx[2] = 0;
+			empty->bar_Vx[3] = 0;
+			empty->bar_Vx[4] = 0;
+			empty->bar_Vr[0] = 0;
+			empty->bar_Vr[1] = 0;
+			empty->bar_Vr[2] = 0;
+			empty->bar_Vr[3] = 0;
+			empty->bar_Vr[4] = 0;
+			empty->Vx[0] = 0;
+			empty->Vx[1] = 0;
+			empty->Vx[2] = 0;
+			empty->Vx[3] = 0;
+			empty->Vx[4] = 0;
+			empty->Vr[0] = 0;
+			empty->Vr[1] = 0;
+			empty->Vr[2] = 0;
+			empty->Vr[3] = 0;
+			empty->Vr[4] = 0;
+			empty->final_z = 0;
+			empty->final_psi = 0;
+		}
 	}
 }
 

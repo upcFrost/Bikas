@@ -13,7 +13,7 @@ double euler_Usn(double P_sn, double S, double F, double dt, double U_prev);
 double euler_Xsn(double x_prev, double U_new);
 
 void euler_proj_broder(double array[5], int j, double Xsn, double dx,
-		double dr);
+		double dr, bool PROJECTILE);
 
 void euler_pist_broder(double array[5], int j, double Xpist, double dx,
 		double dr);

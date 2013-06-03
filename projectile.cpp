@@ -45,13 +45,7 @@ void projSpeedPositionCalc(cell2dStatic & cell, double P_sn,
 		U_pist.push_back(euler_Usn(P_sn, M_PI*pow(top_j*dr,2) - M_PI*pow(bottom_j*dr,2),
 			0, dt, U_pist.back()));
 		x_pist.push_back(euler_Xsn(x_pist.back(), U_pist.back()));
-		if (fmod(x_pist.back(),dx) < 0.75*dx) {
-			i_pist = floor(x_pist.back() / dx);
-			mergedI = false;
-		} else {
-			i_pist = floor(x_pist.back() / dx) + 1;
-			mergedI = true;
-		}
+		i_pist = floor(x_pist.back() / dx);
 		borderI = i_pist;
 	}
 }
@@ -108,6 +102,39 @@ void projCheckIfChanged(cell2dStatic & cell, cell2dStatic & nextTCell,
 			newCell->Vr[4] = oldCell->Vr[4];
 			newCell->final_z = oldCell->final_z;
 			newCell->final_psi = oldCell->final_psi;
+
+			if (borderI == i_pist) {
+				gasCell * empty = &cell.at(borderI).at(j);
+				empty->P[0] = 0;
+				empty->P[1] = 0;
+				empty->P[2] = 0;
+				empty->P[3] = 0;
+				empty->P[4] = 0;
+				empty->rho = 0;
+				empty->e = 0;
+				empty->bar_Vx[0] = 0;
+				empty->bar_Vx[1] = 0;
+				empty->bar_Vx[2] = 0;
+				empty->bar_Vx[3] = 0;
+				empty->bar_Vx[4] = 0;
+				empty->bar_Vr[0] = 0;
+				empty->bar_Vr[1] = 0;
+				empty->bar_Vr[2] = 0;
+				empty->bar_Vr[3] = 0;
+				empty->bar_Vr[4] = 0;
+				empty->Vx[0] = 0;
+				empty->Vx[1] = 0;
+				empty->Vx[2] = 0;
+				empty->Vx[3] = 0;
+				empty->Vx[4] = 0;
+				empty->Vr[0] = 0;
+				empty->Vr[1] = 0;
+				empty->Vr[2] = 0;
+				empty->Vr[3] = 0;
+				empty->Vr[4] = 0;
+				empty->final_z = 0;
+				empty->final_psi = 0;
+			}
 		}
 	}
 }
@@ -117,9 +144,9 @@ void projBorderMove(cell2dStatic & cell, int borderI, bool PROJECTILE) {
 	for (int j = 0; j < max_j; j++) {
 		if (cell.at(borderI-1).at(j).type != 18) {
 			if (PROJECTILE)
-				euler_proj_broder(arrayT, j, x_sn.back(), dx, dr);
+				euler_proj_broder(arrayT, j, x_sn.back(), dx, dr, PROJECTILE);
 			else
-				euler_proj_broder(arrayT, j, x_pist.back(), dx, dr);
+				euler_proj_broder(arrayT, j, x_pist.back(), dx, dr, PROJECTILE);
 			// For n
 			for (int iter = 0; iter < 5; iter++) {
 				cell.at(borderI-1).at(j).A[iter] = arrayT[iter];
@@ -162,11 +189,6 @@ void projParCalc(cell2d & cell, int borderI_prev, int borderI, int var,
 				barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
 				Qi = (cell.at(n-1).at(borderI-2).at(j).A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 			}
-
-//			Qi = M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
-//			barQi = (1 + curCell->A[0] - cell.at(n-1).at(i_sn-1).at(j).A[0]) * Qi;
-//			if (i_sn_prev != i_sn)
-//				barQi = (2 + curCell->A[0] - cell.at(n-1).at(i_sn-2).at(j).A[0]) * Qi;
 
 			// Local speed of sound
 			double ai = sqrt(k * curCell->P[0] / curCell->rho);
@@ -243,45 +265,37 @@ void pistonCalc(cell2d & cell, int borderI_prev, int borderI, bool debug) {
 	borderI_prev = borderI;
 
 	for (int j = 0; j < max_j; j++) {
-		if (cell.at(n).at(borderI).at(j).type != 18) {
+		if (cell.at(n).at(borderI+1).at(j).type != 18) {
 			euler_pist_broder(arrayT, j, x_pist.back(), dx, dr);
 			// For n
 			for (int iter = 0; iter < 5; iter++) {
-				cell.at(n).at(borderI).at(j).A[iter] = arrayT[iter];
+				cell.at(n).at(borderI+1).at(j).A[iter] = arrayT[iter];
 			}
-			if (cell.at(n).at(borderI).at(j+1).type == 18) cell.at(n).at(borderI).at(j).A[4] = 0;
-			if (cell.at(n).at(borderI).at(j-1).type == 18) cell.at(n).at(borderI).at(j).A[3] = 0;
+			if (cell.at(n).at(borderI+1).at(j+1).type == 18) cell.at(n).at(borderI+1).at(j).A[4] = 0;
+			if (cell.at(n).at(borderI+1).at(j-1).type == 18) cell.at(n).at(borderI+1).at(j).A[3] = 0;
 
 			for (int iter = 0; iter < 5; iter++) {
-				if (cell.at(n).at(borderI).at(j).A[iter] >= 2) {
-					cell.at(n).at(borderI).at(j).A[iter] -= 1;
+				if (cell.at(n).at(borderI+1).at(j).A[iter] >= 2) {
+					cell.at(n).at(borderI+1).at(j).A[iter] -= 1;
 				}
 			}
 		}
 	}
 	for (int j = 0; j < max_j; j++) {
-		if (cell.at(n).at(borderI).at(j).type != 18) {
-			gasCell * curCell = &cell.at(n).at(borderI).at(j);
+		if (cell.at(n).at(borderI+1).at(j).type != 18) {
+			gasCell * curCell = &cell.at(n).at(borderI+1).at(j);
 			double barQi;
 			double Qi;
 
-			if (borderI_prev == borderI) {
-				if (debug) {
-					if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
-					if (j == 2) printf("Prev A[0] = %16.16f\n",
-							cell.at(n-1).at(borderI).at(j).A[0]);
-				}
-				barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
-				Qi = (cell.at(n-1).at(borderI).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
-			} else {
-				if (debug) {
-					if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
-					if (j == 2) printf("Prev A[0] = %16.16f\n",
-							cell.at(n-1).at(borderI).at(j).A[0]);
-				}
-				barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
-				Qi = (cell.at(n-1).at(borderI-1).at(j).A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+			if (debug) {
+				if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
+				if (j == 2) printf("Prev A[0] = %16.16f\n",
+						cell.at(n-1).at(borderI+1).at(j).A[0]);
 			}
+			barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
+			Qi = (cell.at(n-1).at(borderI+1).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+
+			if (barQi > Qi) Qi++;
 
 			// Local speed of sound
 			double ai = sqrt(k * curCell->P[0] / curCell->rho);

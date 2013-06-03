@@ -20,7 +20,8 @@ double euler_Xsn(double x_prev, double U_new) {
 }
 
 /* Euler stage projectile border calculation */
-void euler_proj_broder(double array[5], int j, double Xsn, double dx, double dr) {
+void euler_proj_broder(double array[5], int j, double Xsn,
+		double dx, double dr, bool PROJECTILE) {
 
 	double full[5];
 	full[0] = M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
@@ -34,11 +35,19 @@ void euler_proj_broder(double array[5], int j, double Xsn, double dx, double dr)
 //	array[2] = 0;
 //	array[3] = 1 + 2*M_PI * (j-axis_j)*dr * fmod(Xsn, dx) / full[3];
 //	array[4] = 1 + 2*M_PI * (j-axis_j+1)*dr * fmod(Xsn, dx) / full[4];
-	array[0] = 1 + fmod(Xsn, dx)/dx;
-	array[1] = 1;
-	array[2] = 0;
-	array[3] = 1 + fmod(Xsn, dx) / dx;
-	array[4] = 1 + fmod(Xsn, dx) / dx;
+	if (PROJECTILE) {
+		array[0] = 1 + fmod(Xsn, dx)/dx;
+		array[1] = 1;
+		array[2] = 0;
+		array[3] = 1 + fmod(Xsn, dx) / dx;
+		array[4] = 1 + fmod(Xsn, dx) / dx;
+	} else {
+		array[0] = 1 + fmod(Xsn, dx)/dx;
+		array[1] = 0;
+		array[2] = 1;
+		array[3] = 1 + fmod(Xsn, dx) / dx;
+		array[4] = 1 + fmod(Xsn, dx) / dx;
+	}
 }
 
 /* Euler stage piston right border calculation */
@@ -56,11 +65,11 @@ void euler_pist_broder(double array[5], int j, double Xpist, double dx, double d
 //	array[2] = 0;
 //	array[3] = 1 + 2*M_PI * (j-axis_j)*dr * fmod(Xsn, dx) / full[3];
 //	array[4] = 1 + 2*M_PI * (j-axis_j+1)*dr * fmod(Xsn, dx) / full[4];
-	array[0] = !mergedI ? 1 - fmod(Xpist, dx)/dx : 2 - fmod(Xpist, dx)/dx;
+	array[0] = 2 - fmod(Xpist, dx)/dx;
 	array[1] = 0;
 	array[2] = 1;
-	array[3] = !mergedI ? 1 - fmod(Xpist, dx) / dx : 2 - fmod(Xpist, dx)/dx;
-	array[4] = !mergedI ? 1 - fmod(Xpist, dx) / dx : 2 - fmod(Xpist, dx)/dx;
+	array[3] = 2 - fmod(Xpist, dx)/dx;
+	array[4] = 2 - fmod(Xpist, dx)/dx;
 }
 
  /* Vx calculation on euler stage */

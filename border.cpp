@@ -1041,7 +1041,7 @@ void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl,
 			type = 19;
 		}
 	}
-	if (i == i_pist || i == i_sn) {
+	if (i == i_pist+1 || i == i_sn) {
 		if (type == 13) {
 			type = 15;
 		} else if (type == 14) {

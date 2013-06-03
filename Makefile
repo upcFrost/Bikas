@@ -1,5 +1,5 @@
 CPP=g++
-CFLAGS=-c -Wall -Wno-deprecated -Wno-unused-but-set-variable -march=native -g
+CFLAGS=-c -Wall -Wno-deprecated -Wno-unused-but-set-variable -march=native -O3
 LDLIBS=-L. -L./lib -L/usr/lib -lvtkCommon -lvtkGraphics \
 	-lvtkIO -lvtkFiltering -lvtkRendering -lvtkImaging
 

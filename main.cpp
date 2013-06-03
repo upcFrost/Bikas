@@ -116,7 +116,7 @@ int main(int argc, char** argv) {
 		/* Set A for projectile border - needed if starting with non-full cell */
 	    for (int j = 2; j < max_j-2; j++) {
 	    	double arrayT[5] = {0};
-		    euler_proj_broder(arrayT, j, x_sn.back(), dx, dr);
+		    euler_proj_broder(arrayT, j, x_sn.back(), dx, dr, true);
 			// For n
 			cell.at(n).at(i_sn-1).at(j).A[0] = arrayT[0];
 			cell.at(n).at(i_sn-1).at(j).A[1] = arrayT[1];
@@ -129,7 +129,7 @@ int main(int argc, char** argv) {
 	    if (havePiston) {
 			for (int j = 2; j < max_j-2; j++) {
 				double arrayT[5] = {0};
-				euler_proj_broder(arrayT, j, x_pist.back(), dx, dr);
+				euler_proj_broder(arrayT, j, x_pist.back(), dx, dr, true);
 				// For n
 				cell.at(n).at(i_pist-1).at(j).A[0] = arrayT[0];
 				cell.at(n).at(i_pist-1).at(j).A[1] = arrayT[1];
@@ -143,13 +143,13 @@ int main(int argc, char** argv) {
 				double arrayT[5] = {0};
 				euler_pist_broder(arrayT, j, x_pist.back(), dx, dr);
 				// For n
-				cell.at(n).at(i_pist).at(j).A[0] = arrayT[0];
-				cell.at(n).at(i_pist).at(j).A[1] = arrayT[1];
-				cell.at(n).at(i_pist).at(j).A[2] = arrayT[2];
-				cell.at(n).at(i_pist).at(j).A[3] = arrayT[3];
-				cell.at(n).at(i_pist).at(j).A[4] = arrayT[4];
-				if (cell.at(n).at(i_pist).at(j+1).type == 18) cell.at(n).at(i_pist).at(j).A[4] = 0;
-				if (cell.at(n).at(i_pist).at(j-1).type == 18) cell.at(n).at(i_pist).at(j).A[3] = 0;
+				cell.at(n).at(i_pist+1).at(j).A[0] = arrayT[0];
+				cell.at(n).at(i_pist+1).at(j).A[1] = arrayT[1];
+				cell.at(n).at(i_pist+1).at(j).A[2] = arrayT[2];
+				cell.at(n).at(i_pist+1).at(j).A[3] = arrayT[3];
+				cell.at(n).at(i_pist+1).at(j).A[4] = arrayT[4];
+				if (cell.at(n).at(i_pist+1).at(j+1).type == 18) cell.at(n).at(i_pist+1).at(j).A[4] = 0;
+				if (cell.at(n).at(i_pist+1).at(j-1).type == 18) cell.at(n).at(i_pist+1).at(j).A[3] = 0;
 			}
 	    }
 		
@@ -217,9 +217,6 @@ int main(int argc, char** argv) {
 				int i_pist_prev = i_pist;
 				projCalc(cell, gasVar, i_pist, false, debug);
 				pistonCalc(cell, i_pist_prev, i_pist, debug);
-				if (iteration == 395) {
-					printf("123");
-				}
 				projCalc(cell, PISTON, i_sn, true, debug);
 			} else {
 				projCalc(cell, gasVar, i_sn, true, debug);
@@ -231,6 +228,8 @@ int main(int argc, char** argv) {
 			for (int i = 1; i < i_sn; i++) {
 				for (int j = 1; j < max_j-1; j++) {
 					if (cell.at(n).at(i).at(j).type != 18) {
+						if (havePiston && i == i_pist)
+							continue;
 
 						gasCell * curCell = &cell.at(n).at(i).at(j);
 
@@ -248,6 +247,8 @@ int main(int argc, char** argv) {
 			for (int i = 1; i < i_sn; i++) {
 				for (int j = 1; j < max_j-1; j++) {
 					if (cell.at(n).at(i).at(j).type != 18) {
+						if (havePiston && i == i_pist)
+							continue;
 
 						gasCell * curCell = &cell.at(n).at(i).at(j);
 						gasCell * nextTCell = &cell.at(n+1).at(i).at(j);
@@ -271,6 +272,8 @@ int main(int argc, char** argv) {
 			for (int i = 1; i < i_sn; i++) {
 				for (int j = 1; j < max_j-1; j++) {
 					if (cell.at(n).at(i).at(j).type != 18) {
+						if (havePiston && i == i_pist)
+							continue;
 
 						gasCell * nextTCell = &cell.at(n+1).at(i).at(j);
 						
