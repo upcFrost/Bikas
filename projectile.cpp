@@ -35,18 +35,34 @@ void projPCalc(cell2dStatic & cell, double & P_sn,
 
 void projSpeedPositionCalc(cell2dStatic & cell, double P_sn,
 		int top_j, int bottom_j, bool PROJECTILE, int & borderI) {
+
+	double S = M_PI*pow(top_j*dr,2) - M_PI*pow(bottom_j*dr,2);
+
 	if (PROJECTILE) {
-		U_sn.push_back(euler_Usn(P_sn, M_PI*pow(top_j*dr,2) - M_PI*pow(bottom_j*dr,2),
+
+		U_sn.push_back(euler_Usn(P_sn, S,
 			0, dt, U_sn.back()));
 		x_sn.push_back(euler_Xsn(x_sn.back(), U_sn.back()));
 		i_sn = floor(x_sn.back() / dx);
 		borderI = i_sn;
+
 	} else {
-		U_pist.push_back(euler_Usn(P_sn, M_PI*pow(top_j*dr,2) - M_PI*pow(bottom_j*dr,2),
-			0, dt, U_pist.back()));
+
+		double P_pist = 0; int count = 0;
+		for (int j = 0; j < max_j; j++) {
+			if (cell.at(i_pist+1).at(j).type != 18) {
+				count++;
+				P_pist += cell.at(i_pist+1).at(j).P[0];
+			}
+		}
+		P_pist /= count;
+
+		U_pist.push_back(euler_Usn(P_sn, S,
+			P_pist*S, dt, U_pist.back()));
 		x_pist.push_back(euler_Xsn(x_pist.back(), U_pist.back()));
 		i_pist = floor(x_pist.back() / dx);
 		borderI = i_pist;
+
 	}
 }
 

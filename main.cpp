@@ -24,7 +24,7 @@ void finishInit(double e_0) {
 			"e_0, Dzh: %10.10f\n"
 			"psi_0: %10.10f\n"
 			"f: %10.10f\n"
-			"I_k: %d\n"
+			"I_k: %10.10f\n"
 			"m_sn: %10.10f\n"
 			"k: %10.10f\n"
 			"kappa: %10.10f\n"
@@ -36,8 +36,12 @@ void finishInit(double e_0) {
 			"omega: %10.10f\n"
 			"rho_0: %10.10f\n"
 			"axis_j: %d\n\n",
-			P_v, e_0, psi_0, f, I_k, m_sn, k, kappa,
-			lambda, d, S, S_km, V_km, omega, delta_0, axis_j);
+			P_v*scaleP, e_0*scaleE, psi_0, f*scaleF,
+			I_k*scaleIK, m_sn*scaleM,
+			k, kappa, lambda, d*scaleD,
+			S*scaleD*scaleD, S_km*scaleD*scaleD,
+			V_km*scaleD*scaleD*scaleD, omega*scaleM,
+			delta_0*scaleRho, axis_j);
 
 	int numThreads = 0;
 #pragma omp parallel
@@ -72,6 +76,12 @@ int main(int argc, char** argv) {
 	pvdGas << "<VTKFile type=\"Collection\" version=\"0.1\" byte_order=\"LittleEndian\">" << endl <<
 	"	<Collection>" << endl;
 	
+#ifdef OS_WINDOWS
+	system("mkdir ./result");
+#else
+	system("mkdir ./result");
+#endif
+
     if (inputFile.is_open() && outputDyn.is_open() && outputGas.is_open())
     {
     	printf("Which gas model is used?\n"
@@ -114,45 +124,7 @@ int main(int argc, char** argv) {
 		prepOutputGasCSV(outputGas,  verbose);
 		
 		/* Set A for projectile border - needed if starting with non-full cell */
-	    for (int j = 2; j < max_j-2; j++) {
-	    	double arrayT[5] = {0};
-		    euler_proj_broder(arrayT, j, x_sn.back(), dx, dr, true);
-			// For n
-			cell.at(n).at(i_sn-1).at(j).A[0] = arrayT[0];
-			cell.at(n).at(i_sn-1).at(j).A[1] = arrayT[1];
-			cell.at(n).at(i_sn-1).at(j).A[2] = arrayT[2];
-			cell.at(n).at(i_sn-1).at(j).A[3] = arrayT[3];
-			cell.at(n).at(i_sn-1).at(j).A[4] = arrayT[4];
-			if (j == max_j - 2) cell.at(n).at(i_sn-1).at(j).A[4] = 0;
-			if (j == 2) cell.at(n).at(i_sn-1).at(j).A[3] = 0;
-		}
-	    if (havePiston) {
-			for (int j = 2; j < max_j-2; j++) {
-				double arrayT[5] = {0};
-				euler_proj_broder(arrayT, j, x_pist.back(), dx, dr, true);
-				// For n
-				cell.at(n).at(i_pist-1).at(j).A[0] = arrayT[0];
-				cell.at(n).at(i_pist-1).at(j).A[1] = arrayT[1];
-				cell.at(n).at(i_pist-1).at(j).A[2] = arrayT[2];
-				cell.at(n).at(i_pist-1).at(j).A[3] = arrayT[3];
-				cell.at(n).at(i_pist-1).at(j).A[4] = arrayT[4];
-				if (cell.at(n).at(i_pist-1).at(j+1).type == 18) cell.at(n).at(i_pist-1).at(j).A[4] = 0;
-				if (cell.at(n).at(i_pist-1).at(j-1).type == 18) cell.at(n).at(i_pist-1).at(j).A[3] = 0;
-			}
-			for (int j = 2; j < max_j-2; j++) {
-				double arrayT[5] = {0};
-				euler_pist_broder(arrayT, j, x_pist.back(), dx, dr);
-				// For n
-				cell.at(n).at(i_pist+1).at(j).A[0] = arrayT[0];
-				cell.at(n).at(i_pist+1).at(j).A[1] = arrayT[1];
-				cell.at(n).at(i_pist+1).at(j).A[2] = arrayT[2];
-				cell.at(n).at(i_pist+1).at(j).A[3] = arrayT[3];
-				cell.at(n).at(i_pist+1).at(j).A[4] = arrayT[4];
-				if (cell.at(n).at(i_pist+1).at(j+1).type == 18) cell.at(n).at(i_pist+1).at(j).A[4] = 0;
-				if (cell.at(n).at(i_pist+1).at(j-1).type == 18) cell.at(n).at(i_pist+1).at(j).A[3] = 0;
-			}
-	    }
-		
+		borderCellsFix(cell, havePiston);
 		
 		/* Add one more position as as ending */
 		cell2dStatic currentCell = cell.back();
@@ -166,33 +138,13 @@ int main(int argc, char** argv) {
 		float Ku;
 		int iter_count;
 
-		if (argc > 1) {
-			for (int argNum = 1; argNum < argc; argNum += 2) {
-				if (strcmp (argv[argNum], "-Ku") == 0) {
-					Ku = atof(argv[argNum+1]);
-				} else if (strcmp (argv[argNum], "-iter") == 0) {
-					iter_count = atoi(argv[argNum+1]);
-				} else {
-					cout << "Invalid parameters.\nValid usage: -Ku [float] -iter [float]";
-					exit (EXIT_FAILURE);
-				}
-			}
-		} else {
-			try {
-				cout << "Max iterations: \n";
-				cin >> iter_count;
-				if (iter_count <= 0) iter_count = 400;
-			} catch (int e) {
-				iter_count = 400;
-			}
-			cout << "Ku: \n";
-			try {
-				cin >> Ku;
-				if (Ku < 0) Ku = 0.05;
-			} catch (int e) {
-				Ku = 0.05;
-			}
-		}
+		printf("Max iterations: \n");
+		scanf("%d", &iter_count);
+		if (iter_count <= 0) iter_count = 400;
+
+		printf("Ku: \n");
+		scanf("%f", &Ku);
+		if (Ku <= 0) Ku = 0.05;
 		
 		clock_t start = clock();
 		clock_t stop;
@@ -223,7 +175,6 @@ int main(int argc, char** argv) {
 			}
 			
 			/* Euler stage */
-			/** TODO: change i_sn to max_i **/
 #pragma omp parallel for num_threads(4) schedule(dynamic,1) collapse(2)
 			for (int i = 1; i < i_sn; i++) {
 				for (int j = 1; j < max_j-1; j++) {
@@ -295,132 +246,6 @@ int main(int argc, char** argv) {
 				}
 			}
 					
-			/** Smoothing **/
-			/* X axis */
-//			int pointNum = 4; // Should be even, number of interpolating points
-//			for (j = 0; j < max_j; j++) {
-//				for (i = i_sn-10; i < i_sn-3; i++) {
-//					if (cell.at(n+1).at(i).at(j).type != 18 &&
-//							cell.at(n+1).at(i+1).at(j).type != 18 &&
-//							cell.at(n+1).at(i+2).at(j).type != 18 &&
-//							cell.at(n+1).at(i-1).at(j).type != 18 &&
-//							cell.at(n+1).at(i-2).at(j).type != 18) {
-//						double xPoints[pointNum];
-//						double VxPoints[pointNum]; double VxPointsLin[pointNum]; double VxPointsQuad[pointNum]; double VxPointsCub[pointNum];
-//						double VrPoints[pointNum]; double VrPointsLin[pointNum]; double VrPointsQuad[pointNum]; double VrPointsCub[pointNum];
-//						double PPoints[pointNum]; double PPointsLin[pointNum]; double PPointsQuad[pointNum]; double PPointsCub[pointNum];
-//						double ePoints[pointNum]; double ePointsLin[pointNum]; double ePointsQuad[pointNum]; double ePointsCub[pointNum];
-//						double rhoPoints[pointNum]; double rhoPointsLin[pointNum]; double rhoPointsQuad[pointNum]; double rhoPointsCub[pointNum];
-//						for (int iter = 0; iter < pointNum; iter++) {
-//							int current_i = iter < pointNum/2 ? i - pointNum/2 + iter : i - pointNum/2 + iter + 1;
-//							xPoints[iter] = current_i * dx;
-//							VxPoints[iter] = cell.at(n+1).at(current_i).at(j).Vx[0];
-//							VrPoints[iter] = cell.at(n+1).at(current_i).at(j).Vr[0];
-//							PPoints[iter] = cell.at(n+1).at(current_i).at(j).P[0];
-//							ePoints[iter] = cell.at(n+1).at(current_i).at(j).e;
-//							rhoPoints[iter] = cell.at(n+1).at(current_i).at(j).rho;
-//						}
-//						cubic_nak ( pointNum, xPoints, VxPoints, VxPointsLin, VxPointsQuad, VxPointsCub );
-//						cubic_nak ( pointNum, xPoints, VrPoints, VrPointsLin, VrPointsQuad, VrPointsCub );
-//						cubic_nak ( pointNum, xPoints, PPoints, PPointsLin, PPointsQuad, PPointsCub );
-//						cubic_nak ( pointNum, xPoints, ePoints, ePointsLin, ePointsQuad, ePointsCub );
-//						cubic_nak ( pointNum, xPoints, rhoPoints, rhoPointsLin, rhoPointsQuad, rhoPointsCub );
-//
-//						cell.at(n+1).at(i).at(j).Vx[0] = spline_eval ( pointNum, xPoints, VxPoints, VxPointsLin, VxPointsQuad, VxPointsCub, i*dx );
-//						cell.at(n+1).at(i).at(j).Vr[0] = spline_eval ( pointNum, xPoints, VrPoints, VrPointsLin, VrPointsQuad, VrPointsCub, i*dx );
-//						cell.at(n+1).at(i).at(j).P[0] = spline_eval ( pointNum, xPoints, PPoints, PPointsLin, PPointsQuad, PPointsCub, i*dx );
-//						cell.at(n+1).at(i).at(j).e = spline_eval ( pointNum, xPoints, ePoints, ePointsLin, ePointsQuad, ePointsCub, i*dx );
-//						cell.at(n+1).at(i).at(j).rho = spline_eval ( pointNum, xPoints, rhoPoints, rhoPointsLin, rhoPointsQuad, rhoPointsCub, i*dx );
-//					}
-//				}
-//			}
-//			int pointNum = 4; // Should be even, number of interpolating points
-//			for (j = 0; j < max_j; j++) {
-//				for (i = 1+pointNum/2; i < i_sn-1-pointNum/2; i++) {
-//					if (cell.at(n+1).at(i).at(j).type != 18 &&
-//							cell.at(n+1).at(i+1).at(j).type != 18 &&
-//							cell.at(n+1).at(i+2).at(j).type != 18 &&
-//							cell.at(n+1).at(i-1).at(j).type != 18 &&
-//							cell.at(n+1).at(i-2).at(j).type != 18) {
-//						double xPoints[pointNum];
-//						double VxPoints[pointNum]; double VxPointsLin[pointNum]; double VxPointsQuad[pointNum]; double VxPointsCub[pointNum];
-//						double VrPoints[pointNum]; double VrPointsLin[pointNum]; double VrPointsQuad[pointNum]; double VrPointsCub[pointNum];
-//						double PPoints[pointNum]; double PPointsLin[pointNum]; double PPointsQuad[pointNum]; double PPointsCub[pointNum];
-//						double ePoints[pointNum]; double ePointsLin[pointNum]; double ePointsQuad[pointNum]; double ePointsCub[pointNum];
-//						for (int iter = 0; iter < pointNum; iter++) {
-//							int current_i = iter < pointNum/2 ? i - pointNum/2 + iter : i - pointNum/2 + iter + 1;
-//							xPoints[iter] = current_i * dx;
-//							VxPoints[iter] = cell.at(n+1).at(current_i).at(j).Vx[0];
-//							VrPoints[iter] = cell.at(n+1).at(current_i).at(j).Vr[0];
-//							PPoints[iter] = cell.at(n+1).at(current_i).at(j).P[0];
-//							ePoints[iter] = cell.at(n+1).at(current_i).at(j).e;
-//						}
-//						cubic_nak ( pointNum, xPoints, VxPoints, VxPointsLin, VxPointsQuad, VxPointsCub );
-//						cubic_nak ( pointNum, xPoints, VrPoints, VrPointsLin, VrPointsQuad, VrPointsCub );
-//						cubic_nak ( pointNum, xPoints, PPoints, PPointsLin, PPointsQuad, PPointsCub );
-//						cubic_nak ( pointNum, xPoints, ePoints, ePointsLin, ePointsQuad, ePointsCub );
-//
-//						cell.at(n+1).at(i).at(j).Vx[0] = spline_eval ( pointNum, xPoints, VxPoints, VxPointsLin, VxPointsQuad, VxPointsCub, i*dx );
-//						cell.at(n+1).at(i).at(j).Vr[0] = spline_eval ( pointNum, xPoints, VrPoints, VrPointsLin, VrPointsQuad, VrPointsCub, i*dx );
-//						cell.at(n+1).at(i).at(j).P[0] = spline_eval ( pointNum, xPoints, PPoints, PPointsLin, PPointsQuad, PPointsCub, i*dx );
-//						cell.at(n+1).at(i).at(j).e = spline_eval ( pointNum, xPoints, ePoints, ePointsLin, ePointsQuad, ePointsCub, i*dx );
-//					}
-//				}
-//			}
-			/* Y axis */
-			//~ for (i = 0; i < max_i; i++) {
-				//~ for (j = 0; j < max_j; j++) {
-					//~ switch (cell.at(n+1).at(i).at(j).type) {
-						//~ // type 0 --> free cell
-						//~ case 0:
-							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] + 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
-							//~ break;
-							//~
-						//~ // type 15 --> top and left borders closed
-						//~ case 15:
-							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] - 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
-							//~ break;
-						//~
-						//~ // type 17 --> left border closed
-						//~ case 17:
-							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] + 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
-							//~ break;
-						//~
-						//~ // type 16 --> bottom and left borders closed
-						//~ case 16:
-							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] + 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
-							//~ break;
-					//~
-						//~ // type 13 --> top border closed
-						//~ case 13:
-							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] - 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
-							//~ break;
-					//~
-						//~ // type 14 --> bottom border closed
-						//~ case 14:
-							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] + 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
-							//~ break;
-						//~
-						//~ // type 19 --> right border closed
-						//~ case 19:
-							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] + 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
-							//~ break;
-						//~
-						//~ // type 21 --> bottom and right borders closed
-						//~ case 21:
-							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] + 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
-							//~ break;
-							//~
-						//~ // type 20 --> top and right borders closed
-						//~ case 20:
-							//~ cell.at(n+1).at(i).at(j).Vr[0] = 0.1*cell.at(n+1).at(i).at(j-1).Vr[0] + 0.8*cell.at(n+1).at(i).at(j).Vr[0] - 0.1*cell.at(n+1).at(i).at(j+1).Vr[0];
-							//~ break;
-							//~
-						//~ default:
-							//~ break;
-					//~ }
-				//~ }
-			//~ }
 			/*****************
 			 * DEBUG: Vx and E test *
 			 *****************/
@@ -475,7 +300,7 @@ int main(int argc, char** argv) {
 			
 			
 			/* Output to file */
-			if (iteration % 1 == 0) {
+			if (iteration % 5 == 0) {
 //			if (fabs(t.back() - timestep) > pow(10.0,-5) || need_out) {
 				timestep = t.back();
 				

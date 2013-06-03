@@ -76,9 +76,6 @@ void euler_pist_broder(double array[5], int j, double Xpist, double dx, double d
 double euler_bar_Vx(cell2d& cell, int n, int i, int j,
 		double dt, double dx, double dr, int var) {
 
-	if (i == 153 && j == 10) {
-		printf("123");
-	}
 	gasCell curCell = cell[n][i][j];
 	double result = 0;
 
@@ -488,10 +485,6 @@ double lagrange_rho(gasCell * curCell, gasCell * prevCell, int i, int j, double 
     	result = curCell->rho;
     }
 
-    if ((i == i_pist || i == i_pist+1) && j == 10) {
-		printf("123");
-	}
-
 	if (result < 0) {
 		cout << "rho < 0" << endl
 			<< "i = " << i << endl
@@ -668,9 +661,6 @@ double euler_z (cell2d * previousCell, gasCell * cell, int n, int i, int j) {
 	double result = cell->final_z +
 		(cell->P[0]*scaleP) / (I_k*scaleIK) * (dt*scaleT);
 
-	if (i == i_sn - 20 && j == 15) {
-		printf("123");
-	}
 	if (result > max_z) {
 		return max_z;
 	} else {
@@ -680,9 +670,7 @@ double euler_z (cell2d * previousCell, gasCell * cell, int n, int i, int j) {
 double euler_psi (gasCell& cell, int n, int i, int j) {
 	double result = cell.final_psi +
 		(kappa + 2*kappa*lambda*cell.bar_z) * (cell.P[0]*scaleP) / (I_k*scaleIK) * (dt*scaleT);
-	if (i == i_sn - 20 && j == 15) {
-		printf("123");
-	}
+
 	if (result > 1) {
 		return 1;
 	} else {
@@ -723,9 +711,6 @@ double new_final_z (cell2d& cell, int i, int j, int n,
 	    (1-curCell.D[4]) * curCell.bar_z * curCell.dM[4] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
     )
 	;
-    if (i == i_sn - 20 && j == 15) {
-		printf("123");
-	}
     if (result > 1) {
 		return 1;
 	} else {

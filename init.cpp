@@ -112,6 +112,40 @@ void initCellVector(cell2d & cell) {
 	}
 }
 
+gasCell setEmptyCell() {
+	gasCell empty;
+	empty.P[0] = 0;
+	empty.P[1] = 0;
+	empty.P[2] = 0;
+	empty.P[3] = 0;
+	empty.P[4] = 0;
+	empty.rho = 0;
+	empty.e = 0;
+	empty.bar_Vx[0] = 0;
+	empty.bar_Vx[1] = 0;
+	empty.bar_Vx[2] = 0;
+	empty.bar_Vx[3] = 0;
+	empty.bar_Vx[4] = 0;
+	empty.bar_Vr[0] = 0;
+	empty.bar_Vr[1] = 0;
+	empty.bar_Vr[2] = 0;
+	empty.bar_Vr[3] = 0;
+	empty.bar_Vr[4] = 0;
+	empty.Vx[0] = 0;
+	empty.Vx[1] = 0;
+	empty.Vx[2] = 0;
+	empty.Vx[3] = 0;
+	empty.Vx[4] = 0;
+	empty.Vr[0] = 0;
+	empty.Vr[1] = 0;
+	empty.Vr[2] = 0;
+	empty.Vr[3] = 0;
+	empty.Vr[4] = 0;
+	empty.final_z = 0;
+	empty.final_psi = 0;
+	return empty;
+}
+
 void populateCellVector(std::ifstream & inputFile, cell2d & cell,
 		int var, bool havePiston, bool debug) {
 	std::string line;
@@ -240,36 +274,7 @@ void populateCellVector(std::ifstream & inputFile, cell2d & cell,
 		}
 
 		if (i == i_pist) {
-			gasCell * empty = &cell.at(n).at(i_pist).at(j);
-			empty->P[0] = 0;
-			empty->P[1] = 0;
-			empty->P[2] = 0;
-			empty->P[3] = 0;
-			empty->P[4] = 0;
-			empty->rho = 0;
-			empty->e = 0;
-			empty->bar_Vx[0] = 0;
-			empty->bar_Vx[1] = 0;
-			empty->bar_Vx[2] = 0;
-			empty->bar_Vx[3] = 0;
-			empty->bar_Vx[4] = 0;
-			empty->bar_Vr[0] = 0;
-			empty->bar_Vr[1] = 0;
-			empty->bar_Vr[2] = 0;
-			empty->bar_Vr[3] = 0;
-			empty->bar_Vr[4] = 0;
-			empty->Vx[0] = 0;
-			empty->Vx[1] = 0;
-			empty->Vx[2] = 0;
-			empty->Vx[3] = 0;
-			empty->Vx[4] = 0;
-			empty->Vr[0] = 0;
-			empty->Vr[1] = 0;
-			empty->Vr[2] = 0;
-			empty->Vr[3] = 0;
-			empty->Vr[4] = 0;
-			empty->final_z = 0;
-			empty->final_psi = 0;
+			cell.at(n).at(i_pist).at(j) = setEmptyCell();
 		}
 	}
 }
@@ -281,4 +286,45 @@ void init(std::ifstream & inputFile, cell2d & cell, int var,
 	scaleGlobalVars(havePiston);
 	initCellVector(cell);
 	populateCellVector(inputFile, cell, var, havePiston, debug);
+}
+
+void borderCellsFix(cell2d & cell, bool havePiston) {
+	 for (int j = 2; j < max_j-2; j++) {
+		double arrayT[5] = {0};
+		euler_proj_broder(arrayT, j, x_sn.back(), dx, dr, true);
+		// For n
+		cell.at(n).at(i_sn-1).at(j).A[0] = arrayT[0];
+		cell.at(n).at(i_sn-1).at(j).A[1] = arrayT[1];
+		cell.at(n).at(i_sn-1).at(j).A[2] = arrayT[2];
+		cell.at(n).at(i_sn-1).at(j).A[3] = arrayT[3];
+		cell.at(n).at(i_sn-1).at(j).A[4] = arrayT[4];
+		if (j == max_j - 2) cell.at(n).at(i_sn-1).at(j).A[4] = 0;
+		if (j == 2) cell.at(n).at(i_sn-1).at(j).A[3] = 0;
+	}
+	if (havePiston) {
+		for (int j = 2; j < max_j-2; j++) {
+			double arrayT[5] = {0};
+			euler_proj_broder(arrayT, j, x_pist.back(), dx, dr, true);
+			// For n
+			cell.at(n).at(i_pist-1).at(j).A[0] = arrayT[0];
+			cell.at(n).at(i_pist-1).at(j).A[1] = arrayT[1];
+			cell.at(n).at(i_pist-1).at(j).A[2] = arrayT[2];
+			cell.at(n).at(i_pist-1).at(j).A[3] = arrayT[3];
+			cell.at(n).at(i_pist-1).at(j).A[4] = arrayT[4];
+			if (cell.at(n).at(i_pist-1).at(j+1).type == 18) cell.at(n).at(i_pist-1).at(j).A[4] = 0;
+			if (cell.at(n).at(i_pist-1).at(j-1).type == 18) cell.at(n).at(i_pist-1).at(j).A[3] = 0;
+		}
+		for (int j = 2; j < max_j-2; j++) {
+			double arrayT[5] = {0};
+			euler_pist_broder(arrayT, j, x_pist.back(), dx, dr);
+			// For n
+			cell.at(n).at(i_pist+1).at(j).A[0] = arrayT[0];
+			cell.at(n).at(i_pist+1).at(j).A[1] = arrayT[1];
+			cell.at(n).at(i_pist+1).at(j).A[2] = arrayT[2];
+			cell.at(n).at(i_pist+1).at(j).A[3] = arrayT[3];
+			cell.at(n).at(i_pist+1).at(j).A[4] = arrayT[4];
+			if (cell.at(n).at(i_pist+1).at(j+1).type == 18) cell.at(n).at(i_pist+1).at(j).A[4] = 0;
+			if (cell.at(n).at(i_pist+1).at(j-1).type == 18) cell.at(n).at(i_pist+1).at(j).A[3] = 0;
+		}
+	}
 }
