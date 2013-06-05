@@ -36,7 +36,7 @@ void finishInit(double e_0) {
 			"omega: %10.10f\n"
 			"rho_0: %10.10f\n"
 			"axis_j: %d\n\n",
-			P_v*scaleP, e_0*scaleE, psi_0, f*scaleF,
+			P_v*scaleP, e_0*scaleE, psi_0, f*scaleFF,
 			I_k*scaleIK, m_sn*scaleM,
 			k, kappa, lambda, d*scaleD,
 			S*scaleD*scaleD, S_km*scaleD*scaleD,
@@ -151,7 +151,7 @@ int main(int argc, char** argv) {
 		double speed = 0;
 		bool need_out;
 		int iteration = 0;
-//		while (x_sn.at(x_sn.size()-1) < (max_i-8)*dx) {
+//		while (x_sn.at(xs_sn.size()-1) < (max_i-8)*dx) {
 		while (iteration < iter_count) {
 			need_out = false;
 			if (iteration % 1000 == 0 && iteration > 0) {
@@ -300,7 +300,7 @@ int main(int argc, char** argv) {
 			
 			
 			/* Output to file */
-			if (iteration % 5 == 0) {
+			if (iteration % 25 == 0) {
 //			if (fabs(t.back() - timestep) > pow(10.0,-5) || need_out) {
 				timestep = t.back();
 				

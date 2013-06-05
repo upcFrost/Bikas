@@ -24,11 +24,11 @@ OBJECTS=main.o init.o functions.o globals.o interp.o border.o \
 all : $(TARGET)
 
 $(TARGET) : $(OBJECTS)
-	$(CPP) -o bin/$(TARGET) $(OBJECTS) $(LDLIBS) 
+	$(CPP) -o bin/$(TARGET) $(OBJECTS) $(LDLIBS) $(OPENMP)
 
 
 main.o : main.cpp globals.cpp
-	$(CPP) $(CFLAGS) $(INCLUDES) main.cpp
+	$(CPP) $(CFLAGS) $(INCLUDES) $(OPENMP) main.cpp
 
 functions.o : functions.cpp
 	$(CPP) $(CFLAGS) $(INCLUDES) functions.cpp
