@@ -30,24 +30,24 @@ void euler_proj_broder(double array[5], int j, double Xsn,
 	full[3] = 2*M_PI*(j-axis_j)*dr*dx;
 	full[4] = 2*M_PI*(j-axis_j+1)*dr*dx;
 
-//	array[0] = 1 + M_PI*(2*(j-axis_j)+1)*pow(dr,2)*fmod(Xsn, dx) / full[0];
-//	array[1] = 1;
-//	array[2] = 0;
-//	array[3] = 1 + 2*M_PI * (j-axis_j)*dr * fmod(Xsn, dx) / full[3];
-//	array[4] = 1 + 2*M_PI * (j-axis_j+1)*dr * fmod(Xsn, dx) / full[4];
-	if (PROJECTILE) {
-		array[0] = 1 + fmod(Xsn, dx)/dx;
-		array[1] = 1;
-		array[2] = 0;
-		array[3] = 1 + fmod(Xsn, dx) / dx;
-		array[4] = 1 + fmod(Xsn, dx) / dx;
-	} else {
-		array[0] = 1 + fmod(Xsn, dx)/dx;
-		array[1] = 0;
-		array[2] = 1;
-		array[3] = 1 + fmod(Xsn, dx) / dx;
-		array[4] = 1 + fmod(Xsn, dx) / dx;
-	}
+	array[0] = 1 + M_PI*(2*(j-axis_j)+1)*pow(dr,2)*fmod(Xsn, dx) / full[0];
+	array[1] = 1;
+	array[2] = 0;
+	array[3] = 1 + 2*M_PI * (j-axis_j)*dr * fmod(Xsn, dx) / full[3];
+	array[4] = 1 + 2*M_PI * (j-axis_j+1)*dr * fmod(Xsn, dx) / full[4];
+//	if (PROJECTILE) {
+//		array[0] = 1 + fmod(Xsn, dx)/dx;
+//		array[1] = 1;
+//		array[2] = 0;
+//		array[3] = 1 + fmod(Xsn, dx) / dx;
+//		array[4] = 1 + fmod(Xsn, dx) / dx;
+//	} else {
+//		array[0] = 1 + fmod(Xsn, dx)/dx;
+//		array[1] = 0;
+//		array[2] = 1;
+//		array[3] = 1 + fmod(Xsn, dx) / dx;
+//		array[4] = 1 + fmod(Xsn, dx) / dx;
+//	}
 }
 
 /* Euler stage piston right border calculation */
@@ -87,12 +87,12 @@ double euler_bar_Vx(cell2d& cell, int n, int i, int j,
 	BorderCond brd[10];
 	calculateBorder(n, cell[n], NEEDED_COND, brd, i, j);
 
-//  double P_i12 = (brd[P_POS].i1j + brd[P_POS].ij)/2 *
-//    		(1 - (k-1)*(brd[VX_POS].i1j - brd[VX_POS].ij)*dt/dx);
-//	double P_i_12 = (brd[P_POS].i_1j + brd[P_POS].ij)/2 *
-//			(1 - (k-1)*(brd[VX_POS].ij - brd[VX_POS].i_1j)*dt/dx);
-	double P_i12 = (brd[P_POS].i1j + brd[P_POS].ij)/2;
-	double P_i_12 = (brd[P_POS].i_1j + brd[P_POS].ij)/2;
+	double P_i12 = (brd[P_POS].i1j + brd[P_POS].ij)/2 *
+    		(1 - (k-1)*(brd[VX_POS].i1j - brd[VX_POS].ij)*dt/dx);
+	double P_i_12 = (brd[P_POS].i_1j + brd[P_POS].ij)/2 *
+			(1 - (k-1)*(brd[VX_POS].ij - brd[VX_POS].i_1j)*dt/dx);
+//	double P_i12 = (brd[P_POS].i1j + brd[P_POS].ij)/2;
+//	double P_i_12 = (brd[P_POS].i_1j + brd[P_POS].ij)/2;
 
 	switch (var) {
 	case FIRST_ORDER:
@@ -192,12 +192,12 @@ double euler_bar_Vr(cell2d& cell, int n, int i, int j,
 	borderArray[6] = brd[6];
 	borderArray[7] = brd[7];
 
-//    double P_j12 = (brd[P_POS].ij1 + brd[P_POS].ij)/2 *
-//    		(1 - (k-1)*(brd[VR_POS].ij1 - brd[VR_POS].ij)*dt/dr);
-//	double P_j_12 = (brd[P_POS].ij_1 + brd[P_POS].ij)/2 *
-//			(1 - (k-1)*(brd[VR_POS].ij - brd[VR_POS].ij_1)*dt/dr);
-	double P_j12 = (brd[P_POS].ij1 + brd[P_POS].ij)/2;
-	double P_j_12 = (brd[P_POS].ij_1 + brd[P_POS].ij)/2;
+    double P_j12 = (brd[P_POS].ij1 + brd[P_POS].ij)/2 *
+    		(1 - (k-1)*(brd[VR_POS].ij1 - brd[VR_POS].ij)*dt/dr);
+	double P_j_12 = (brd[P_POS].ij_1 + brd[P_POS].ij)/2 *
+			(1 - (k-1)*(brd[VR_POS].ij - brd[VR_POS].ij_1)*dt/dr);
+//	double P_j12 = (brd[P_POS].ij1 + brd[P_POS].ij)/2;
+//	double P_j_12 = (brd[P_POS].ij_1 + brd[P_POS].ij)/2;
 
 	switch (var) {
 	case FIRST_ORDER:
@@ -275,6 +275,7 @@ double euler_bar_Vr(cell2d& cell, int n, int i, int j,
     //~ if (fabs(curCell.P[4] - curCell.P[3]) < pow(10,-5)/scaleV) result = curCell.Vr[0];
 
 	if (fabs(result-curCell.Vr[0]) < pow(10.0,-12)) result = curCell.Vr[0];
+
 	return result;
 }
 
@@ -485,6 +486,10 @@ double lagrange_rho(gasCell * curCell, gasCell * prevCell, int i, int j, double 
     	result = curCell->rho;
     }
 
+    if (curCell->type == 22 && result > 1000) {
+    	printf("123");
+    }
+
 	if (result < 0) {
 		cout << "rho < 0" << endl
 			<< "i = " << i << endl
@@ -570,10 +575,14 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 	array[7] = ruleVr1 ? 1 : 0;
 	array[8] = ruleVr2 ? 0 : 1;
 
-//	double debugArray[21];
-//	for (int idx = 0; idx < 21; idx++) {
-//		debugArray[idx] = array[idx];
-//	}
+	double debugArray[21];
+	for (int idx = 0; idx < 21; idx++) {
+		debugArray[idx] = array[idx];
+	}
+    if (curCell.type == 22 && curCell.rho > 1000) {
+    	printf("123");
+    }
+
 //	if ((i == i_pist || i == i_pist+1) && j == 10) {
 //		gasCell * cell1 = &cell[n][i][j];
 //		gasCell * cell2 = &cell[n][i+1][j];
@@ -851,34 +860,34 @@ double final_calc_Vr(cell2d& cell, int i, int j, int n,
         double dx, double dr, double dt) {
 
 	gasCell curCell = cell[n][i][j];
+	gasCell nextTCell = cell[n+1][i][j];
 
 	unsigned NEEDED_COND = 0;
-	NEEDED_COND += RHO_PAR;
-	NEEDED_COND += BAR_VX_PAR;
 	NEEDED_COND += BAR_VR_PAR;
 	BorderCond brd[10];
 	calculateBorder(n, cell[n], NEEDED_COND, brd, i, j);
 
-    double result = curCell.bar_Vr[0] * brd[RHO_POS].ij / cell[n+1][i][j].rho
+    double result = curCell.bar_Vr[0] * curCell.rho / nextTCell.rho
     +
     (
-	    curCell.D[1] * brd[BAR_VR_POS].i_1j * curCell.dM[1] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    curCell.D[1] * brd[BAR_VR_POS].i_1j * curCell.dM[1] / ((fabs(j-axis_j-0.5)) * nextTCell.rho * curCell.A[0] * dx * pow(dr,2))
 	    +
-	    curCell.D[2] * brd[BAR_VR_POS].i1j * curCell.dM[2] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    curCell.D[2] * brd[BAR_VR_POS].i1j * curCell.dM[2] / ((fabs(j-axis_j-0.5)) * nextTCell.rho * curCell.A[0] * dx * pow(dr,2))
 	    +
-	    curCell.D[3] * brd[BAR_VR_POS].ij_1 * curCell.dM[3] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    curCell.D[3] * brd[BAR_VR_POS].ij_1 * curCell.dM[3] / ((fabs(j-axis_j-0.5)) * nextTCell.rho * curCell.A[0] * dx * pow(dr,2))
 	    +
-	    curCell.D[4] * brd[BAR_VR_POS].ij1 * curCell.dM[4] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    curCell.D[4] * brd[BAR_VR_POS].ij1 * curCell.dM[4] / ((fabs(j-axis_j-0.5)) * nextTCell.rho * curCell.A[0] * dx * pow(dr,2))
 	    -
-	    (1-curCell.D[1]) * curCell.bar_Vr[0] * curCell.dM[1] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    (1-curCell.D[1]) * curCell.bar_Vr[0] * curCell.dM[1] / ((fabs(j-axis_j-0.5)) * nextTCell.rho * curCell.A[0] * dx * pow(dr,2))
 	    -
-	    (1-curCell.D[2]) * curCell.bar_Vr[0] * curCell.dM[2] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    (1-curCell.D[2]) * curCell.bar_Vr[0] * curCell.dM[2] / ((fabs(j-axis_j-0.5)) * nextTCell.rho * curCell.A[0] * dx * pow(dr,2))
 	    -
-	    (1-curCell.D[3]) * curCell.bar_Vr[0] * curCell.dM[3] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    (1-curCell.D[3]) * curCell.bar_Vr[0] * curCell.dM[3] / ((fabs(j-axis_j-0.5)) * nextTCell.rho * curCell.A[0] * dx * pow(dr,2))
 	    -
-	    (1-curCell.D[4]) * curCell.bar_Vr[0] * curCell.dM[4] / ((fabs(j-axis_j-0.5)) * cell[n+1][i][j].rho * curCell.A[0] * dx * pow(dr,2))
+	    (1-curCell.D[4]) * curCell.bar_Vr[0] * curCell.dM[4] / ((fabs(j-axis_j-0.5)) * nextTCell.rho * curCell.A[0] * dx * pow(dr,2))
 	)
     ;
+
     return result;
 }
 

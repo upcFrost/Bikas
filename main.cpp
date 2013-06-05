@@ -86,23 +86,23 @@ int main(int argc, char** argv) {
     {
     	printf("Which gas model is used?\n"
     			"0 - Ideal gas, 2 - Powder\n");
-    	scanf("%d", &gasVar);
-    	while (gasVar != IDEAL_GAS && gasVar != POWDER_EQ) {
-    		printf("\nInvalid input, please try again\n");
-    		scanf("%d", &gasVar);
-    	}
+    	cin >> gasVar;
+//    	while (gasVar != IDEAL_GAS && gasVar != POWDER_EQ) {
+//    		printf("\nInvalid input, please try again\n");
+//    		scanf("%d", &gasVar);
+//    	}
 
     	int ifPiston = 0;
     	printf("Is plastic piston present?\n"
 				"1 - yes, any other digit - no\n");
-		scanf("%d", &ifPiston);
+		cin >> ifPiston;
 		if (ifPiston == 1) {
 			havePiston = true;
 		}
 
     	int debugOutput = 0;
 		printf("\nDo you need debug output? (1 - yes, any other digit - no)\n");
-		scanf("%d", &debugOutput);
+		cin >> debugOutput;
 		if (debugOutput == 1) {
 			debug = true;
 		}
@@ -112,7 +112,7 @@ int main(int argc, char** argv) {
 		/** Test - Riemann problem 1 **/
     	int riemannTest = 0;
     	printf("\nPreform riemann test? (1 - yes, any other digit - no)\n");
-    	scanf("%d", &riemannTest);
+    	cin >> riemannTest;
     	if (riemannTest == 1) {
     		i_sn = max_i - 10;
     		x_sn.back() = i_sn * dx;
@@ -139,11 +139,11 @@ int main(int argc, char** argv) {
 		int iter_count;
 
 		printf("Max iterations: \n");
-		scanf("%d", &iter_count);
+		cin >> iter_count;
 		if (iter_count <= 0) iter_count = 400;
 
 		printf("Ku: \n");
-		scanf("%f", &Ku);
+		cin >> Ku;
 		if (Ku <= 0) Ku = 0.05;
 		
 		clock_t start = clock();
