@@ -23,17 +23,17 @@ void pre_cell_geometry(double array[5], gasCell cell, int i, int j) {
 		break;
 
 	case 1:
-//	    array[0] = (2*M_PI * (j*dr + (cell.r_1*dr + cell.r_2*dr)/2) * (cell.r_1*dr + cell.r_2*dr)/2 * dx) / full[0] ;
-//	    array[1] = (M_PI * (2*j*dr*cell.r_1*dr + pow(cell.r_1*dr, 2))) / full[1] ;
-//	    array[2] = (M_PI * (2*j*dr*cell.r_2*dr + pow(cell.r_2*dr, 2))) / full[2] ;
-//	    array[3] = 1;
-//	    array[4] = 0;
-	    array[0] = ((j-1)*(cell.r_1+cell.r_2) + cell.r_1*cell.r_2 +
-			pow(cell.r_2-cell.r_1, 2)/3) / (2*j-1);
-		array[1] = cell.r_1 * (j-1+cell.r_1/2) / (j-0.5);
-		array[2] = cell.r_2 * (j-1+cell.r_2/2) / (j-0.5);
-		array[3] = 1;
-		array[4] = 0;
+	    array[0] = (2*M_PI * (j*dr + (cell.r_1*dr + cell.r_2*dr)/2) * (cell.r_1*dr + cell.r_2*dr)/2 * dx) / full[0] ;
+	    array[1] = (M_PI * (2*j*dr*cell.r_1*dr + pow(cell.r_1*dr, 2))) / full[1] ;
+	    array[2] = (M_PI * (2*j*dr*cell.r_2*dr + pow(cell.r_2*dr, 2))) / full[2] ;
+	    array[3] = 1;
+	    array[4] = 0;
+//	    array[0] = ((j-1)*(cell.r_1+cell.r_2) + cell.r_1*cell.r_2 +
+//			pow(cell.r_2-cell.r_1, 2)/3) / (2*j-1);
+//		array[1] = cell.r_1 * (j-1+cell.r_1/2) / (j-0.5);
+//		array[2] = cell.r_2 * (j-1+cell.r_2/2) / (j-0.5);
+//		array[3] = 1;
+//		array[4] = 0;
 	    break;
 
 	case 2:
@@ -207,17 +207,17 @@ void pre_cell_geometry(double array[5], gasCell cell, int i, int j) {
 		break;
 
 	case 22:
-//		array[0] = (2*M_PI*(j*dr + cell.r_1*dr/2) * cell.r_1*dr*cell.x_1*dx / 2) / full[0] ;
-//		array[1] = (M_PI * (2*j*dr*cell.r_1*dr + pow(cell.r_1*dr, 2))) / full[1] ;
-//		array[2] = 0;
-//		array[3] = (2*M_PI*j*cell.x_1*dx*dr) / full[3];
-//		array[4] = 0;
-	    array[0] = ((j-1)*(cell.r_1+cell.r_2) + cell.r_1*cell.r_2 +
-			pow(cell.r_2-cell.r_1, 2)/3) / (2*j-1);
-		array[1] = cell.r_1 * (j-1+cell.r_1/2) / (j-0.5);
+		array[0] = (2*M_PI*(j*dr + cell.r_1*dr/2) * cell.r_1*dr*cell.x_1*dx / 2) / full[0] ;
+		array[1] = (M_PI * (2*j*dr*cell.r_1*dr + pow(cell.r_1*dr, 2))) / full[1] ;
 		array[2] = 0;
-		array[3] = 1;
+		array[3] = (2*M_PI*j*cell.x_1*dx*dr) / full[3];
 		array[4] = 0;
+//	    array[0] = ((j-1)*(cell.r_1+cell.r_2) + cell.r_1*cell.r_2 +
+//			pow(cell.r_2-cell.r_1, 2)/3) / (2*j-1);
+//		array[1] = cell.r_1 * (j-1+cell.r_1/2) / (j-0.5);
+//		array[2] = 0;
+//		array[3] = 1;
+//		array[4] = 0;
 		break;
 
 
