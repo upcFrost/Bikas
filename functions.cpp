@@ -30,17 +30,17 @@ void euler_proj_broder(double array[5], int j, double Xsn,
 	full[3] = 2*M_PI*(j-axis_j)*dr*dx;
 	full[4] = 2*M_PI*(j-axis_j+1)*dr*dx;
 
-	array[0] = 1 + M_PI*(2*(j-axis_j)+1)*pow(dr,2)*fmod(Xsn, dx) / full[0];
-	array[1] = 1;
-	array[2] = 0;
-	array[3] = 1 + 2*M_PI * (j-axis_j)*dr * fmod(Xsn, dx) / full[3];
-	array[4] = 1 + 2*M_PI * (j-axis_j+1)*dr * fmod(Xsn, dx) / full[4];
+//	array[0] = 1 + M_PI*(2*(j-axis_j)+1)*pow(dr,2)*fmod(Xsn, dx) / full[0];
+//	array[1] = 1;
+//	array[2] = 0;
+//	array[3] = 1 + 2*M_PI * (j-axis_j)*dr * fmod(Xsn, dx) / full[3];
+//	array[4] = 1 + 2*M_PI * (j-axis_j+1)*dr * fmod(Xsn, dx) / full[4];
 //	if (PROJECTILE) {
-//		array[0] = 1 + fmod(Xsn, dx)/dx;
-//		array[1] = 1;
-//		array[2] = 0;
-//		array[3] = 1 + fmod(Xsn, dx) / dx;
-//		array[4] = 1 + fmod(Xsn, dx) / dx;
+		array[0] = 1 + fmod(Xsn, dx)/dx;
+		array[1] = 1;
+		array[2] = 0;
+		array[3] = 1 + fmod(Xsn, dx) / dx;
+		array[4] = 1 + fmod(Xsn, dx) / dx;
 //	} else {
 //		array[0] = 1 + fmod(Xsn, dx)/dx;
 //		array[1] = 0;
@@ -87,12 +87,12 @@ double euler_bar_Vx(cell2d& cell, int n, int i, int j,
 	BorderCond brd[10];
 	calculateBorder(n, cell[n], NEEDED_COND, brd, i, j);
 
-	double P_i12 = (brd[P_POS].i1j + brd[P_POS].ij)/2 *
-    		(1 - (k-1)*(brd[VX_POS].i1j - brd[VX_POS].ij)*dt/dx);
-	double P_i_12 = (brd[P_POS].i_1j + brd[P_POS].ij)/2 *
-			(1 - (k-1)*(brd[VX_POS].ij - brd[VX_POS].i_1j)*dt/dx);
-//	double P_i12 = (brd[P_POS].i1j + brd[P_POS].ij)/2;
-//	double P_i_12 = (brd[P_POS].i_1j + brd[P_POS].ij)/2;
+//	double P_i12 = (brd[P_POS].i1j + brd[P_POS].ij)/2 *
+//    		(1 - (k-1)*(brd[VX_POS].i1j - brd[VX_POS].ij)*dt/dx);
+//	double P_i_12 = (brd[P_POS].i_1j + brd[P_POS].ij)/2 *
+//			(1 - (k-1)*(brd[VX_POS].ij - brd[VX_POS].i_1j)*dt/dx);
+	double P_i12 = (brd[P_POS].i1j + brd[P_POS].ij)/2;
+	double P_i_12 = (brd[P_POS].i_1j + brd[P_POS].ij)/2;
 
 	switch (var) {
 	case FIRST_ORDER:
@@ -192,12 +192,12 @@ double euler_bar_Vr(cell2d& cell, int n, int i, int j,
 	borderArray[6] = brd[6];
 	borderArray[7] = brd[7];
 
-    double P_j12 = (brd[P_POS].ij1 + brd[P_POS].ij)/2 *
-    		(1 - (k-1)*(brd[VR_POS].ij1 - brd[VR_POS].ij)*dt/dr);
-	double P_j_12 = (brd[P_POS].ij_1 + brd[P_POS].ij)/2 *
-			(1 - (k-1)*(brd[VR_POS].ij - brd[VR_POS].ij_1)*dt/dr);
-//	double P_j12 = (brd[P_POS].ij1 + brd[P_POS].ij)/2;
-//	double P_j_12 = (brd[P_POS].ij_1 + brd[P_POS].ij)/2;
+//    double P_j12 = (brd[P_POS].ij1 + brd[P_POS].ij)/2 *
+//    		(1 - (k-1)*(brd[VR_POS].ij1 - brd[VR_POS].ij)*dt/dr);
+//	double P_j_12 = (brd[P_POS].ij_1 + brd[P_POS].ij)/2 *
+//			(1 - (k-1)*(brd[VR_POS].ij - brd[VR_POS].ij_1)*dt/dr);
+	double P_j12 = (brd[P_POS].ij1 + brd[P_POS].ij)/2;
+	double P_j_12 = (brd[P_POS].ij_1 + brd[P_POS].ij)/2;
 
 	switch (var) {
 	case FIRST_ORDER:
@@ -553,20 +553,20 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 	if (fabs(array[2]) < pow(10.0,-14)) array[2] = 0;
 
 	if (ruleVr1) {
-		array[3] = cell[n][i][j-1].A[4] * brd[RHO_POS].ij_1 * Vr_j_12 * j*dx*dr * dt;
-//		array[3] = cell[n][i][j-1].A[4] * brd[RHO_POS].ij_1 * Vr_j_12 * dx * dt;
+//		array[3] = cell[n][i][j-1].A[4] * brd[RHO_POS].ij_1 * Vr_j_12 * j*dx*dr * dt;
+		array[3] = cell[n][i][j-1].A[4] * brd[RHO_POS].ij_1 * Vr_j_12 * dx * dt;
 	} else {
-		array[3] = curCell.A[3] * brd[RHO_POS].ij * Vr_j_12 * j*dx*dr * dt;
-//		array[3] = curCell.A[3] * brd[RHO_POS].ij * Vr_j_12 * dx * dt;
+//		array[3] = curCell.A[3] * brd[RHO_POS].ij * Vr_j_12 * j*dx*dr * dt;
+		array[3] = curCell.A[3] * brd[RHO_POS].ij * Vr_j_12 * dx * dt;
 	}
 	if (fabs(array[3]) < pow(10.0,-14)) array[3] = 0;
 
 	if (ruleVr2) {
-		array[4] = curCell.A[4] * brd[RHO_POS].ij * Vr_j12 * (j+1)*dx*dr * dt;
-//		array[4] = curCell.A[4] * brd[RHO_POS].ij * Vr_j12 * dx * dt;
+//		array[4] = curCell.A[4] * brd[RHO_POS].ij * Vr_j12 * (j+1)*dx*dr * dt;
+		array[4] = curCell.A[4] * brd[RHO_POS].ij * Vr_j12 * dx * dt;
 	} else {
-		array[4] = cell[n][i][j+1].A[3] * brd[RHO_POS].ij1 * Vr_j12 * (j+1)*dx*dr * dt;
-//		array[4] = cell[n][i][j+1].A[3] * brd[RHO_POS].ij1 * Vr_j12 * dx * dt;
+//		array[4] = cell[n][i][j+1].A[3] * brd[RHO_POS].ij1 * Vr_j12 * (j+1)*dx*dr * dt;
+		array[4] = cell[n][i][j+1].A[3] * brd[RHO_POS].ij1 * Vr_j12 * dx * dt;
 	}
 	if (fabs(array[4]) < pow(10.0,-14)) array[4] = 0;
 

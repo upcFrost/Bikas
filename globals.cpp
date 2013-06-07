@@ -23,7 +23,7 @@ float dM0 = 0;
 double i_v = 0;
 double j_v = 0;
 double k = 1.262;
-double m_sn = 5.3;
+double m_sn = 0.3;
 double j_sn = 0;
 double i_sn = 0;
 double i_pist = 0;
@@ -37,7 +37,7 @@ double f = 0.922*pow(10,6);
 int P_f = 30000000;
 double P_atm = 100000;
 double rho_atm = 1.2754;
-double P_v = 40000000;
+double P_v = 30000000;
 
 /* STUB */
 int Qr = 0;
