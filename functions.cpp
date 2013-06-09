@@ -14,6 +14,23 @@ double euler_Usn(double P_sn, double S, double F, double dt, double U_prev) {
 	}
 }
 
+double soundSpeed(double P, double rho, double psi, int gasVar) {
+	double result = 0;
+	switch (gasVar) {
+	case IDEAL_GAS:
+		result = sqrt(k * P / rho);
+		break;
+
+	case POWDER_EQ:
+		result = sqrt(k*P / (1/rho - (1-psi)/delta - alpha_k*psi));
+		break;
+
+	default:
+		break;
+	}
+	return result;
+}
+
 /* Euler stage X_sn calculation */
 double euler_Xsn(double x_prev, double U_new) {
 	return x_prev + U_new*dt;

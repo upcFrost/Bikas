@@ -237,14 +237,15 @@ void projParCalc(cell2d & cell, int borderI_prev, int borderI, int var,
 			}
 
 			// Local speed of sound
-			double ai = sqrt(k * curCell->P[0] / curCell->rho);
+//			double ai = soundSpeed(curCell->P[0], curCell->rho, curCell->final_psi, var);
+			double ai = soundSpeed(curCell->P[0], curCell->rho, curCell->final_psi, IDEAL_GAS);
 			// Pressure at the border
 			double borderP;
 			if (PROJECTILE)
-				borderP= curCell->P[0] + ai*curCell->rho *
+				borderP = curCell->P[0] + ai*curCell->rho *
 					(U_sn.back() - curCell->Vx[0]);
 			else
-				borderP= curCell->P[0] + ai*curCell->rho *
+				borderP = curCell->P[0] + ai*curCell->rho *
 					(U_pist.back() - curCell->Vx[0]);
 			// Density at the center of the cell
 			double newRho = curCell->rho * Qi / barQi;

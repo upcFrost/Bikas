@@ -66,8 +66,12 @@ int main(int argc, char** argv) {
     t.resize(1);
     x_sn.resize(1);
     U_sn.resize(1);
+
+    string inputFileName;
+    cout << "Type input file name and path\n";
+    cin >> inputFileName;
     /* Open input file and create output files */
-    ifstream inputFile ("input.csv");
+    ifstream inputFile (inputFileName.c_str());
     ofstream outputGas ("outputGas.csv");
 	ofstream outputDyn ("outputDyn.csv");
 
