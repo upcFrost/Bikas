@@ -22,7 +22,7 @@ double soundSpeed(double P, double rho, double psi, int gasVar) {
 		break;
 
 	case POWDER_EQ:
-		result = sqrt(k*P / (1/rho - (1-psi)/delta - alpha_k*psi));
+		result = 1/rho * sqrt(k*P / (1/rho - (1-psi)/delta - alpha_k*psi));
 		break;
 
 	default:
@@ -570,20 +570,20 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
 	if (fabs(array[2]) < pow(10.0,-14)) array[2] = 0;
 
 	if (ruleVr1) {
-//		array[3] = cell[n][i][j-1].A[4] * brd[RHO_POS].ij_1 * Vr_j_12 * j*dx*dr * dt;
-		array[3] = cell[n][i][j-1].A[4] * brd[RHO_POS].ij_1 * Vr_j_12 * dx * dt;
+		array[3] = cell[n][i][j-1].A[4] * brd[RHO_POS].ij_1 * Vr_j_12 * j*dx*dr * dt;
+//		array[3] = cell[n][i][j-1].A[4] * brd[RHO_POS].ij_1 * Vr_j_12 * dx * dt;
 	} else {
-//		array[3] = curCell.A[3] * brd[RHO_POS].ij * Vr_j_12 * j*dx*dr * dt;
-		array[3] = curCell.A[3] * brd[RHO_POS].ij * Vr_j_12 * dx * dt;
+		array[3] = curCell.A[3] * brd[RHO_POS].ij * Vr_j_12 * j*dx*dr * dt;
+//		array[3] = curCell.A[3] * brd[RHO_POS].ij * Vr_j_12 * dx * dt;
 	}
 	if (fabs(array[3]) < pow(10.0,-14)) array[3] = 0;
 
 	if (ruleVr2) {
-//		array[4] = curCell.A[4] * brd[RHO_POS].ij * Vr_j12 * (j+1)*dx*dr * dt;
-		array[4] = curCell.A[4] * brd[RHO_POS].ij * Vr_j12 * dx * dt;
+		array[4] = curCell.A[4] * brd[RHO_POS].ij * Vr_j12 * (j+1)*dx*dr * dt;
+//		array[4] = curCell.A[4] * brd[RHO_POS].ij * Vr_j12 * dx * dt;
 	} else {
-//		array[4] = cell[n][i][j+1].A[3] * brd[RHO_POS].ij1 * Vr_j12 * (j+1)*dx*dr * dt;
-		array[4] = cell[n][i][j+1].A[3] * brd[RHO_POS].ij1 * Vr_j12 * dx * dt;
+		array[4] = cell[n][i][j+1].A[3] * brd[RHO_POS].ij1 * Vr_j12 * (j+1)*dx*dr * dt;
+//		array[4] = cell[n][i][j+1].A[3] * brd[RHO_POS].ij1 * Vr_j12 * dx * dt;
 	}
 	if (fabs(array[4]) < pow(10.0,-14)) array[4] = 0;
 

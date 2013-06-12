@@ -237,8 +237,7 @@ void projParCalc(cell2d & cell, int borderI_prev, int borderI, int var,
 			}
 
 			// Local speed of sound
-//			double ai = soundSpeed(curCell->P[0], curCell->rho, curCell->final_psi, var);
-			double ai = soundSpeed(curCell->P[0], curCell->rho, curCell->final_psi, IDEAL_GAS);
+			double ai = soundSpeed(curCell->P[0], curCell->rho, curCell->final_psi, var);
 			// Pressure at the border
 			double borderP;
 			if (PROJECTILE)

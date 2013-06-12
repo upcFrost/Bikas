@@ -155,8 +155,8 @@ int main(int argc, char** argv) {
 		double speed = 0;
 		bool need_out;
 		int iteration = 0;
-//		while (x_sn.at(xs_sn.size()-1) < (max_i-8)*dx) {
-		while (iteration < iter_count) {
+		while (x_sn.at(x_sn.size()-1) < (max_i-8)*dx) {
+//		while (iteration < iter_count) {
 			need_out = false;
 			if (iteration % 1000 == 0 && iteration > 0) {
 				stop = clock();
@@ -218,6 +218,11 @@ int main(int argc, char** argv) {
 						}
 						nextTCell->rho = lagrange_rho(&cell.at(n).at(i).at(j),
 								&cell.at(n-1).at(i).at(j),i,j,dt,dx,dr);
+
+						if (i == 343 && j == 27) {
+							printf("dM = %10.10f, %10.10f, %10.10f, %10.10f, rho = %10.10f",
+									curCell->dM[1],curCell->dM[2],curCell->dM[3],curCell->dM[4],curCell->rho);
+						}
 					}
 				}
 			}
@@ -304,8 +309,8 @@ int main(int argc, char** argv) {
 			
 			
 			/* Output to file */
-			if (iteration % 25 == 0) {
-//			if (fabs(t.back() - timestep) > pow(10.0,-5) || need_out) {
+//			if (iteration % 25 == 0) {
+			if (fabs(t.back() - timestep) > pow(10.0,-5)/scaleT) {
 				timestep = t.back();
 				
 				/* Dynamics - to csv */
