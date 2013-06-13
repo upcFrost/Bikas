@@ -4,11 +4,12 @@ using namespace std;
 
 
 /* Euler stage U_sn calculation */
-double euler_Usn(double P_sn, double S, double F, double dt, double U_prev) {
+double euler_Usn(double P_sn, double S, double F, double dt, double U_prev,
+		double mass_sn) {
 
-	if (P_sn > P_f || U_prev > 0) {
+	if (P_sn > P_f || U_prev != 0) {
 		//return cell->Vx[0] + (S*cell->P[4] - F)*dt / m_sn;
-		return U_prev + (S*P_sn - F)*dt / (m_sn);
+		return U_prev + (S*P_sn - F)*dt / (mass_sn);
 	} else {
 		return 0;
 	}
@@ -471,6 +472,7 @@ double euler_bar_e(cell2d& cell, int n, int i, int j,
 				fmax(cell[n][i][j].A[3],cell[n][i][j].A[4]) << endl
 			<< "(fabs(j-axis_j-0.5))*dr = " << (fabs(j-axis_j-0.5))*dr << endl
 			<< "fmax(cell[n][i][j].A[3],cell[n][i][j].A[4]) = " << fmax(cell[n][i][j].A[3],cell[n][i][j].A[4]) << endl << endl;
+		getchar();
 		return 0;
 	}
 }
@@ -507,7 +509,7 @@ double lagrange_rho(gasCell * curCell, gasCell * prevCell, int i, int j, double 
     	printf("123");
     }
 
-	if (result < 0) {
+	if (result <= 0) {
 		cout << "rho < 0" << endl
 			<< "i = " << i << endl
 			<< "j = " << j << endl
@@ -811,6 +813,11 @@ double final_calc_p(gasCell * prevCell, gasCell * curCell, int var, int i) {
 
 	default:
 		break;
+	}
+
+	if (result != result) {
+		cout << "P is NaN" << endl;
+		getchar();
 	}
 
 	if (result < 0) {

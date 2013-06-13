@@ -250,16 +250,19 @@ void populateCellVector(std::ifstream & inputFile, cell2d & cell,
 			}
 		} else if (i < i_sn && havePiston) {
 //			curCell->rho = (PISTON_RHO / scaleRho);
-			curCell->rho = 931.779;
-			for (int iter = 0; iter < 5; iter++) curCell->P[iter] = PISTON_B *
-					curCell->rho/PISTON_RHO * (curCell->rho/PISTON_RHO - 1) /
-					pow(PISTON_C - curCell->rho/PISTON_RHO, 2);;
+//			curCell->rho = 931.779;
+			curCell->rho = 500;
+//			for (int iter = 0; iter < 5; iter++) curCell->P[iter] = PISTON_B *
+//					curCell->rho/PISTON_RHO * (curCell->rho/PISTON_RHO - 1) /
+//					pow(PISTON_C - curCell->rho/PISTON_RHO, 2);
+			for (int iter = 0; iter < 5; iter++) curCell->P[iter] = P_v*0.9;
 			for (int iter = 0; iter < 5; iter++) curCell->Vx[iter] = 0;
 			for (int iter = 0; iter < 5; iter++) curCell->Vr[iter] = 0;
 			for (int iter = 0; iter < 5; iter++) curCell->bar_Vx[iter] = 0;
 			for (int iter = 0; iter < 5; iter++) curCell->bar_Vr[iter] = 0;
 			for (int iter = 0; iter < 5; iter++) curCell->dM[iter] = 0;
-			curCell->e = cell.at(n).at(i).at(j).P[0] / (k-1) / (PISTON_RHO/ scaleRho);
+			curCell->e = cell.at(n).at(i).at(j).P[0] / (k-1) / curCell->rho;
+//			curCell->e = cell.at(n).at(i).at(j).P[0] / (k-1) / (PISTON_RHO/ scaleRho);
 			curCell->final_psi = 1;
 			curCell->final_z = 1;
 		} else {

@@ -8,7 +8,8 @@
 #include "globals.h"
 #include <set>
 
-double euler_Usn(double P_sn, double S, double F, double dt, double U_prev);
+double euler_Usn(double P_sn, double S, double F, double dt, double U_prev,
+		double mass_sn);
 
 double euler_Xsn(double x_prev, double U_new);
 

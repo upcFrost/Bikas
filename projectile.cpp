@@ -41,7 +41,7 @@ void projSpeedPositionCalc(cell2dStatic & cell, double P_sn,
 	if (PROJECTILE) {
 
 		U_sn.push_back(euler_Usn(P_sn, S,
-			0, dt, U_sn.back()));
+			0, dt, U_sn.back(), m_sn));
 		x_sn.push_back(euler_Xsn(x_sn.back(), U_sn.back()));
 		i_sn = floor(x_sn.back() / dx);
 		borderI = i_sn;
@@ -58,7 +58,10 @@ void projSpeedPositionCalc(cell2dStatic & cell, double P_sn,
 		P_pist /= count;
 
 		U_pist.push_back(euler_Usn(P_sn, S,
-			P_pist*S, dt, U_pist.back()));
+			P_pist*S, dt, U_pist.back(), 0.01));
+		if (U_pist.back() < 0) {
+			printf("123");
+		}
 		x_pist.push_back(euler_Xsn(x_pist.back(), U_pist.back()));
 		i_pist = floor(x_pist.back() / dx);
 		borderI = i_pist;
@@ -306,9 +309,9 @@ void projCalc(cell2d & cell, int var, int borderI,
 	projParCalc(cell, borderI_prev, borderI, var, PROJECTILE, debug);
 }
 
-void pistonCalc(cell2d & cell, int borderI_prev, int borderI, bool debug) {
+void pistonCalc(cell2d & cell, int borderI_prev, int borderI,
+		int var, bool debug) {
 	double arrayT[5] = {0};
-	borderI_prev = borderI;
 
 	for (int j = 0; j < max_j; j++) {
 		if (cell.at(n).at(borderI+1).at(j).type != 18) {
@@ -327,11 +330,129 @@ void pistonCalc(cell2d & cell, int borderI_prev, int borderI, bool debug) {
 			}
 		}
 	}
+
+	if (borderI_prev != borderI) {
+		for (int j = 0; j < max_j; j++) {
+			/* Return cell to its original shape */
+			// For n
+			double tempArray[5];
+//			pre_cell_geometry(tempArray, cell.at(n).at(borderI_prev-1).at(j), borderI_prev-1, j);
+			gasCell * oldCell = &cell.at(n).at(borderI_prev+1).at(j);
+			gasCell * oldTCell = &cell.at(n+1).at(borderI_prev+1).at(j);
+			gasCell * newCell = &cell.at(n).at(borderI+1).at(j);
+
+			oldCell->A[0] = tempArray[0];
+			oldCell->A[1] = tempArray[1];
+			oldCell->A[2] = tempArray[2];
+			oldCell->A[3] = tempArray[3];
+			oldCell->A[4] = tempArray[4];
+			oldTCell->A[0] = tempArray[0];
+			oldTCell->A[1] = tempArray[1];
+			oldTCell->A[2] = tempArray[2];
+			oldTCell->A[3] = tempArray[3];
+			oldTCell->A[4] = tempArray[4];
+
+			newCell->P[0] = oldCell->P[0];
+			newCell->P[1] = oldCell->P[1];
+			newCell->P[2] = oldCell->P[2];
+			newCell->P[3] = oldCell->P[3];
+			newCell->P[4] = oldCell->P[4];
+			newCell->rho = oldCell->rho;
+			newCell->e = oldCell->e;
+			newCell->bar_Vx[0] = oldCell->bar_Vx[0];
+			newCell->bar_Vx[1] = oldCell->bar_Vx[1];
+			newCell->bar_Vx[2] = oldCell->bar_Vx[2];
+			newCell->bar_Vx[3] = oldCell->bar_Vx[3];
+			newCell->bar_Vx[4] = oldCell->bar_Vx[4];
+			newCell->bar_Vr[0] = oldCell->bar_Vr[0];
+			newCell->bar_Vr[1] = oldCell->bar_Vr[1];
+			newCell->bar_Vr[2] = oldCell->bar_Vr[2];
+			newCell->bar_Vr[3] = oldCell->bar_Vr[3];
+			newCell->bar_Vr[4] = oldCell->bar_Vr[4];
+			newCell->Vx[0] = oldCell->Vx[0];
+			newCell->Vx[1] = oldCell->Vx[1];
+			newCell->Vx[2] = oldCell->Vx[2];
+			newCell->Vx[3] = oldCell->Vx[3];
+			newCell->Vx[4] = oldCell->Vx[4];
+			newCell->Vr[0] = oldCell->Vr[0];
+			newCell->Vr[1] = oldCell->Vr[1];
+			newCell->Vr[2] = oldCell->Vr[2];
+			newCell->Vr[3] = oldCell->Vr[3];
+			newCell->Vr[4] = oldCell->Vr[4];
+			newCell->final_z = oldCell->final_z;
+			newCell->final_psi = oldCell->final_psi;
+
+//			if (borderI == i_pist) {
+//				gasCell * empty = &cell.at(borderI).at(j);
+//				gasCell * nextTEmpty = cell.at(n+1).at(borderI).at(j);
+//				empty->P[0] = 0;
+//				empty->P[1] = 0;
+//				empty->P[2] = 0;
+//				empty->P[3] = 0;
+//				empty->P[4] = 0;
+//				empty->rho = 0;
+//				empty->e = 0;
+//				empty->bar_Vx[0] = 0;
+//				empty->bar_Vx[1] = 0;
+//				empty->bar_Vx[2] = 0;
+//				empty->bar_Vx[3] = 0;
+//				empty->bar_Vx[4] = 0;
+//				empty->bar_Vr[0] = 0;
+//				empty->bar_Vr[1] = 0;
+//				empty->bar_Vr[2] = 0;
+//				empty->bar_Vr[3] = 0;
+//				empty->bar_Vr[4] = 0;
+//				empty->Vx[0] = 0;
+//				empty->Vx[1] = 0;
+//				empty->Vx[2] = 0;
+//				empty->Vx[3] = 0;
+//				empty->Vx[4] = 0;
+//				empty->Vr[0] = 0;
+//				empty->Vr[1] = 0;
+//				empty->Vr[2] = 0;
+//				empty->Vr[3] = 0;
+//				empty->Vr[4] = 0;
+//				empty->final_z = 0;
+//				empty->final_psi = 0;
+//				nextTEmpty->P[0] = 0;
+//				nextTEmpty->P[1] = 0;
+//				nextTEmpty->P[2] = 0;
+//				nextTEmpty->P[3] = 0;
+//				nextTEmpty->P[4] = 0;
+//				nextTEmpty->rho = 0;
+//				nextTEmpty->e = 0;
+//				nextTEmpty->bar_Vx[0] = 0;
+//				nextTEmpty->bar_Vx[1] = 0;
+//				nextTEmpty->bar_Vx[2] = 0;
+//				nextTEmpty->bar_Vx[3] = 0;
+//				nextTEmpty->bar_Vx[4] = 0;
+//				nextTEmpty->bar_Vr[0] = 0;
+//				nextTEmpty->bar_Vr[1] = 0;
+//				nextTEmpty->bar_Vr[2] = 0;
+//				nextTEmpty->bar_Vr[3] = 0;
+//				nextTEmpty->bar_Vr[4] = 0;
+//				nextTEmpty->Vx[0] = 0;
+//				nextTEmpty->Vx[1] = 0;
+//				nextTEmpty->Vx[2] = 0;
+//				nextTEmpty->Vx[3] = 0;
+//				nextTEmpty->Vx[4] = 0;
+//				nextTEmpty->Vr[0] = 0;
+//				nextTEmpty->Vr[1] = 0;
+//				nextTEmpty->Vr[2] = 0;
+//				nextTEmpty->Vr[3] = 0;
+//				nextTEmpty->Vr[4] = 0;
+//				nextTEmpty->final_z = 0;
+//				nextTEmpty->final_psi = 0;
+//			}
+		}
+	}
+
 	for (int j = 0; j < max_j; j++) {
 		if (cell.at(n).at(borderI+1).at(j).type != 18) {
 			gasCell * curCell = &cell.at(n).at(borderI+1).at(j);
 			double barQi;
 			double Qi;
+			double newP = 0;
 
 			if (debug) {
 				if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
@@ -341,7 +462,8 @@ void pistonCalc(cell2d & cell, int borderI_prev, int borderI, bool debug) {
 			barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
 			Qi = (cell.at(n-1).at(borderI+1).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 
-			if (barQi > Qi) Qi = (cell.at(n-1).at(borderI+1).at(j).A[0]+1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+			if (barQi - Qi > 0.1*Qi) Qi = (cell.at(n-1).at(borderI+1).at(j).A[0]+1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+			if (Qi - barQi > 0.1*Qi) barQi = (cell.at(n-1).at(borderI+1).at(j).A[0]+1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 
 			// Local speed of sound
 			double ai = sqrt(k * curCell->P[0] / curCell->rho);
@@ -357,10 +479,33 @@ void pistonCalc(cell2d & cell, int borderI_prev, int borderI, bool debug) {
 			// Gas full energy at the center of the cell
 			double newE = curCell->e + borderP * (Qi - barQi) / curCell->rho / Qi;
 			// Gas pressure at the center of the cell
-			double newP = PISTON_B * newRho/PISTON_RHO * (newRho/PISTON_RHO - 1) /
-				pow(PISTON_C - newRho/PISTON_RHO, 2);
+			switch (var) {
+				case IDEAL_GAS:
+					newP = (k-1) * (newE - (pow(newVx,2) + pow(curCell->Vr[0],2))/2) * newRho;
+					break;
+
+				case POWDER_EQ:
+					newP = (k-1) * (newE - (pow(newVx,2) + pow(curCell->Vr[0],2))/2 -
+							f/(k-1)*(1-curCell->final_psi)) /
+						( 1/newRho - (1 - curCell->final_psi)/delta -
+								alpha_k * curCell->final_psi);
+					break;
+
+				case PISTON:
+					newP = PISTON_B * newRho/PISTON_RHO * (newRho/PISTON_RHO - 1) /
+						pow(PISTON_C - newRho/PISTON_RHO, 2);
+					break;
+
+				default:
+					break;
+				}
 
 			if (j == 10) {
+				std::cout << " A[0] = " << curCell->A[0] << ", borderI = " << borderI
+						<< ", borderI_prev = " << borderI_prev << ", U = " << U_pist.back() << std::endl;
+			}
+
+			if (j == 10 && (newP > 35 || newP != newP || newE != newE || newVx != newVx)) {
 				printf("123");
 			}
 

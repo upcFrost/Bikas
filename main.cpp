@@ -172,8 +172,8 @@ int main(int argc, char** argv) {
 			if (havePiston) {
 				int i_pist_prev = i_pist;
 				projCalc(cell, gasVar, i_pist, false, debug);
-				pistonCalc(cell, i_pist_prev, i_pist, debug);
-				projCalc(cell, PISTON, i_sn, true, debug);
+				pistonCalc(cell, i_pist_prev, i_pist, IDEAL_GAS, debug);
+				projCalc(cell, IDEAL_GAS, i_sn, true, debug);
 			} else {
 				projCalc(cell, gasVar, i_sn, true, debug);
 			}
@@ -219,9 +219,10 @@ int main(int argc, char** argv) {
 						nextTCell->rho = lagrange_rho(&cell.at(n).at(i).at(j),
 								&cell.at(n-1).at(i).at(j),i,j,dt,dx,dr);
 
-						if (i == 343 && j == 27) {
+						if (i == i_pist-1 && j == 10) {
 							printf("dM = %10.10f, %10.10f, %10.10f, %10.10f, rho = %10.10f",
 									curCell->dM[1],curCell->dM[2],curCell->dM[3],curCell->dM[4],curCell->rho);
+							cout << " rho = " <<  curCell->rho << endl;
 						}
 					}
 				}
@@ -248,8 +249,10 @@ int main(int argc, char** argv) {
 							nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
 								gasVar, i);
 						} else if (i >= i_pist && i <= i_sn && havePiston) {
+//							nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
+//								PISTON, i);
 							nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
-								PISTON, i);
+								IDEAL_GAS, i);
 						}
 					}
 				}
@@ -283,12 +286,12 @@ int main(int argc, char** argv) {
 			}
 			
 			if (debug) {
-				int debug_I = i_sn-1, debug_J = 15;
+				int debug_I = 87, debug_J = 15;
 				if (true && debug_I != 0 && debug_J != 0) {
 					int nArray = 3; int *iArray = new int[nArray]; int *jArray = new int[nArray];
-					iArray[0] = debug_I-2; jArray[0] = debug_J;
-					iArray[1] = debug_I-1; jArray[1] = debug_J;
-					iArray[2] = debug_I; jArray[2] = debug_J;
+					iArray[0] = debug_I; jArray[0] = debug_J;
+					iArray[1] = debug_I+1; jArray[1] = debug_J;
+					iArray[2] = debug_I+2; jArray[2] = debug_J;
 					debug_Vx_Vr_P_A_barVx_output(n, nArray, iArray, jArray, cell);
 					debug_dM_rho_output(n, nArray, iArray, jArray, cell);
 					debug_p_output(n, nArray, iArray, jArray, cell);
@@ -310,7 +313,7 @@ int main(int argc, char** argv) {
 			
 			/* Output to file */
 //			if (iteration % 25 == 0) {
-			if (fabs(t.back() - timestep) > pow(10.0,-6)/scaleT) {
+			if (fabs(t.back() - timestep) > pow(10.0,-8)/scaleT) {
 				timestep = t.back();
 				
 				/* Dynamics - to csv */
