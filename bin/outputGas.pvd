@@ -1,4 +1,2 @@
 <VTKFile type="Collection" version="0.1" byte_order="LittleEndian">
 	<Collection>
-<DataSet timestep="0.0010918177" group="" part="0" file="./result/outputGas_25.vtp"/>
-<DataSet timestep="0.0022225154" group="" part="0" file="./result/outputGas_32.vtp"/>
