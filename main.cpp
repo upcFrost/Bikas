@@ -312,8 +312,8 @@ int main(int argc, char** argv) {
 			
 			
 			/* Output to file */
-//			if (iteration % 25 == 0) {
-			if (fabs(t.back() - timestep) > pow(10.0,-5)/scaleT) {
+			if (iteration % 25 == 0) {
+//			if (fabs(t.back() - timestep) > pow(10.0,-5)/scaleT) {
 				timestep = t.back();
 				
 				/* Dynamics - to csv */

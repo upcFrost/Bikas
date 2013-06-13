@@ -71,7 +71,7 @@ void projSpeedPositionCalc(cell2dStatic & cell, double P_sn,
 
 void projCheckIfChanged(cell2dStatic & cell, cell2dStatic & nextTCell,
 		int borderI_prev, int borderI) {
-	if (borderI_prev != borderI) {
+	if (borderI_prev != borderI && borderI > borderI_prev) {
 		for (int j = 0; j < max_j; j++) {
 			/* Return cell to its original shape */
 			// For n
@@ -217,6 +217,8 @@ void projParCalc(cell2d & cell, int borderI_prev, int borderI, int var,
 	for (int j = 0; j < max_j; j++) {
 		if (cell.at(n).at(borderI-1).at(j).type != 18) {
 			gasCell * curCell = &cell.at(n).at(borderI-1).at(j);
+			gasCell * prevCell = &cell.at(n-1).at(borderI-2).at(j);
+
 			double barQi;
 			double Qi;
 			double newP = 0;
@@ -229,7 +231,7 @@ void projParCalc(cell2d & cell, int borderI_prev, int borderI, int var,
 				}
 				barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
 				Qi = (cell.at(n-1).at(borderI-1).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
-			} else {
+			} else if (borderI > borderI_prev) {
 				if (debug) {
 					if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
 					if (j == 2) printf("Prev A[0] = %16.16f\n",
@@ -237,6 +239,14 @@ void projParCalc(cell2d & cell, int borderI_prev, int borderI, int var,
 				}
 				barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
 				Qi = (cell.at(n-1).at(borderI-2).at(j).A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+			} else {
+				if (debug) {
+					if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
+					if (j == 2) printf("Prev A[0] = %16.16f\n",
+							cell.at(n-1).at(borderI-2).at(j).A[0]);
+				}
+				barQi = (curCell->A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
+				Qi = (cell.at(n-1).at(borderI-2).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 			}
 
 			// Local speed of sound
@@ -290,6 +300,10 @@ void projParCalc(cell2d & cell, int borderI_prev, int borderI, int var,
 						newVx, newE, newP, curCell->final_psi, x_sn.back());
 			}
 
+			if (j == 10 && (newP > 35 || newP != newP || newE != newE || newVx != newVx)) {
+				printf("123");
+			}
+
 			curCell->P[0] = newP;
 			curCell->e = newE;
 			curCell->Vx[0] = newVx;
@@ -333,24 +347,8 @@ void pistonCalc(cell2d & cell, int borderI_prev, int borderI,
 
 	if (borderI_prev != borderI) {
 		for (int j = 0; j < max_j; j++) {
-			/* Return cell to its original shape */
-			// For n
-			double tempArray[5];
-//			pre_cell_geometry(tempArray, cell.at(n).at(borderI_prev-1).at(j), borderI_prev-1, j);
 			gasCell * oldCell = &cell.at(n).at(borderI_prev+1).at(j);
-			gasCell * oldTCell = &cell.at(n+1).at(borderI_prev+1).at(j);
 			gasCell * newCell = &cell.at(n).at(borderI+1).at(j);
-
-			oldCell->A[0] = tempArray[0];
-			oldCell->A[1] = tempArray[1];
-			oldCell->A[2] = tempArray[2];
-			oldCell->A[3] = tempArray[3];
-			oldCell->A[4] = tempArray[4];
-			oldTCell->A[0] = tempArray[0];
-			oldTCell->A[1] = tempArray[1];
-			oldTCell->A[2] = tempArray[2];
-			oldTCell->A[3] = tempArray[3];
-			oldTCell->A[4] = tempArray[4];
 
 			newCell->P[0] = oldCell->P[0];
 			newCell->P[1] = oldCell->P[1];
