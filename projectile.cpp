@@ -217,7 +217,6 @@ void projParCalc(cell2d & cell, int borderI_prev, int borderI, int var,
 	for (int j = 0; j < max_j; j++) {
 		if (cell.at(n).at(borderI-1).at(j).type != 18) {
 			gasCell * curCell = &cell.at(n).at(borderI-1).at(j);
-			gasCell * prevCell = &cell.at(n-1).at(borderI-2).at(j);
 
 			double barQi;
 			double Qi;

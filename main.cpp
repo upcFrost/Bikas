@@ -153,11 +153,9 @@ int main(int argc, char** argv) {
 		clock_t start = clock();
 		clock_t stop;
 		double speed = 0;
-		bool need_out;
 		int iteration = 0;
 		while (x_sn.at(x_sn.size()-1) < (max_i-8)*dx) {
 //		while (iteration < iter_count) {
-			need_out = false;
 			if (iteration % 1000 == 0 && iteration > 0) {
 				stop = clock();
 				speed = (stop - start) / CLOCKS_PER_SEC;
@@ -182,14 +180,14 @@ int main(int argc, char** argv) {
 #pragma omp parallel for num_threads(4) schedule(dynamic,1) collapse(2)
 			for (int i = 1; i < i_sn; i++) {
 				for (int j = 1; j < max_j-1; j++) {
-					if (cell.at(n).at(i).at(j).type != 18) {
+					if (cell[n][i][j].type != 18) {
 						if (havePiston && i == i_pist)
 							continue;
 
-						gasCell * curCell = &cell.at(n).at(i).at(j);
+						gasCell * curCell = &cell[n][i][j];
 
-						curCell->bar_z = euler_z(&cell, &cell.at(n).at(i).at(j), n, i, j);
-						curCell->bar_psi = euler_psi(cell.at(n).at(i).at(j), n, i, j);
+						curCell->bar_z = euler_z(&cell, &cell[n][i][j], n, i, j);
+						curCell->bar_psi = euler_psi(cell[n][i][j], n, i, j);
 						curCell->bar_Vx[0] = euler_bar_Vx(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
 						curCell->bar_Vr[0] = euler_bar_Vr(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
 						curCell->bar_e = euler_bar_e(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
@@ -201,12 +199,12 @@ int main(int argc, char** argv) {
 #pragma omp parallel for num_threads(4) schedule(dynamic,1) collapse(2)
 			for (int i = 1; i < i_sn; i++) {
 				for (int j = 1; j < max_j-1; j++) {
-					if (cell.at(n).at(i).at(j).type != 18) {
+					if (cell[n][i][j].type != 18) {
 						if (havePiston && i == i_pist)
 							continue;
 
-						gasCell * curCell = &cell.at(n).at(i).at(j);
-						gasCell * nextTCell = &cell.at(n+1).at(i).at(j);
+						gasCell * curCell = &cell[n][i][j];
+						gasCell * nextTCell = &cell[n+1][i][j];
 
 						double array[21] = {0};
 						lagrange_mass(array, cell, i, j, n, dx, dr, dt);
@@ -216,8 +214,8 @@ int main(int argc, char** argv) {
 							curCell->dM[iter] = fabs(array[iter]);
 							curCell->D[iter] = array[4+iter];
 						}
-						nextTCell->rho = lagrange_rho(&cell.at(n).at(i).at(j),
-								&cell.at(n-1).at(i).at(j),i,j,dt,dx,dr);
+						nextTCell->rho = lagrange_rho(&cell[n][i][j],
+								&cell[n-1][i][j],i,j,dt,dx,dr);
 
 						if (i == i_pist-1 && j == 10) {
 							printf("dM = %10.10f, %10.10f, %10.10f, %10.10f, rho = %10.10f",
@@ -232,11 +230,11 @@ int main(int argc, char** argv) {
 #pragma omp parallel for num_threads(4) schedule(dynamic,1) collapse(2)
 			for (int i = 1; i < i_sn; i++) {
 				for (int j = 1; j < max_j-1; j++) {
-					if (cell.at(n).at(i).at(j).type != 18) {
+					if (cell[n][i][j].type != 18) {
 						if (havePiston && i == i_pist)
 							continue;
 
-						gasCell * nextTCell = &cell.at(n+1).at(i).at(j);
+						gasCell * nextTCell = &cell[n+1][i][j];
 						
 						nextTCell->Vx[0] = final_calc_Vx(cell,i,j,n,dx,dr,dt);
 						nextTCell->Vr[0] = final_calc_Vr(cell,i,j,n,dx,dr,dt);
@@ -246,12 +244,12 @@ int main(int argc, char** argv) {
 						
 						// Post-final stage
 						if (i < i_pist || !havePiston) {
-							nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
+							nextTCell->P[0] = final_calc_p(&cell[n][i][j], &cell[n+1][i][j],
 								gasVar, i);
 						} else if (i >= i_pist && i <= i_sn && havePiston) {
-//							nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
+//							nextTCell->P[0] = final_calc_p(&cell[n][i][j], &cell[n+1][i][j],
 //								PISTON, i);
-							nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
+							nextTCell->P[0] = final_calc_p(&cell[n][i][j], &cell[n+1][i][j],
 								IDEAL_GAS, i);
 						}
 					}
@@ -264,17 +262,17 @@ int main(int argc, char** argv) {
 			//~ debug_equality_Vx_e(i_sn, max_j, n, cell);
 
 			/* Next dt calculation */
-			t.push_back(t.at(t.size()-1) + dt);
+			t.push_back(t.back() + dt);
 			vector <double> array;
 			vector <double> minimum;
 			for (int i = 0; i < max_i; i++) {
 				array.resize(max_j);
 				for (int j = 0; j < max_j; j++) {
-					if (cell.at(n).at(i).at(j).A[0] != 0) {
-						gasCell * curCell = &cell.at(n+1).at(i).at(j);
+					if (cell[n][i][j].A[0] != 0) {
+						gasCell * curCell = &cell[n+1][i][j];
 						array[j] = fmin(dx,dr) /
 							(
-								sqrt( fabs (k * curCell->P[0] /	curCell->rho))
+								sqrt( k * curCell->P[0] / curCell->rho )
 								+
 								sqrt(pow(curCell->Vx[0],2) + pow(curCell->Vr[0],2))
 							);

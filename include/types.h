@@ -52,16 +52,12 @@ struct gasCell {
     double Vr[5]; // Array of 5
     double P[5]; // Array of 5
     double dM[5]; // Array of 5
-    double dMVx[5]; // Array of 5
-    double dMVr[5]; // Array of 5
-    double dME[5]; // Array of 5
     int D[5];
     double A[5]; // A[0] == f, A[0] = A_i-1/2, A[1] = A_i+1/2, A[2] = A_j-1/2, A[3] = A_j+1/2
     double rho;
     double e;
     double bar_e;
     double alpha;
-    double m;
     
     WeightVector weightVector;
     LineAngle2D angle;

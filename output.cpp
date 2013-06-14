@@ -38,23 +38,23 @@ void OutputPVD(cell2d cell, std::string filename) {
 				//~ } else {
 					//~ strips->InsertNextCell(4);
 				//~ }
-				gasCell c_0 = cell.at(n).at(i).at(j);
-				gasCell c_i1 = cell.at(n).at(i+1).at(j).type != 18 ? 
-					cell.at(n).at(i+1).at(j) : cell.at(n).at(i).at(j);
-				gasCell c_i_1 = cell.at(n).at(i-1).at(j).type != 18 ? 
-					cell.at(n).at(i-1).at(j) : cell.at(n).at(i).at(j);
-				gasCell c_j1 = cell.at(n).at(i).at(j+1).type != 18 ? 
-					cell.at(n).at(i).at(j+1) : cell.at(n).at(i).at(j);
-				gasCell c_j_1 = cell.at(n).at(i).at(j-1).type != 18 ? 
-					cell.at(n).at(i).at(j-1) : cell.at(n).at(i).at(j);
-				gasCell c_i1j1 = cell.at(n).at(i+1).at(j+1).type != 18 ?
-					cell.at(n).at(i+1).at(j+1) : c_i1;
-				gasCell c_i1j_1 = cell.at(n).at(i+1).at(j-1).type != 18 ?
-					cell.at(n).at(i+1).at(j-1) : c_i1;
-				gasCell c_i_1j1 = cell.at(n).at(i-1).at(j+1).type != 18 ?
-					cell.at(n).at(i-1).at(j+1) : c_i_1;
-				gasCell c_i_1j_1 = cell.at(n).at(i-1).at(j-1).type != 18 ?
-					cell.at(n).at(i-1).at(j-1) : c_i_1;
+				gasCell c_0 = cell[n][i][j];
+				gasCell c_i1 = cell[n][i+1][j].type != 18 ?
+					cell[n][i+1][j] : cell[n][i][j];
+				gasCell c_i_1 = cell[n][i-1][j].type != 18 ?
+					cell[n][i-1][j] : cell[n][i][j];
+				gasCell c_j1 = cell[n][i][j+1].type != 18 ?
+					cell[n][i][j+1] : cell[n][i][j];
+				gasCell c_j_1 = cell[n][i][j-1].type != 18 ?
+					cell[n][i][j-1] : cell[n][i][j];
+				gasCell c_i1j1 = cell[n][i+1][j+1].type != 18 ?
+					cell[n][i+1][j+1] : c_i1;
+				gasCell c_i1j_1 = cell[n][i+1][j-1].type != 18 ?
+					cell[n][i+1][j-1] : c_i1;
+				gasCell c_i_1j1 = cell[n][i-1][j+1].type != 18 ?
+					cell[n][i-1][j+1] : c_i_1;
+				gasCell c_i_1j_1 = cell[n][i-1][j-1].type != 18 ?
+					cell[n][i-1][j-1] : c_i_1;
 				
 				IDs[0] = points->InsertNextPoint (i*dx*scaleD, j*dr*scaleD, 0 );
 				outputP->InsertNextValue ( (c_0.P[0]+c_i_1j_1.P[0]+c_i_1.P[0]+c_j_1.P[0])/4 * scaleP);
@@ -151,7 +151,7 @@ void OutputPVD(cell2d cell, std::string filename) {
 	
 	// Optional - set the mode. The default is binary.
 	writer->SetDataModeToBinary();
-	//writer->SetDataModeToAscii();
+//	writer->SetDataModeToAscii();
 	writer->Write();
 }
 
@@ -170,7 +170,6 @@ void outputCSV(cell2d cell, std::ofstream & outputGas) {
 				<< cell.at(n).at(i).at(j).bar_Vx[0] << ","
 				<< cell.at(n).at(i).at(j).bar_Vr[0] << ","
 				<< cell.at(n).at(i).at(j).bar_e << ","
-				<< cell.at(n).at(i).at(j).m << ","
 				<< cell.at(n+1).at(i).at(j).final_z << ","
 				<< cell.at(n+1).at(i).at(j).final_psi << ","
 				<< cell.at(n).at(i).at(j).dM[1] << ","
