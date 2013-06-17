@@ -158,7 +158,7 @@ int main(int argc, char** argv) {
 		while (x_sn.at(x_sn.size()-1) < (max_i-8)*dx) {
 //		while (iteration < iter_count) {
 			need_out = false;
-			if (iteration % 1000 == 0 && iteration > 0) {
+			if (iteration % 100 == 0 && iteration > 0) {
 				stop = clock();
 				speed = (stop - start) / CLOCKS_PER_SEC;
 				start = clock();
@@ -186,13 +186,13 @@ int main(int argc, char** argv) {
 						if (havePiston && i == i_pist)
 							continue;
 
-						gasCell * curCell = &cell.at(n).at(i).at(j);
+						gasCell & curCell = cell.at(n).at(i).at(j);
 
-						curCell->bar_z = euler_z(&cell, &cell.at(n).at(i).at(j), n, i, j);
-						curCell->bar_psi = euler_psi(cell.at(n).at(i).at(j), n, i, j);
-						curCell->bar_Vx[0] = euler_bar_Vx(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
-						curCell->bar_Vr[0] = euler_bar_Vr(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
-						curCell->bar_e = euler_bar_e(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
+						curCell.bar_z = euler_z(&cell, &cell.at(n).at(i).at(j), n, i, j);
+						curCell.bar_psi = euler_psi(cell.at(n).at(i).at(j), n, i, j);
+						curCell.bar_Vx[0] = euler_bar_Vx(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
+						curCell.bar_Vr[0] = euler_bar_Vr(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
+						curCell.bar_e = euler_bar_e(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
 					}
 				}
 			}
@@ -205,24 +205,24 @@ int main(int argc, char** argv) {
 						if (havePiston && i == i_pist)
 							continue;
 
-						gasCell * curCell = &cell.at(n).at(i).at(j);
-						gasCell * nextTCell = &cell.at(n+1).at(i).at(j);
+						gasCell & curCell = cell.at(n).at(i).at(j);
+						gasCell & nextTCell = cell.at(n+1).at(i).at(j);
 
 						double array[21] = {0};
 						lagrange_mass(array, cell, i, j, n, dx, dr, dt);
-						curCell->dM[0] = 0;
-						curCell->D[0] = 0;
+						curCell.dM[0] = 0;
+						curCell.D[0] = 0;
 						for (int iter = 1; iter < 5; iter++) {
-							curCell->dM[iter] = fabs(array[iter]);
-							curCell->D[iter] = array[4+iter];
+							curCell.dM[iter] = fabs(array[iter]);
+							curCell.D[iter] = array[4+iter];
 						}
-						nextTCell->rho = lagrange_rho(&cell.at(n).at(i).at(j),
+						nextTCell.rho = lagrange_rho(&cell.at(n).at(i).at(j),
 								&cell.at(n-1).at(i).at(j),i,j,dt,dx,dr);
 
 						if (i == i_pist-1 && j == 10) {
 							printf("dM = %10.10f, %10.10f, %10.10f, %10.10f, rho = %10.10f",
-									curCell->dM[1],curCell->dM[2],curCell->dM[3],curCell->dM[4],curCell->rho);
-							cout << " rho = " <<  curCell->rho << endl;
+									curCell.dM[1],curCell.dM[2],curCell.dM[3],curCell.dM[4],curCell.rho);
+							cout << " rho = " <<  curCell.rho << endl;
 						}
 					}
 				}
@@ -236,22 +236,22 @@ int main(int argc, char** argv) {
 						if (havePiston && i == i_pist)
 							continue;
 
-						gasCell * nextTCell = &cell.at(n+1).at(i).at(j);
+						gasCell & nextTCell = cell.at(n+1).at(i).at(j);
 						
-						nextTCell->Vx[0] = final_calc_Vx(cell,i,j,n,dx,dr,dt);
-						nextTCell->Vr[0] = final_calc_Vr(cell,i,j,n,dx,dr,dt);
-						nextTCell->e = final_calc_e(cell,i,j,n,dx,dr,dt);
-						nextTCell->final_z = new_final_z(cell,i,j,n,dx,dr,dt);
-						nextTCell->final_psi = new_final_psi(cell,i,j,n,dx,dr,dt);
+						nextTCell.Vx[0] = final_calc_Vx(cell,i,j,n,dx,dr,dt);
+						nextTCell.Vr[0] = final_calc_Vr(cell,i,j,n,dx,dr,dt);
+						nextTCell.e = final_calc_e(cell,i,j,n,dx,dr,dt);
+						nextTCell.final_z = new_final_z(cell,i,j,n,dx,dr,dt);
+						nextTCell.final_psi = new_final_psi(cell,i,j,n,dx,dr,dt);
 						
 						// Post-final stage
 						if (i < i_pist || !havePiston) {
-							nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
+							nextTCell.P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
 								gasVar, i);
 						} else if (i >= i_pist && i <= i_sn && havePiston) {
-//							nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
+//							nextTCell.P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
 //								PISTON, i);
-							nextTCell->P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
+							nextTCell.P[0] = final_calc_p(&cell.at(n).at(i).at(j), &cell.at(n+1).at(i).at(j),
 								IDEAL_GAS, i);
 						}
 					}
@@ -271,12 +271,12 @@ int main(int argc, char** argv) {
 				array.resize(max_j);
 				for (int j = 0; j < max_j; j++) {
 					if (cell.at(n).at(i).at(j).A[0] != 0) {
-						gasCell * curCell = &cell.at(n+1).at(i).at(j);
-						array[j] = fmin(dx,dr) /
+						gasCell & curCell = cell.at(n+1).at(i).at(j);
+						array[j] = fmin(static_cast<double> (dx),static_cast<double> (dr)) /
 							(
-								sqrt( fabs (k * curCell->P[0] /	curCell->rho))
+								sqrt( fabs (k * curCell.P[0] /	curCell.rho))
 								+
-								sqrt(pow(curCell->Vx[0],2) + pow(curCell->Vr[0],2))
+								sqrt(pow(curCell.Vx[0],2) + pow(curCell.Vr[0],2))
 							);
 					} else {
 						array[j] = 1;
@@ -307,13 +307,13 @@ int main(int argc, char** argv) {
 			}
 			
 			if (dt > Ku*pow(10.0,-6)/scaleT) dt = Ku*pow(10.0,-6)/scaleT;
-			cout << "\r Num: " << iteration << ", dt: " << dt << ", speed: " << speed << " sec / 1000 iter, x_sn: " << x_sn.at(x_sn.size()-1) << ", Ak: " << cell.at(n-1).at(i_sn-1).at(4).A[0]/cell.at(n).at(i_sn-1).at(4).A[0];
+			cout << "\r Num: " << iteration << ", dt: " << dt << ", speed: " << speed << " sec / 100 iter, x_sn: " << x_sn.at(x_sn.size()-1) << ", Ak: " << cell.at(n-1).at(i_sn-1).at(4).A[0]/cell.at(n).at(i_sn-1).at(4).A[0];
 			
 			
 			
 			/* Output to file */
-			if (iteration % 25 == 0) {
-//			if (fabs(t.back() - timestep) > pow(10.0,-5)/scaleT) {
+//			if (iteration % 25 == 0) {
+			if (fabs(t.back() - timestep) > pow(10.0,-5)/scaleT) {
 				timestep = t.back();
 				
 				/* Dynamics - to csv */

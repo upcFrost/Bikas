@@ -28,8 +28,8 @@ struct find_type : std::unary_function<TPoint2D, bool> {
 };
 
 WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug);
-void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl,
-		BorderCond result[8], int i, int j);
+void calculateBorder(int n, const cell2dStatic& cell, unsigned long ctrl,
+		BorderCond (&result)[10], int i, int j);
 void pre_cell_geometry(double array[5], gasCell cell, int i, int j);
 
 #endif	/* BORDER_H */

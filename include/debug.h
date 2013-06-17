@@ -14,14 +14,14 @@ void debug_projectile_par(int i_sn, int j, double borderP,
 void debug_weights(int i, int j, double P,
 	std::vector < WeightPart > weightVector);
 	
-void debug_equality_Vx_e(int i_sn, int max_j, int n, cell2d cell);
+void debug_equality_Vx_e(int i_sn, int max_j, int n, cell2d & cell);
 
-void debug_p_output(int n, int nArray, int *i, int *j, cell2d cell);
+void debug_p_output(int n, int nArray, int *i, int *j, cell2d & cell);
 
-void debug_dM_rho_output(int n, int nArray, int *i, int *j, cell2d cell);
+void debug_dM_rho_output(int n, int nArray, int *i, int *j, cell2d & cell);
 
-void debug_Vx_Vr_P_A_barVx_output(int n, int nArray, int *i, int *j, cell2d cell);
+void debug_Vx_Vr_P_A_barVx_output(int n, int nArray, int *i, int *j, cell2d & cell);
 
-void debug_final_output(int n, int nArray, int *i, int *j, cell2d cell);
+void debug_final_output(int n, int nArray, int *i, int *j, cell2d & cell);
 
 #endif	/* DEBUG_H */

@@ -38,15 +38,15 @@ double euler_Xsn(double x_prev, double U_new) {
 }
 
 /* Euler stage projectile border calculation */
-void euler_proj_broder(double array[5], int j, double Xsn,
+void euler_proj_broder(double (&array)[5], int j, double Xsn,
 		double dx, double dr, bool PROJECTILE) {
 
-	double full[5];
-	full[0] = M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
-	full[1] = M_PI*(2*(j-axis_j)+1)*pow(dr,2);
-	full[2] = M_PI*(2*(j-axis_j)+1)*pow(dr,2);
-	full[3] = 2*M_PI*(j-axis_j)*dr*dx;
-	full[4] = 2*M_PI*(j-axis_j+1)*dr*dx;
+//	double full[5];
+//	full[0] = M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+//	full[1] = M_PI*(2*(j-axis_j)+1)*pow(dr,2);
+//	full[2] = M_PI*(2*(j-axis_j)+1)*pow(dr,2);
+//	full[3] = 2*M_PI*(j-axis_j)*dr*dx;
+//	full[4] = 2*M_PI*(j-axis_j+1)*dr*dx;
 
 //	array[0] = 1 + M_PI*(2*(j-axis_j)+1)*pow(dr,2)*fmod(Xsn, dx) / full[0];
 //	array[1] = 1;
@@ -69,14 +69,14 @@ void euler_proj_broder(double array[5], int j, double Xsn,
 }
 
 /* Euler stage piston right border calculation */
-void euler_pist_broder(double array[5], int j, double Xpist, double dx, double dr) {
+void euler_pist_broder(double (&array)[5], int j, double Xpist, double dx, double dr) {
 
-	double full[5];
-	full[0] = M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
-	full[1] = M_PI*(2*(j-axis_j)+1)*pow(dr,2);
-	full[2] = M_PI*(2*(j-axis_j)+1)*pow(dr,2);
-	full[3] = 2*M_PI*(j-axis_j)*dr*dx;
-	full[4] = 2*M_PI*(j-axis_j+1)*dr*dx;
+//	double full[5];
+//	full[0] = M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+//	full[1] = M_PI*(2*(j-axis_j)+1)*pow(dr,2);
+//	full[2] = M_PI*(2*(j-axis_j)+1)*pow(dr,2);
+//	full[3] = 2*M_PI*(j-axis_j)*dr*dx;
+//	full[4] = 2*M_PI*(j-axis_j+1)*dr*dx;
 
 //	array[0] = 1 + M_PI*(2*(j-axis_j)+1)*pow(dr,2)*fmod(Xsn, dx) / full[0];
 //	array[1] = 1;
@@ -91,10 +91,10 @@ void euler_pist_broder(double array[5], int j, double Xpist, double dx, double d
 }
 
  /* Vx calculation on euler stage */
-double euler_bar_Vx(cell2d& cell, int n, int i, int j,
+double euler_bar_Vx(cell2d & cell, int n, int i, int j,
 		double dt, double dx, double dr, int var) {
 
-	gasCell curCell = cell[n][i][j];
+	gasCell & curCell = cell[n][i][j];
 	double result = 0;
 
 	unsigned NEEDED_COND = 0;
@@ -187,10 +187,10 @@ double euler_bar_Vx(cell2d& cell, int n, int i, int j,
 }
 
 /* Vr calculation on euler stage */
-double euler_bar_Vr(cell2d& cell, int n, int i, int j,
+double euler_bar_Vr(cell2d & cell, int n, int i, int j,
 		double dt, double dx, double dr, int var) {
 
-	gasCell curCell = cell[n][i][j];
+	gasCell & curCell = cell[n][i][j];
 	double result = 0;
 
 	unsigned NEEDED_COND = 0;
@@ -200,15 +200,6 @@ double euler_bar_Vr(cell2d& cell, int n, int i, int j,
 	NEEDED_COND += VR_PAR;
 	BorderCond brd[10];
 	calculateBorder(n, cell[n], NEEDED_COND, brd, i, j);
-	BorderCond borderArray[8];
-	borderArray[0] = brd[0];
-	borderArray[1] = brd[1];
-	borderArray[2] = brd[2];
-	borderArray[3] = brd[3];
-	borderArray[4] = brd[4];
-	borderArray[5] = brd[5];
-	borderArray[6] = brd[6];
-	borderArray[7] = brd[7];
 
 //    double P_j12 = (brd[P_POS].ij1 + brd[P_POS].ij)/2 *
 //    		(1 - (k-1)*(brd[VR_POS].ij1 - brd[VR_POS].ij)*dt/dr);
@@ -317,10 +308,10 @@ double * smoothSpeed(double * Vx, double * Vr, LineAngle2D angle) {
 }
 
 /* Energy calculation on euler stage */
-double euler_bar_e(cell2d& cell, int n, int i, int j,
+double euler_bar_e(cell2d & cell, int n, int i, int j,
 		double dt, double dx, double dr, int var) {
 
-	gasCell curCell = cell[n][i][j];
+	gasCell & curCell = cell[n][i][j];
 	double result = 0;
 
 	unsigned NEEDED_COND = 0;
@@ -528,7 +519,8 @@ double lagrange_rho(gasCell * curCell, gasCell * prevCell, int i, int j, double 
 }
 
 /* Lagrangian stage mass calculation */
-void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
+void lagrange_mass(double (&array)[21], cell2d & cell,
+		int i, int j, int n,
         double dx, double dr, double dt) {
 
     /****************************************************************
@@ -537,7 +529,7 @@ void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
      * **************************************************************/
     for (int iter = 0; iter < 21; iter++) array[iter] = 0;
 
-	gasCell curCell = cell[n][i][j];
+	gasCell & curCell = cell[n][i][j];
 
 	unsigned NEEDED_COND = 0;
 	NEEDED_COND += RHO_PAR;
@@ -709,7 +701,7 @@ double euler_psi (gasCell& cell, int n, int i, int j) {
 double new_final_z (cell2d& cell, int i, int j, int n,
         double dx, double dr, double dt) {
 
-	gasCell curCell = cell[n][i][j];
+	gasCell & curCell = cell[n][i][j];
 
 	unsigned NEEDED_COND = 0;
 	NEEDED_COND += RHO_PAR;
@@ -749,7 +741,7 @@ double new_final_z (cell2d& cell, int i, int j, int n,
 double new_final_psi (cell2d& cell, int i, int j, int n,
         double dx, double dr, double dt) {
 
-	gasCell curCell = cell[n][i][j];
+	gasCell & curCell = cell[n][i][j];
 
 	unsigned NEEDED_COND = 0;
 	NEEDED_COND += RHO_PAR;
@@ -843,7 +835,7 @@ double final_calc_p(gasCell * prevCell, gasCell * curCell, int var, int i) {
 double final_calc_Vx(cell2d& cell, int i, int j, int n,
         double dx, double dr, double dt) {
 
-	gasCell curCell = cell[n][i][j];
+	gasCell & curCell = cell[n][i][j];
 
 	unsigned NEEDED_COND = 0;
 	NEEDED_COND += RHO_PAR;
@@ -883,8 +875,8 @@ double final_calc_Vx(cell2d& cell, int i, int j, int n,
 double final_calc_Vr(cell2d& cell, int i, int j, int n,
         double dx, double dr, double dt) {
 
-	gasCell curCell = cell[n][i][j];
-	gasCell nextTCell = cell[n+1][i][j];
+	gasCell & curCell = cell[n][i][j];
+	gasCell & nextTCell = cell[n+1][i][j];
 
 	unsigned NEEDED_COND = 0;
 	NEEDED_COND += BAR_VR_PAR;
@@ -920,7 +912,7 @@ double final_calc_Vr(cell2d& cell, int i, int j, int n,
 double final_calc_e(cell2d& cell, int i, int j, int n,
         double dx, double dr, double dt) {
 
-	gasCell curCell = cell[n][i][j];
+	gasCell & curCell = cell[n][i][j];
 
 	unsigned NEEDED_COND = 0;
 	NEEDED_COND += RHO_PAR;

@@ -1027,8 +1027,8 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 
 
 
-void calculateBorder(int n, cell2dStatic& cell, unsigned long ctrl,
-		BorderCond result[10], int i, int j) {
+void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
+		BorderCond (&result)[10], int i, int j) {
 
 	/* Dummy cells calc */
 	int type = cell[i][j].type;

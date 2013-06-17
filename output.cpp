@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "output.h"
 
-void OutputPVD(cell2d cell, std::string filename) {
+void OutputPVD(cell2d & cell, std::string & filename) {
 	// Points array
 	vtkSmartPointer<vtkPoints> points = 
 	    vtkSmartPointer<vtkPoints>::New();
@@ -155,7 +155,7 @@ void OutputPVD(cell2d cell, std::string filename) {
 	writer->Write();
 }
 
-void outputCSV(cell2d cell, std::ofstream & outputGas) {
+void outputCSV(cell2d & cell, std::ofstream & outputGas) {
 	for (int i = 0; i < max_i; i++) {
 		for (int j = 0; j < max_j; j++) {
 			outputGas << std::setiosflags(std::ios::fixed) << std::setprecision(10)
