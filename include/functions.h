@@ -15,23 +15,26 @@ double euler_Xsn(double x_prev, double U_new);
 
 double soundSpeed(double P, double rho, double psi, int gasVar);
 
-void euler_proj_broder(double array[5], int j, double Xsn, double dx,
+void euler_proj_broder(double (&array)[5], int j, double Xsn, double dx,
 		double dr, bool PROJECTILE);
 
-void euler_pist_broder(double array[5], int j, double Xpist, double dx,
+void euler_pist_broder(double (&array)[5], int j, double Xpist, double dx,
 		double dr);
 
-double euler_bar_Vx(cell2d& cell, int n, int i, int j, double dt, double dx,
+double euler_bar_Vx(cell2d & cell,
+		int n, int i, int j, double dt, double dx,
 		double dr, int var);
 
-double euler_bar_Vr(cell2d& cell, int n, int i, int j, double dt, double dx,
+double euler_bar_Vr(cell2d & cell,
+		int n, int i, int j, double dt, double dx,
 		double dr, int var);
 
 void rotateVectors(double& Vx, double& Vr, LineAngle2D angle);
 
 double * smoothSpeed(double * Vx, double * Vr, LineAngle2D angle);
 
-double euler_bar_e(cell2d& cell, int n, int i, int j, double dt, double dx,
+double euler_bar_e(cell2d & cell,
+		int n, int i, int j, double dt, double dx,
 		double dr, int var);
 
 double lagrange_rho(gasCell * cell, gasCell * prevCell, int i, int j, double dt,
@@ -39,7 +42,7 @@ double lagrange_rho(gasCell * cell, gasCell * prevCell, int i, int j, double dt,
 
 double lagrange_m(gasCell * cell);
 
-void lagrange_mass(double array[21], cell2d& cell, int i, int j, int n,
+void lagrange_mass(double (&array)[21], cell2d& cell, int i, int j, int n,
 		double dx, double dr, double dt);
 
 double lagrange_e(gasCell * prevCell, gasCell * cell);

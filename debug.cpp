@@ -54,7 +54,7 @@ void debug_weights(int i, int j, double P, std::vector < WeightPart > weightVect
 }
 
 
-void debug_equality_Vx_e(int i_sn, int max_j, int n, cell2d cell)
+void debug_equality_Vx_e(int i_sn, int max_j, int n, cell2d & cell)
 {
 	for (int i = 1; i < i_sn; i++) {
 		for (int j = 1; j < max_j-3; j++) {
@@ -138,7 +138,7 @@ void debug_equality_Vx_e(int i_sn, int max_j, int n, cell2d cell)
 	}
 }
 
-void debug_p_output(int n, int nArray, int *i, int *j, cell2d cell)
+void debug_p_output(int n, int nArray, int *i, int *j, cell2d & cell)
 {
 	for (int iter = 0; iter < nArray; iter++) {
 		std::cout << "For i = " << i[iter] << ", j =  " << j[iter] << ", P[0] = " << cell.at(n+1).at(i[iter]).at(j[iter]).P[0] << std::endl;
@@ -146,7 +146,7 @@ void debug_p_output(int n, int nArray, int *i, int *j, cell2d cell)
 	std::cout << std::endl;
 }
 
-void debug_dM_rho_output(int n, int nArray, int *i, int *j, cell2d cell)
+void debug_dM_rho_output(int n, int nArray, int *i, int *j, cell2d & cell)
 {
 	for (int iter = 0; iter < nArray; iter++) {
 		std::cout << "For i = " << i[iter] << ", j = " << j[iter] << ", dM = {" << cell.at(n).at(i[iter]).at(j[iter]).dM[1] << ", " << cell.at(n).at(i[iter]).at(j[iter]).dM[2] << ", " << cell.at(n).at(i[iter]).at(j[iter]).dM[3] << ", " << cell.at(n).at(i[iter]).at(j[iter]).dM[4] << "}" << std::endl <<
@@ -155,7 +155,7 @@ void debug_dM_rho_output(int n, int nArray, int *i, int *j, cell2d cell)
 	std::cout << std::endl;
 }
 
-void debug_Vx_Vr_P_A_barVx_output(int n, int nArray, int *i, int *j, cell2d cell)
+void debug_Vx_Vr_P_A_barVx_output(int n, int nArray, int *i, int *j, cell2d & cell)
 {
 	for (int iter = 0; iter < nArray; iter++) {
 		gasCell * curCell = &cell.at(n+1).at(i[iter]).at(j[iter]);
@@ -170,7 +170,7 @@ void debug_Vx_Vr_P_A_barVx_output(int n, int nArray, int *i, int *j, cell2d cell
 	std::cout << std::endl;
 }
 
-void debug_final_output(int n, int nArray, int *i, int *j, cell2d cell) {
+void debug_final_output(int n, int nArray, int *i, int *j, cell2d & cell) {
 	for (int iter = 0; iter < nArray; iter++) {
 		printf("E at %d:%d = %16.16f\n",
 				i[iter],j[iter],cell.at(n+1).at(i[iter]).at(j[iter]).e);
