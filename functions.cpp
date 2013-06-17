@@ -131,12 +131,13 @@ double euler_bar_Vx(cell2d & cell, int n, int i, int j,
 //			(1 - (k-1)*(brd[VX_POS].ij - brd[VX_POS].i_1j)*dt/dx);
 	double P_i12 = (brd[P_POS].i1j + brd[P_POS].ij)/2;
 	double P_i_12 = (brd[P_POS].i_1j + brd[P_POS].ij)/2;
+	double maxA = curCell.type == 0 && i < i_sn-2 ? 1 : fmax(curCell.A[1],curCell.A[2]);
 
 	switch (var) {
 	case FIRST_ORDER:
 		/** First order **/
 		result = curCell.Vx[0] -
-			(P_i12 - P_i_12) / dx * fmax(curCell.A[1], curCell.A[2]) * dt
+			(P_i12 - P_i_12) / dx * maxA * dt
 			/ (curCell.rho * curCell.A[0]);
 		break;
 
@@ -145,7 +146,7 @@ double euler_bar_Vx(cell2d & cell, int n, int i, int j,
 		result = curCell.Vx[0] -
 			(1.0/12.0*cell[n][i-2][j].P[0] - 2.0/3.0*brd[P_POS].i_1j +
 					2.0/3.0*brd[P_POS].i1j - 1.0/12.0*cell[n][i+2][j].P[0])
-			/ dx * fmax(curCell.A[1],curCell.A[2]) * dt / (curCell.rho * curCell.A[0]);
+			/ dx * maxA * dt / (curCell.rho * curCell.A[0]);
 		break;
 
 	case FIRST_ORDER_NS:
@@ -153,7 +154,7 @@ double euler_bar_Vx(cell2d & cell, int n, int i, int j,
 		result = curCell.Vx[0] - dt  / (curCell.rho * curCell.A[0] * dx) *
 			(
 				// Pressure
-				(P_i12 - P_i_12) * fmax(curCell.A[1], curCell.A[2]) -
+				(P_i12 - P_i_12) * maxA -
 				// Viscosity
 				gasMu * dx * (
 					(gasA+2)/pow(dx,2) * (
@@ -175,7 +176,7 @@ double euler_bar_Vx(cell2d & cell, int n, int i, int j,
 				// Pressure
 				(1.0/12.0*cell[n][i-2][j].P[0] - 2.0/3.0*brd[P_POS].i_1j +
 						2.0/3.0*brd[P_POS].i1j - 1.0/12.0*cell[n][i+2][j].P[0])
-						* fmax(curCell.A[1],curCell.A[2]) -
+						* maxA -
 				// Viscosity
 				gasMu * dx * (
 					(gasA+2)/pow(dx,2) * (
@@ -247,12 +248,13 @@ double euler_bar_Vr(cell2d & cell, int n, int i, int j,
 //			(1 - (k-1)*(brd[VR_POS].ij - brd[VR_POS].ij_1)*dt/dr);
 	double P_j12 = (brd[P_POS].ij1 + brd[P_POS].ij)/2;
 	double P_j_12 = (brd[P_POS].ij_1 + brd[P_POS].ij)/2;
+	double maxA = curCell.type == 0 && i < i_sn-2 ? 1 : fmax(curCell.A[3],curCell.A[4]);
 
 	switch (var) {
 	case FIRST_ORDER:
 		/** First order **/
 		result = curCell.Vr[0] -
-			(P_j12 - P_j_12) / dx * fmax(curCell.A[3], curCell.A[4]) * dt
+			(P_j12 - P_j_12) / dx * maxA * dt
 			/ (curCell.rho * curCell.A[0]);
 		break;
 
@@ -269,7 +271,7 @@ double euler_bar_Vr(cell2d & cell, int n, int i, int j,
 		result = curCell.Vr[0] - dt  / (curCell.rho * curCell.A[0] * dr) *
 			(
 			// Pressure
-			(P_j12 - P_j_12)*fmax(curCell.A[3],curCell.A[4]) -
+			(P_j12 - P_j_12)*maxA -
 			// Viscosity
 			gasMu * dr *(
 				(gasA+2)/pow(dr,2) * (
@@ -290,7 +292,7 @@ double euler_bar_Vr(cell2d & cell, int n, int i, int j,
 				// Pressure
 				(1.0/12.0*cell[n][i][j-2].P[0] - 2.0/3.0*brd[P_POS].ij_1
 					+ 2.0/3.0*brd[P_POS].ij1 - 1.0/12.0*cell[n][i][j+2].P[0])
-					* fmax(curCell.A[4],curCell.A[3]) -
+					* maxA -
 				// Viscosity
 				gasMu * dr *(
 					(gasA+2)/pow(dr,2) * (
@@ -371,14 +373,16 @@ double euler_bar_e(cell2d & cell, int n, int i, int j,
 	double Vx_i_12 = (brd[VX_POS].i_1j + brd[VX_POS].ij)/2;
 	double Vr_j12 = (brd[VR_POS].ij1 + brd[VR_POS].ij)/2;
 	double Vr_j_12 = (brd[VR_POS].ij_1 + brd[VR_POS].ij)/2;
+	double maxAi = curCell.type == 0 && i < i_sn-2 ? 1 : fmax(curCell.A[1],curCell.A[2]);
+	double maxAj = curCell.type == 0 && i < i_sn-2 ? 1 : fmax(curCell.A[3],curCell.A[4]);
 
 	switch (var) {
 	case FIRST_ORDER:
 	    /** First order **/
 		result = curCell.e -
 			(
-				(P_i12*Vx_i12 - P_i_12*Vx_i_12) / dx * fmax(curCell.A[1],curCell.A[2]) +
-				(fabs(j-axis_j)*P_j12*Vr_j12 - fabs(j-axis_j-1)*P_j_12*Vr_j_12) / (fabs(j-axis_j-0.5)*dr) * fmax(curCell.A[3],curCell.A[4])
+				(P_i12*Vx_i12 - P_i_12*Vx_i_12) / dx * maxAi +
+				(fabs(j-axis_j)*P_j12*Vr_j12 - fabs(j-axis_j-1)*P_j_12*Vr_j_12) / (fabs(j-axis_j-0.5)*dr) * maxAj
 			) * dt / (curCell.A[0] * curCell.rho);
 		break;
 
