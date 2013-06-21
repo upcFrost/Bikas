@@ -114,33 +114,12 @@ void initCellVector(cell2d & cell) {
 
 gasCell setEmptyCell(gasCell & cell) {
 	gasCell empty = cell;
-	empty.P[0] = 0;
-	empty.P[1] = 0;
-	empty.P[2] = 0;
-	empty.P[3] = 0;
-	empty.P[4] = 0;
+	empty.P = 0;
 	empty.rho = 0;
 	empty.e = 0;
-	empty.bar_Vx[0] = 0;
-	empty.bar_Vx[1] = 0;
-	empty.bar_Vx[2] = 0;
-	empty.bar_Vx[3] = 0;
-	empty.bar_Vx[4] = 0;
-	empty.bar_Vr[0] = 0;
-	empty.bar_Vr[1] = 0;
-	empty.bar_Vr[2] = 0;
-	empty.bar_Vr[3] = 0;
-	empty.bar_Vr[4] = 0;
-	empty.Vx[0] = 0;
-	empty.Vx[1] = 0;
-	empty.Vx[2] = 0;
-	empty.Vx[3] = 0;
-	empty.Vx[4] = 0;
-	empty.Vr[0] = 0;
-	empty.Vr[1] = 0;
-	empty.Vr[2] = 0;
-	empty.Vr[3] = 0;
-	empty.Vr[4] = 0;
+	empty.bar_Vx = 0;
+	empty.Vx = 0;
+	empty.Vr = 0;
 	empty.final_z = 0;
 	empty.final_psi = 0;
 	return empty;
@@ -220,28 +199,28 @@ void populateCellVector(std::ifstream & inputFile, cell2d & cell,
 
 		/* Set gas init parameters */
 		if ((i < i_pist && havePiston) || (i < i_sn && !havePiston)) {
-			for (int iter = 0; iter < 5; iter++) curCell->P[iter] = P_v;
-			for (int iter = 0; iter < 5; iter++) curCell->Vx[iter] = 0;
-			for (int iter = 0; iter < 5; iter++) curCell->Vr[iter] = 0;
-			for (int iter = 0; iter < 5; iter++) curCell->bar_Vx[iter] = 0;
-			for (int iter = 0; iter < 5; iter++) curCell->bar_Vr[iter] = 0;
+			curCell->P = P_v;
+			curCell->Vx = 0;
+			curCell->Vr = 0;
+			curCell->bar_Vx = 0;
+			curCell->bar_Vr = 0;
 			for (int iter = 0; iter < 5; iter++) curCell->dM[iter] = 0;
 			curCell->rho = delta_0;
 			switch (var) {
 			case IDEAL_GAS:
 				curCell->final_psi = 1;
 				curCell->final_z = 1;
-				curCell->e = cell.at(n).at(i).at(j).P[0] / (k-1) / delta_0;
+				curCell->e = cell.at(n).at(i).at(j).P / (k-1) / delta_0;
 				break;
 			case ABEL_DUPRE:
 				curCell->final_psi = 1;
 				curCell->final_z = 1;
-				curCell->e = cell.at(n).at(i).at(j).P[0] / (k-1) / delta_0;
+				curCell->e = cell.at(n).at(i).at(j).P / (k-1) / delta_0;
 				break;
 			case POWDER_EQ:
 				curCell->final_psi = (delta/delta_0 - 1) / (f * delta / P_v + alpha_k * delta - 1);
 				curCell->final_z = 2 * curCell->final_psi / (kappa * (1 + sqrt(1 + 4*lambda*curCell->final_psi/kappa)));
-				curCell->e = curCell->P[0] / (k-1) * (1/curCell->rho -
+				curCell->e = curCell->P / (k-1) * (1/curCell->rho -
 					(1 - curCell->final_psi)/delta - alpha_k * curCell->final_psi) +
 					f/(k-1)*(1-curCell->final_psi);
 				break;
@@ -255,20 +234,20 @@ void populateCellVector(std::ifstream & inputFile, cell2d & cell,
 //			for (int iter = 0; iter < 5; iter++) curCell->P[iter] = PISTON_B *
 //					curCell->rho/PISTON_RHO * (curCell->rho/PISTON_RHO - 1) /
 //					pow(PISTON_C - curCell->rho/PISTON_RHO, 2);
-			for (int iter = 0; iter < 5; iter++) curCell->P[iter] = P_v;
-			for (int iter = 0; iter < 5; iter++) curCell->Vx[iter] = 0;
-			for (int iter = 0; iter < 5; iter++) curCell->Vr[iter] = 0;
-			for (int iter = 0; iter < 5; iter++) curCell->bar_Vx[iter] = 0;
-			for (int iter = 0; iter < 5; iter++) curCell->bar_Vr[iter] = 0;
+			curCell->P = P_v;
+			curCell->Vx = 0;
+			curCell->Vr = 0;
+			curCell->bar_Vx = 0;
+			curCell->bar_Vr = 0;
 			for (int iter = 0; iter < 5; iter++) curCell->dM[iter] = 0;
-			curCell->e = cell.at(n).at(i).at(j).P[0] / (k-1) / curCell->rho;
-//			curCell->e = cell.at(n).at(i).at(j).P[0] / (k-1) / (PISTON_RHO/ scaleRho);
+			curCell->e = cell.at(n).at(i).at(j).P / (k-1) / curCell->rho;
+//			curCell->e = cell.at(n).at(i).at(j).P / (k-1) / (PISTON_RHO/ scaleRho);
 			curCell->final_psi = 1;
 			curCell->final_z = 1;
 		} else {
-			for (int iter = 0; iter < 5; iter++) curCell->P[iter] = P_atm;
-			for (int iter = 0; iter < 5; iter++) curCell->Vx[iter] = 0;
-			for (int iter = 0; iter < 5; iter++) curCell->Vr[iter] = 0;
+			curCell->P = P_atm;
+			curCell->Vx = 0;
+			curCell->Vr = 0;
 			for (int iter = 0; iter < 5; iter++) curCell->dM[iter] = 0;
 			curCell->rho = rho_atm; // Air
 			curCell->e = P_atm / rho_atm / (k - 1); // Ideal gas

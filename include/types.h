@@ -46,11 +46,11 @@ struct gasCell {
     double x_1;
     double x_2;
     // Gas parameters
-    double bar_Vx[5];
-    double Vx[5]; // Array of 5
-    double bar_Vr[5];
-    double Vr[5]; // Array of 5
-    double P[5]; // Array of 5
+    double bar_Vx;
+    double Vx; // Array of 5
+    double bar_Vr;
+    double Vr; // Array of 5
+    double P; // Array of 5
     double dM[5]; // Array of 5
     int D[5];
     double A[5]; // A[0] == f, A[0] = A_i-1/2, A[1] = A_i+1/2, A[2] = A_j-1/2, A[3] = A_j+1/2

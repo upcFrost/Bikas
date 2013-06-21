@@ -45,7 +45,7 @@ void debug_type1_cell(int i, int j, double sin_a, double cos_a,
 
 void debug_weights(int i, int j, double P, std::vector < WeightPart > weightVector)
 {
-	std::cout << "i = " << i << ", j = " << j << ", P[0] = " << P << std::endl;
+	std::cout << "i = " << i << ", j = " << j << ", P = " << P << std::endl;
 	std::cout << "Weights: " << std::endl;
 	for (unsigned int idx2 = 0; idx2 < weightVector.size(); idx2++) {
 		std::cout << "Weight: i = " << weightVector[idx2].i << ", j = " << weightVector[idx2].j << ", weight = " << weightVector[idx2].weight << std::endl;
@@ -69,15 +69,15 @@ void debug_equality_Vx_e(int i_sn, int max_j, int n, cell2d & cell)
 							"E       = " << cell.at(n+1).at(i).at(j).e << std::endl <<
 							"lower E = " << cell.at(n+1).at(i).at(j-1).e << std::endl <<
 							"upper E = " << cell.at(n+1).at(i).at(j+1).e << std::endl <<
-							"P       = " << cell.at(n+1).at(i).at(j).P[0] << std::endl <<
-							"lower P = " << cell.at(n+1).at(i).at(j-1).P[0] << std::endl <<
-							"upper P = " << cell.at(n+1).at(i).at(j+1).P[0] << std::endl <<
-							"bar_Vx       = " << cell.at(n).at(i).at(j).bar_Vx[0] << std::endl <<
-							"lower bar_Vx = " << cell.at(n).at(i).at(j-1).bar_Vx[0] << std::endl <<
-							"upper bar_Vx = " << cell.at(n).at(i).at(j+1).bar_Vx[0] << std::endl <<
-							"Vx       = " << cell.at(n+1).at(i).at(j).Vx[0] << std::endl <<
-							"lower Vx = " << cell.at(n+1).at(i).at(j-1).Vx[0] << std::endl <<
-							"upper Vx = " << cell.at(n+1).at(i).at(j+1).Vx[0] << std::endl <<
+							"P       = " << cell.at(n+1).at(i).at(j).P << std::endl <<
+							"lower P = " << cell.at(n+1).at(i).at(j-1).P << std::endl <<
+							"upper P = " << cell.at(n+1).at(i).at(j+1).P << std::endl <<
+							"bar_Vx       = " << cell.at(n).at(i).at(j).bar_Vx << std::endl <<
+							"lower bar_Vx = " << cell.at(n).at(i).at(j-1).bar_Vx << std::endl <<
+							"upper bar_Vx = " << cell.at(n).at(i).at(j+1).bar_Vx << std::endl <<
+							"Vx       = " << cell.at(n+1).at(i).at(j).Vx << std::endl <<
+							"lower Vx = " << cell.at(n+1).at(i).at(j-1).Vx << std::endl <<
+							"upper Vx = " << cell.at(n+1).at(i).at(j+1).Vx << std::endl <<
 							"rho       = " << cell.at(n+1).at(i).at(j).rho << std::endl <<
 							"lower rho = " << cell.at(n+1).at(i).at(j-1).rho << std::endl <<
 							"upper rho = " << cell.at(n+1).at(i).at(j+1).rho << std::endl <<
@@ -96,7 +96,7 @@ void debug_equality_Vx_e(int i_sn, int max_j, int n, cell2d & cell)
 								std::cout << "bar_e(j) != bar_e(j+1)" << std::endl;
 					getchar();
 				}
-				if (cell.at(n+1).at(i).at(j).Vx[0] != cell.at(n+1).at(i).at(j+1).Vx[0]) {
+				if (cell.at(n+1).at(i).at(j).Vx != cell.at(n+1).at(i).at(j+1).Vx) {
 					std::cout << std::setiosflags(std::ios::fixed) << std::setprecision(16) << "Vx is different" << std::endl <<
 							"i    = " << i << std::endl <<
 							"j    = " << j << std::endl <<
@@ -106,15 +106,15 @@ void debug_equality_Vx_e(int i_sn, int max_j, int n, cell2d & cell)
 							"E       = " << cell.at(n+1).at(i).at(j).e << std::endl <<
 							"lower E = " << cell.at(n+1).at(i).at(j-1).e << std::endl <<
 							"upper E = " << cell.at(n+1).at(i).at(j+1).e << std::endl <<
-							"P       = " << cell.at(n+1).at(i).at(j).P[0] << std::endl <<
-							"lower P = " << cell.at(n+1).at(i).at(j-1).P[0] << std::endl <<
-							"upper P = " << cell.at(n+1).at(i).at(j+1).P[0] << std::endl <<
-							"bar_Vx       = " << cell.at(n).at(i).at(j).bar_Vx[0] << std::endl <<
-							"lower bar_Vx = " << cell.at(n).at(i).at(j-1).bar_Vx[0] << std::endl <<
-							"upper bar_Vx = " << cell.at(n).at(i).at(j+1).bar_Vx[0] << std::endl <<
-							"Vx       = " << cell.at(n+1).at(i).at(j).Vx[0] << std::endl <<
-							"lower Vx = " << cell.at(n+1).at(i).at(j-1).Vx[0] << std::endl <<
-							"upper Vx = " << cell.at(n+1).at(i).at(j+1).Vx[0] << std::endl <<
+							"P       = " << cell.at(n+1).at(i).at(j).P << std::endl <<
+							"lower P = " << cell.at(n+1).at(i).at(j-1).P << std::endl <<
+							"upper P = " << cell.at(n+1).at(i).at(j+1).P << std::endl <<
+							"bar_Vx       = " << cell.at(n).at(i).at(j).bar_Vx << std::endl <<
+							"lower bar_Vx = " << cell.at(n).at(i).at(j-1).bar_Vx << std::endl <<
+							"upper bar_Vx = " << cell.at(n).at(i).at(j+1).bar_Vx << std::endl <<
+							"Vx       = " << cell.at(n+1).at(i).at(j).Vx << std::endl <<
+							"lower Vx = " << cell.at(n+1).at(i).at(j-1).Vx << std::endl <<
+							"upper Vx = " << cell.at(n+1).at(i).at(j+1).Vx << std::endl <<
 							"rho       = " << cell.at(n+1).at(i).at(j).rho << std::endl <<
 							"lower rho = " << cell.at(n+1).at(i).at(j-1).rho << std::endl <<
 							"upper rho = " << cell.at(n+1).at(i).at(j+1).rho << std::endl <<
@@ -141,7 +141,7 @@ void debug_equality_Vx_e(int i_sn, int max_j, int n, cell2d & cell)
 void debug_p_output(int n, int nArray, int *i, int *j, cell2d & cell)
 {
 	for (int iter = 0; iter < nArray; iter++) {
-		std::cout << "For i = " << i[iter] << ", j =  " << j[iter] << ", P[0] = " << cell.at(n+1).at(i[iter]).at(j[iter]).P[0] << std::endl;
+		std::cout << "For i = " << i[iter] << ", j =  " << j[iter] << ", P = " << cell.at(n+1).at(i[iter]).at(j[iter]).P << std::endl;
 	}
 	std::cout << std::endl;
 }
@@ -161,11 +161,11 @@ void debug_Vx_Vr_P_A_barVx_output(int n, int nArray, int *i, int *j, cell2d & ce
 		gasCell * curCell = &cell.at(n+1).at(i[iter]).at(j[iter]);
 		gasCell * prevCell = &cell.at(n).at(i[iter]).at(j[iter]);
 		std::cout << "For i = " << i[iter] << ", j = " << j[iter] << std::endl <<
-			"Vx = " << curCell->Vx[0] << std::endl <<
-			"Vr = " << curCell->Vr[0] << std::endl <<
-			"P = {" << curCell->P[0] << ", "  << curCell->P[1] << ", " << curCell->P[2] << ", " << curCell->P[3] << ", " << curCell->P[4] << "}" << std::endl <<
+			"Vx = " << curCell->Vx << std::endl <<
+			"Vr = " << curCell->Vr << std::endl <<
+			"P = " << curCell->P << std::endl <<
 			"A = {" << curCell->A[1] << ", " << curCell->A[2] << ", " << curCell->A[3] << ", " << curCell->A[4] << "}" << std::endl <<
-			"bar_Vx = " << prevCell->bar_Vx[0] << ", bar_Vr = " << prevCell->bar_Vr[0] << ", bar_e = " << prevCell->bar_e << std::endl << std::endl;
+			"bar_Vx = " << prevCell->bar_Vx << ", bar_Vr = " << prevCell->bar_Vr << ", bar_e = " << prevCell->bar_e << std::endl << std::endl;
 	}
 	std::cout << std::endl;
 }
@@ -185,13 +185,13 @@ void debug_final_output(int n, int nArray, int *i, int *j, cell2d & cell) {
 		printf("dM[4] at %d:%d = %16.16f\n",
 				i[iter],j[iter],cell.at(n).at(i[iter]).at(j[iter]).dM[4]);
 		printf("barVx at %d:%d = %16.16f\n",
-				i[iter],j[iter],cell.at(n).at(i[iter]).at(j[iter]).bar_Vx[0]);
+				i[iter],j[iter],cell.at(n).at(i[iter]).at(j[iter]).bar_Vx);
 		printf("barVr at %d:%d = %16.16f\n",
-				i[iter],j[iter],cell.at(n).at(i[iter]).at(j[iter]).bar_Vr[0]);
+				i[iter],j[iter],cell.at(n).at(i[iter]).at(j[iter]).bar_Vr);
 		printf("Vx at %d:%d = %16.16f\n",
-				i[iter],j[iter],cell.at(n+1).at(i[iter]).at(j[iter]).Vx[0]);
+				i[iter],j[iter],cell.at(n+1).at(i[iter]).at(j[iter]).Vx);
 		printf("Vr at %d:%d = %16.16f\n",
-				i[iter],j[iter],cell.at(n+1).at(i[iter]).at(j[iter]).Vr[0]);
+				i[iter],j[iter],cell.at(n+1).at(i[iter]).at(j[iter]).Vr);
 		printf("Final_psi at %d:%d = %16.16f\n",
 				i[iter],j[iter],cell.at(n+1).at(i[iter]).at(j[iter]).final_psi);
 		printf("Final_z at %d:%d = %16.16f\n",

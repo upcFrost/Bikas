@@ -1090,37 +1090,37 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 		// Free cell
 		case 0:
 			if (isSet_P) {
-				result[0].i_1j1 = no_I_1 ? (cell[i][j+1].P[0]+cell[i-1][j].P[0])/2 : cell[i-1][j+1].P[0];
-				result[0].ij1 	= cell[i][j+1].P[0];
-				result[0].i1j1 	= no_I1 ? (cell[i][j+1].P[0]+cell[i+1][j].P[0])/2 : cell[i+1][j+1].P[0];
-				result[0].i_1j 	= cell[i-1][j].P[0];
-				result[0].ij 	= cell[i][j].P[0];
-				result[0].i1j 	= cell[i+1][j].P[0];
-				result[0].i_1j_1 = cell[i-1][j-1].P[0];
-				result[0].ij_1 	= cell[i][j-1].P[0];
-				result[0].i1j_1 = cell[i+1][j-1].P[0];
+				result[0].i_1j1 = no_I_1 ? (cell[i][j+1].P+cell[i-1][j].P)/2 : cell[i-1][j+1].P;
+				result[0].ij1 	= cell[i][j+1].P;
+				result[0].i1j1 	= no_I1 ? (cell[i][j+1].P+cell[i+1][j].P)/2 : cell[i+1][j+1].P;
+				result[0].i_1j 	= cell[i-1][j].P;
+				result[0].ij 	= cell[i][j].P;
+				result[0].i1j 	= cell[i+1][j].P;
+				result[0].i_1j_1 = cell[i-1][j-1].P;
+				result[0].ij_1 	= cell[i][j-1].P;
+				result[0].i1j_1 = cell[i+1][j-1].P;
 			}
 			if (isSet_Vx) {
-				result[1].i_1j1 = no_I_1 ? (cell[i][j+1].Vx[0]+cell[i-1][j].Vx[0])/2 : cell[i-1][j+1].Vx[0];
-				result[1].ij1 = cell[i][j+1].Vx[0];
-				result[1].i1j1 = no_I1 ? (cell[i][j+1].Vx[0]+cell[i+1][j].Vx[0])/2 : cell[i+1][j+1].Vx[0];
-				result[1].i_1j = cell[i-1][j].Vx[0];
-				result[1].ij = cell[i][j].Vx[0];
-				result[1].i1j = cell[i+1][j].Vx[0];
-				result[1].i_1j_1 = cell[i-1][j-1].Vx[0];
-				result[1].ij_1 = cell[i][j-1].Vx[0];
-				result[1].i1j_1 = cell[i+1][j-1].Vx[0];
+				result[1].i_1j1 = no_I_1 ? (cell[i][j+1].Vx+cell[i-1][j].Vx)/2 : cell[i-1][j+1].Vx;
+				result[1].ij1 = cell[i][j+1].Vx;
+				result[1].i1j1 = no_I1 ? (cell[i][j+1].Vx+cell[i+1][j].Vx)/2 : cell[i+1][j+1].Vx;
+				result[1].i_1j = cell[i-1][j].Vx;
+				result[1].ij = cell[i][j].Vx;
+				result[1].i1j = cell[i+1][j].Vx;
+				result[1].i_1j_1 = cell[i-1][j-1].Vx;
+				result[1].ij_1 = cell[i][j-1].Vx;
+				result[1].i1j_1 = cell[i+1][j-1].Vx;
 			}
 			if (isSet_Vr) {
-				result[2].i_1j1 = no_I_1 ? (cell[i][j+1].Vr[0]+cell[i-1][j].Vr[0])/2 : cell[i-1][j+1].Vr[0];
-				result[2].ij1 = cell[i][j+1].Vr[0];
-				result[2].i1j1 = no_I1 ? (cell[i][j+1].Vr[0]+cell[i+1][j].Vr[0])/2 : cell[i+1][j+1].Vr[0];
-				result[2].i_1j = cell[i-1][j].Vr[0];
-				result[2].ij = cell[i][j].Vr[0];
-				result[2].i1j = cell[i+1][j].Vr[0];
-				result[2].i_1j_1 = cell[i-1][j-1].Vr[0];
-				result[2].ij_1 = cell[i][j-1].Vr[0];
-				result[2].i1j_1 = cell[i+1][j-1].Vr[0];
+				result[2].i_1j1 = no_I_1 ? (cell[i][j+1].Vr+cell[i-1][j].Vr)/2 : cell[i-1][j+1].Vr;
+				result[2].ij1 = cell[i][j+1].Vr;
+				result[2].i1j1 = no_I1 ? (cell[i][j+1].Vr+cell[i+1][j].Vr)/2 : cell[i+1][j+1].Vr;
+				result[2].i_1j = cell[i-1][j].Vr;
+				result[2].ij = cell[i][j].Vr;
+				result[2].i1j = cell[i+1][j].Vr;
+				result[2].i_1j_1 = cell[i-1][j-1].Vr;
+				result[2].ij_1 = cell[i][j-1].Vr;
+				result[2].i1j_1 = cell[i+1][j-1].Vr;
 			}
 			if (isSet_E) {
 				result[3].i_1j1 = no_I_1 ? (cell[i][j+1].e+cell[i-1][j].e)/2 : cell[i-1][j+1].e;
@@ -1145,26 +1145,26 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				result[4].i1j_1 = cell[i+1][j-1].rho;
 			}
 			if (isSet_barVx) {
-				result[5].i_1j1 = no_I_1 ? (cell[i][j+1].bar_Vx[0]+cell[i-1][j].bar_Vx[0])/2 : cell[i-1][j+1].bar_Vx[0];
-				result[5].ij1 = cell[i][j+1].bar_Vx[0];
-				result[5].i1j1 = no_I1 ? (cell[i][j+1].bar_Vx[0]+cell[i+1][j].bar_Vx[0])/2 : cell[i+1][j+1].bar_Vx[0];
-				result[5].i_1j = cell[i-1][j].bar_Vx[0];
-				result[5].ij = cell[i][j].bar_Vx[0];
-				result[5].i1j = cell[i+1][j].bar_Vx[0];
-				result[5].i_1j_1 = cell[i-1][j-1].bar_Vx[0];
-				result[5].ij_1 = cell[i][j-1].bar_Vx[0];
-				result[5].i1j_1 = cell[i+1][j-1].bar_Vx[0];
+				result[5].i_1j1 = no_I_1 ? (cell[i][j+1].bar_Vx+cell[i-1][j].bar_Vx)/2 : cell[i-1][j+1].bar_Vx;
+				result[5].ij1 = cell[i][j+1].bar_Vx;
+				result[5].i1j1 = no_I1 ? (cell[i][j+1].bar_Vx+cell[i+1][j].bar_Vx)/2 : cell[i+1][j+1].bar_Vx;
+				result[5].i_1j = cell[i-1][j].bar_Vx;
+				result[5].ij = cell[i][j].bar_Vx;
+				result[5].i1j = cell[i+1][j].bar_Vx;
+				result[5].i_1j_1 = cell[i-1][j-1].bar_Vx;
+				result[5].ij_1 = cell[i][j-1].bar_Vx;
+				result[5].i1j_1 = cell[i+1][j-1].bar_Vx;
 			}
 			if (isSet_barVr) {
-				result[6].i_1j1 = no_I_1 ? (cell[i][j+1].bar_Vr[0]+cell[i-1][j].bar_Vr[0])/2 : cell[i-1][j+1].bar_Vr[0];
-				result[6].ij1 = cell[i][j+1].bar_Vr[0];
-				result[6].i1j1 = no_I1 ? (cell[i][j+1].bar_Vr[0]+cell[i+1][j].bar_Vr[0])/2 : cell[i+1][j+1].bar_Vr[0];
-				result[6].i_1j = cell[i-1][j].bar_Vr[0];
-				result[6].ij = cell[i][j].bar_Vr[0];
-				result[6].i1j = cell[i+1][j].bar_Vr[0];
-				result[6].i_1j_1 = cell[i-1][j-1].bar_Vr[0];
-				result[6].ij_1 = cell[i][j-1].bar_Vr[0];
-				result[6].i1j_1 = cell[i+1][j-1].bar_Vr[0];
+				result[6].i_1j1 = no_I_1 ? (cell[i][j+1].bar_Vr+cell[i-1][j].bar_Vr)/2 : cell[i-1][j+1].bar_Vr;
+				result[6].ij1 = cell[i][j+1].bar_Vr;
+				result[6].i1j1 = no_I1 ? (cell[i][j+1].bar_Vr+cell[i+1][j].bar_Vr)/2 : cell[i+1][j+1].bar_Vr;
+				result[6].i_1j = cell[i-1][j].bar_Vr;
+				result[6].ij = cell[i][j].bar_Vr;
+				result[6].i1j = cell[i+1][j].bar_Vr;
+				result[6].i_1j_1 = cell[i-1][j-1].bar_Vr;
+				result[6].ij_1 = cell[i][j-1].bar_Vr;
+				result[6].i1j_1 = cell[i+1][j-1].bar_Vr;
 			}
 			if (isSet_barE) {
 				result[7].i_1j1 = no_I_1 ? (cell[i][j+1].bar_e+cell[i-1][j].bar_e)/2 : cell[i-1][j+1].bar_e;
@@ -1203,37 +1203,37 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 
 		case 1:
 			if (isSet_P) {
-				result[0].i_1j1 = cell[i-1][j].P[0];
-				result[0].ij1 = cell[i][j].P[0];
-				result[0].i1j1 = cell[i+1][j].P[0];
-				result[0].i_1j = cell[i-1][j].P[0];
-				result[0].ij = cell[i][j].P[0];
-				result[0].i1j = cell[i+1][j].P[0];
-				result[0].i_1j_1 = cell[i-1][j-1].P[0];
-				result[0].ij_1 = cell[i][j-1].P[0];
-				result[0].i1j_1 = cell[i+1][j-1].P[0];
+				result[0].i_1j1 = cell[i-1][j].P;
+				result[0].ij1 = cell[i][j].P;
+				result[0].i1j1 = cell[i+1][j].P;
+				result[0].i_1j = cell[i-1][j].P;
+				result[0].ij = cell[i][j].P;
+				result[0].i1j = cell[i+1][j].P;
+				result[0].i_1j_1 = cell[i-1][j-1].P;
+				result[0].ij_1 = cell[i][j-1].P;
+				result[0].i1j_1 = cell[i+1][j-1].P;
 			}
 			if (isSet_Vx) {
-				result[1].i_1j1 = cell[i-1][j].Vx[0];
-				result[1].ij1 = cell[i][j].Vx[0];
-				result[1].i1j1 = cell[i+1][j].Vx[0];
-				result[1].i_1j = cell[i-1][j].Vx[0];
-				result[1].ij = cell[i][j].Vx[0];
-				result[1].i1j = cell[i+1][j].Vx[0];
-				result[1].i_1j_1 = cell[i-1][j-1].Vx[0];
-				result[1].ij_1 = cell[i][j-1].Vx[0];
-				result[1].i1j_1 = cell[i+1][j-1].Vx[0];
+				result[1].i_1j1 = cell[i-1][j].Vx;
+				result[1].ij1 = cell[i][j].Vx;
+				result[1].i1j1 = cell[i+1][j].Vx;
+				result[1].i_1j = cell[i-1][j].Vx;
+				result[1].ij = cell[i][j].Vx;
+				result[1].i1j = cell[i+1][j].Vx;
+				result[1].i_1j_1 = cell[i-1][j-1].Vx;
+				result[1].ij_1 = cell[i][j-1].Vx;
+				result[1].i1j_1 = cell[i+1][j-1].Vx;
 			}
 			if (isSet_Vr) {
-				result[2].i_1j1 = -cell[i-1][j].Vr[0];
-				result[2].ij1 = -cell[i][j].Vr[0];
-				result[2].i1j1 = -cell[i+1][j].Vr[0];
-				result[2].i_1j = cell[i-1][j].Vr[0];
-				result[2].ij = cell[i][j].Vr[0];
-				result[2].i1j = cell[i+1][j].Vr[0];
-				result[2].i_1j_1 = cell[i-1][j-1].Vr[0];
-				result[2].ij_1 = cell[i][j-1].Vr[0];
-				result[2].i1j_1 = cell[i+1][j-1].Vr[0];
+				result[2].i_1j1 = -cell[i-1][j].Vr;
+				result[2].ij1 = -cell[i][j].Vr;
+				result[2].i1j1 = -cell[i+1][j].Vr;
+				result[2].i_1j = cell[i-1][j].Vr;
+				result[2].ij = cell[i][j].Vr;
+				result[2].i1j = cell[i+1][j].Vr;
+				result[2].i_1j_1 = cell[i-1][j-1].Vr;
+				result[2].ij_1 = cell[i][j-1].Vr;
+				result[2].i1j_1 = cell[i+1][j-1].Vr;
 			}
 			if (isSet_E) {
 				result[3].i_1j1 = cell[i-1][j].e;
@@ -1258,26 +1258,26 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				result[4].i1j_1 = cell[i+1][j-1].rho;
 			}
 			if (isSet_barVx) {
-				result[5].i_1j1 = cell[i-1][j].bar_Vx[0];
-				result[5].ij1 = cell[i][j].bar_Vx[0];
-				result[5].i1j1 = cell[i+1][j].bar_Vx[0];
-				result[5].i_1j = cell[i-1][j].bar_Vx[0];
-				result[5].ij = cell[i][j].bar_Vx[0];
-				result[5].i1j = cell[i+1][j].bar_Vx[0];
-				result[5].i_1j_1 = cell[i-1][j-1].bar_Vx[0];
-				result[5].ij_1 = cell[i][j-1].bar_Vx[0];
-				result[5].i1j_1 = cell[i+1][j-1].bar_Vx[0];
+				result[5].i_1j1 = cell[i-1][j].bar_Vx;
+				result[5].ij1 = cell[i][j].bar_Vx;
+				result[5].i1j1 = cell[i+1][j].bar_Vx;
+				result[5].i_1j = cell[i-1][j].bar_Vx;
+				result[5].ij = cell[i][j].bar_Vx;
+				result[5].i1j = cell[i+1][j].bar_Vx;
+				result[5].i_1j_1 = cell[i-1][j-1].bar_Vx;
+				result[5].ij_1 = cell[i][j-1].bar_Vx;
+				result[5].i1j_1 = cell[i+1][j-1].bar_Vx;
 			}
 			if (isSet_barVr) {
-				result[6].i_1j1 = -cell[i-1][j].bar_Vr[0];
-				result[6].ij1 = -cell[i][j].bar_Vr[0];
-				result[6].i1j1 = -cell[i+1][j].bar_Vr[0];
-				result[6].i_1j = cell[i-1][j].bar_Vr[0];
-				result[6].ij = cell[i][j].bar_Vr[0];
-				result[6].i1j = cell[i+1][j].bar_Vr[0];
-				result[6].i_1j_1 = cell[i-1][j-1].bar_Vr[0];
-				result[6].ij_1 = cell[i][j-1].bar_Vr[0];
-				result[6].i1j_1 = cell[i+1][j-1].bar_Vr[0];
+				result[6].i_1j1 = -cell[i-1][j].bar_Vr;
+				result[6].ij1 = -cell[i][j].bar_Vr;
+				result[6].i1j1 = -cell[i+1][j].bar_Vr;
+				result[6].i_1j = cell[i-1][j].bar_Vr;
+				result[6].ij = cell[i][j].bar_Vr;
+				result[6].i1j = cell[i+1][j].bar_Vr;
+				result[6].i_1j_1 = cell[i-1][j-1].bar_Vr;
+				result[6].ij_1 = cell[i][j-1].bar_Vr;
+				result[6].i1j_1 = cell[i+1][j-1].bar_Vr;
 			}
 			if (isSet_barE) {
 				result[7].i_1j1 = cell[i-1][j].bar_e;
@@ -1322,13 +1322,13 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				weightCell.i = cell[i][j].weightVector.y.at(idx).i;
 				weightCell.j = cell[i][j].weightVector.y.at(idx).j;
 				if (isSet_P) {
-					result[0].ij1 += weight*cell[weightCell.i][weightCell.j].P[0];
+					result[0].ij1 += weight*cell[weightCell.i][weightCell.j].P;
 				}
 				if (isSet_Vx) {
-					result[1].ij1 += weight*cell[weightCell.i][weightCell.j].Vx[0];
+					result[1].ij1 += weight*cell[weightCell.i][weightCell.j].Vx;
 				}
 				if (isSet_Vr) {
-					result[2].ij1 -= weight*cell[weightCell.i][weightCell.j].Vr[0];
+					result[2].ij1 -= weight*cell[weightCell.i][weightCell.j].Vr;
 				}
 				if (isSet_E) {
 					result[3].ij1 += weight*cell[weightCell.i][weightCell.j].e;
@@ -1337,10 +1337,10 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 					result[4].ij1 += weight*cell[weightCell.i][weightCell.j].rho;
 				}
 				if (isSet_barVx) {
-					result[5].ij1 += weight*cell[weightCell.i][weightCell.j].bar_Vx[0];
+					result[5].ij1 += weight*cell[weightCell.i][weightCell.j].bar_Vx;
 				}
 				if (isSet_barVr) {
-					result[6].ij1 -= weight*cell[weightCell.i][weightCell.j].bar_Vr[0];
+					result[6].ij1 -= weight*cell[weightCell.i][weightCell.j].bar_Vr;
 				}
 				if (isSet_barE) {
 					result[7].ij1 += weight*cell[weightCell.i][weightCell.j].bar_e;
@@ -1362,13 +1362,13 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				weightCell.i = cell[i][j].weightVector.xy.at(idx).i;
 				weightCell.j = cell[i][j].weightVector.xy.at(idx).j;
 				if (isSet_P) {
-					result[0].i1j1 += weight*cell[weightCell.i][weightCell.j].P[0];
+					result[0].i1j1 += weight*cell[weightCell.i][weightCell.j].P;
 				}
 				if (isSet_Vx) {
-					result[1].i1j1 += weight*cell[weightCell.i][weightCell.j].Vx[0];
+					result[1].i1j1 += weight*cell[weightCell.i][weightCell.j].Vx;
 				}
 				if (isSet_Vr) {
-					result[2].i1j1 -= weight*cell[weightCell.i][weightCell.j].Vr[0];
+					result[2].i1j1 -= weight*cell[weightCell.i][weightCell.j].Vr;
 				}
 				if (isSet_E) {
 					result[3].i1j1 += weight*cell[weightCell.i][weightCell.j].e;
@@ -1377,10 +1377,10 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 					result[4].i1j1 += weight*cell[weightCell.i][weightCell.j].rho;
 				}
 				if (isSet_barVx) {
-					result[5].i1j1 += weight*cell[weightCell.i][weightCell.j].bar_Vx[0];
+					result[5].i1j1 += weight*cell[weightCell.i][weightCell.j].bar_Vx;
 				}
 				if (isSet_barVr) {
-					result[6].i1j1 -= weight*cell[weightCell.i][weightCell.j].bar_Vr[0];
+					result[6].i1j1 -= weight*cell[weightCell.i][weightCell.j].bar_Vr;
 				}
 				if (isSet_barE) {
 					result[7].i1j1 += weight*cell[weightCell.i][weightCell.j].bar_e;
@@ -1396,37 +1396,37 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 
 		case 3:
 			if (isSet_P) {
-				result[0].i_1j1 	= cell[i-1][j+1].P[0];
-				result[0].ij1 		= cell[i][j+1].P[0];
-				result[0].i1j1 		= cell[i+1][j+1].P[0];
-				result[0].i_1j 		= cell[i-1][j].P[0];
-				result[0].ij 		= cell[i][j].P[0];
-				result[0].i1j 		= cell[i+1][j].P[0];
-				result[0].i_1j_1 	= cell[i-1][j-1].P[0];
-				result[0].ij_1 		= cell[i][j-1].P[0];
-				result[0].i1j_1 	= cell[i+1][j-1].P[0];
+				result[0].i_1j1 	= cell[i-1][j+1].P;
+				result[0].ij1 		= cell[i][j+1].P;
+				result[0].i1j1 		= cell[i+1][j+1].P;
+				result[0].i_1j 		= cell[i-1][j].P;
+				result[0].ij 		= cell[i][j].P;
+				result[0].i1j 		= cell[i+1][j].P;
+				result[0].i_1j_1 	= cell[i-1][j-1].P;
+				result[0].ij_1 		= cell[i][j-1].P;
+				result[0].i1j_1 	= cell[i+1][j-1].P;
 			}
 			if (isSet_Vx) {
-				result[1].i_1j1 	= cell[i-1][j+1].Vx[0];
-				result[1].ij1 		= cell[i][j+1].Vx[0];
-				result[1].i1j1 		= -cell[i][j+1].Vx[0];
-				result[1].i_1j 		= cell[i-1][j].Vx[0];
-				result[1].ij 		= cell[i][j].Vx[0];
-				result[1].i1j 		= -cell[i][j].Vx[0];
-				result[1].i_1j_1 	= cell[i-1][j-1].Vx[0];
-				result[1].ij_1 		= cell[i][j-1].Vx[0];
-				result[1].i1j_1 	= -cell[i][j-1].Vx[0];
+				result[1].i_1j1 	= cell[i-1][j+1].Vx;
+				result[1].ij1 		= cell[i][j+1].Vx;
+				result[1].i1j1 		= -cell[i][j+1].Vx;
+				result[1].i_1j 		= cell[i-1][j].Vx;
+				result[1].ij 		= cell[i][j].Vx;
+				result[1].i1j 		= -cell[i][j].Vx;
+				result[1].i_1j_1 	= cell[i-1][j-1].Vx;
+				result[1].ij_1 		= cell[i][j-1].Vx;
+				result[1].i1j_1 	= -cell[i][j-1].Vx;
 			}
 			if (isSet_Vr) {
-				result[2].i_1j1 = cell[i-1][j+1].Vr[0];
-				result[2].ij1 = cell[i][j+1].Vr[0];
-				result[2].i1j1 = cell[i+1][j+1].Vr[0];
-				result[2].i_1j = cell[i-1][j].Vr[0];
-				result[2].ij = cell[i][j].Vr[0];
-				result[2].i1j = cell[i+1][j].Vr[0];
-				result[2].i_1j_1 = cell[i-1][j-1].Vr[0];
-				result[2].ij_1 = cell[i][j-1].Vr[0];
-				result[2].i1j_1 = cell[i+1][j-1].Vr[0];
+				result[2].i_1j1 = cell[i-1][j+1].Vr;
+				result[2].ij1 = cell[i][j+1].Vr;
+				result[2].i1j1 = cell[i+1][j+1].Vr;
+				result[2].i_1j = cell[i-1][j].Vr;
+				result[2].ij = cell[i][j].Vr;
+				result[2].i1j = cell[i+1][j].Vr;
+				result[2].i_1j_1 = cell[i-1][j-1].Vr;
+				result[2].ij_1 = cell[i][j-1].Vr;
+				result[2].i1j_1 = cell[i+1][j-1].Vr;
 			}
 			if (isSet_E) {
 				result[3].i_1j1 = cell[i-1][j+1].e; 		result[3].ij1 = cell[i][j+1].e;		result[3].i1j1 = cell[i+1][j+1].e;
@@ -1439,20 +1439,20 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				result[4].i_1j_1 = cell[i-1][j-1].rho;	result[4].ij_1 = cell[i][j-1].rho;	result[4].i1j_1 = cell[i+1][j-1].rho;
 			}
 			if (isSet_barVx) {
-				result[5].i_1j1 	= cell[i-1][j+1].bar_Vx[0];
-				result[5].ij1 		= cell[i][j+1].bar_Vx[0];
-				result[5].i1j1 		= -cell[i][j+1].bar_Vx[0];
-				result[5].i_1j 		= cell[i-1][j].bar_Vx[0];
-				result[5].ij 		= cell[i][j].bar_Vx[0];
-				result[5].i1j 		= -cell[i][j].bar_Vx[0];
-				result[5].i_1j_1 	= cell[i-1][j-1].bar_Vx[0];
-				result[5].ij_1 		= cell[i][j-1].bar_Vx[0];
-				result[5].i1j_1 	= -cell[i][j-1].bar_Vx[0];
+				result[5].i_1j1 	= cell[i-1][j+1].bar_Vx;
+				result[5].ij1 		= cell[i][j+1].bar_Vx;
+				result[5].i1j1 		= -cell[i][j+1].bar_Vx;
+				result[5].i_1j 		= cell[i-1][j].bar_Vx;
+				result[5].ij 		= cell[i][j].bar_Vx;
+				result[5].i1j 		= -cell[i][j].bar_Vx;
+				result[5].i_1j_1 	= cell[i-1][j-1].bar_Vx;
+				result[5].ij_1 		= cell[i][j-1].bar_Vx;
+				result[5].i1j_1 	= -cell[i][j-1].bar_Vx;
 			}
 			if (isSet_barVr) {
-				result[6].i_1j1 = cell[i-1][j+1].bar_Vr[0];	result[6].ij1 = cell[i][j+1].bar_Vr[0];	result[6].i1j1 = cell[i+1][j+1].bar_Vr[0];
-				result[6].i_1j = cell[i-1][j].bar_Vr[0];		result[6].ij = cell[i][j].bar_Vr[0]; 	result[6].i1j = cell[i+1][j].bar_Vr[0];
-				result[6].i_1j_1 = cell[i-1][j-1].bar_Vr[0];	result[6].ij_1 = cell[i][j-1].bar_Vr[0];	result[6].i1j_1 = cell[i+1][j-1].bar_Vr[0];
+				result[6].i_1j1 = cell[i-1][j+1].bar_Vr;	result[6].ij1 = cell[i][j+1].bar_Vr;	result[6].i1j1 = cell[i+1][j+1].bar_Vr;
+				result[6].i_1j = cell[i-1][j].bar_Vr;		result[6].ij = cell[i][j].bar_Vr; 	result[6].i1j = cell[i+1][j].bar_Vr;
+				result[6].i_1j_1 = cell[i-1][j-1].bar_Vr;	result[6].ij_1 = cell[i][j-1].bar_Vr;	result[6].i1j_1 = cell[i+1][j-1].bar_Vr;
 			}
 			if (isSet_barE) {
 				result[7].i_1j1 = cell[i-1][j+1].bar_e;	result[7].ij1 = cell[i][j+1].bar_e;	result[7].i1j1 = cell[i+1][j+1].bar_e;
@@ -1473,19 +1473,19 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 
 		case 8:
 			if (isSet_P) {
-				result[0].i_1j1 = cell[i-1][j+1].P[0]; 	result[0].ij1 = cell[i][j+1].P[0];	result[0].i1j1 = cell[i+1][j+1].P[0];
-				result[0].i_1j = cell[i-1][j].P[0]; 		result[0].ij = cell[i][j].P[0]; 		result[0].i1j = cell[i+1][j].P[0];
-				result[0].i_1j_1 = cell[i-1][j-1].P[0]; 	result[0].ij_1 = cell[i][j-1].P[0]; 	result[0].i1j_1 = cell[i+1][j-1].P[0];
+				result[0].i_1j1 = cell[i-1][j+1].P; 	result[0].ij1 = cell[i][j+1].P;	result[0].i1j1 = cell[i+1][j+1].P;
+				result[0].i_1j = cell[i-1][j].P; 		result[0].ij = cell[i][j].P; 		result[0].i1j = cell[i+1][j].P;
+				result[0].i_1j_1 = cell[i-1][j-1].P; 	result[0].ij_1 = cell[i][j-1].P; 	result[0].i1j_1 = cell[i+1][j-1].P;
 			}
 			if (isSet_Vx) {
-				result[1].i_1j1 = cell[i-1][j+1].Vx[0]; 	result[1].ij1 = cell[i][j+1].Vx[0];	result[1].i1j1 = cell[i+1][j+1].Vx[0];
-				result[1].i_1j = cell[i-1][j].Vx[0]; 	result[1].ij = cell[i][j].Vx[0]; 	result[1].i1j = cell[i+1][j].Vx[0];
-				result[1].i_1j_1 = cell[i-1][j-1].Vx[0];	result[1].ij_1 = cell[i][j-1].Vx[0];	result[1].i1j_1 = cell[i+1][j-1].Vx[0];
+				result[1].i_1j1 = cell[i-1][j+1].Vx; 	result[1].ij1 = cell[i][j+1].Vx;	result[1].i1j1 = cell[i+1][j+1].Vx;
+				result[1].i_1j = cell[i-1][j].Vx; 	result[1].ij = cell[i][j].Vx; 	result[1].i1j = cell[i+1][j].Vx;
+				result[1].i_1j_1 = cell[i-1][j-1].Vx;	result[1].ij_1 = cell[i][j-1].Vx;	result[1].i1j_1 = cell[i+1][j-1].Vx;
 			}
 			if (isSet_Vr) {
-				result[2].i_1j1 = cell[i-1][j+1].Vr[0]; 	result[2].ij1 = cell[i][j+1].Vr[0];	result[2].i1j1 = cell[i+1][j+1].Vr[0];
-				result[2].i_1j = cell[i-1][j].Vr[0]; 	result[2].ij = cell[i][j].Vr[0]; 	result[2].i1j = cell[i+1][j].Vr[0];
-				result[2].i_1j_1 = cell[i-1][j-1].Vr[0];	result[2].ij_1 = cell[i][j-1].Vr[0];	result[2].i1j_1 = cell[i+1][j-1].Vr[0];
+				result[2].i_1j1 = cell[i-1][j+1].Vr; 	result[2].ij1 = cell[i][j+1].Vr;	result[2].i1j1 = cell[i+1][j+1].Vr;
+				result[2].i_1j = cell[i-1][j].Vr; 	result[2].ij = cell[i][j].Vr; 	result[2].i1j = cell[i+1][j].Vr;
+				result[2].i_1j_1 = cell[i-1][j-1].Vr;	result[2].ij_1 = cell[i][j-1].Vr;	result[2].i1j_1 = cell[i+1][j-1].Vr;
 			}
 			if (isSet_E) {
 				result[3].i_1j1 = cell[i-1][j+1].e; 		result[3].ij1 = cell[i][j+1].e;		result[3].i1j1 = cell[i+1][j+1].e;
@@ -1498,14 +1498,14 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				result[4].i_1j_1 = cell[i-1][j-1].rho;	result[4].ij_1 = cell[i][j-1].rho;	result[4].i1j_1 = cell[i+1][j-1].rho;
 			}
 			if (isSet_barVx) {
-				result[5].i_1j1 = cell[i-1][j+1].bar_Vx[0];	result[5].ij1 = cell[i][j+1].bar_Vx[0];	result[5].i1j1 = cell[i+1][j+1].bar_Vx[0];
-				result[5].i_1j = cell[i-1][j].bar_Vx[0];		result[5].ij = cell[i][j].bar_Vx[0]; 	result[5].i1j = cell[i+1][j].bar_Vx[0];
-				result[5].i_1j_1 = cell[i-1][j-1].bar_Vx[0];	result[5].ij_1 = cell[i][j-1].bar_Vx[0];	result[5].i1j_1 = cell[i+1][j-1].bar_Vx[0];
+				result[5].i_1j1 = cell[i-1][j+1].bar_Vx;	result[5].ij1 = cell[i][j+1].bar_Vx;	result[5].i1j1 = cell[i+1][j+1].bar_Vx;
+				result[5].i_1j = cell[i-1][j].bar_Vx;		result[5].ij = cell[i][j].bar_Vx; 	result[5].i1j = cell[i+1][j].bar_Vx;
+				result[5].i_1j_1 = cell[i-1][j-1].bar_Vx;	result[5].ij_1 = cell[i][j-1].bar_Vx;	result[5].i1j_1 = cell[i+1][j-1].bar_Vx;
 			}
 			if (isSet_barVr) {
-				result[6].i_1j1 = cell[i-1][j+1].bar_Vr[0];	result[6].ij1 = cell[i][j+1].bar_Vr[0];	result[6].i1j1 = cell[i+1][j+1].bar_Vr[0];
-				result[6].i_1j = cell[i-1][j].bar_Vr[0];		result[6].ij = cell[i][j].bar_Vr[0]; 	result[6].i1j = cell[i+1][j].bar_Vr[0];
-				result[6].i_1j_1 = cell[i-1][j-1].bar_Vr[0];	result[6].ij_1 = cell[i][j-1].bar_Vr[0];	result[6].i1j_1 = cell[i+1][j-1].bar_Vr[0];
+				result[6].i_1j1 = cell[i-1][j+1].bar_Vr;	result[6].ij1 = cell[i][j+1].bar_Vr;	result[6].i1j1 = cell[i+1][j+1].bar_Vr;
+				result[6].i_1j = cell[i-1][j].bar_Vr;		result[6].ij = cell[i][j].bar_Vr; 	result[6].i1j = cell[i+1][j].bar_Vr;
+				result[6].i_1j_1 = cell[i-1][j-1].bar_Vr;	result[6].ij_1 = cell[i][j-1].bar_Vr;	result[6].i1j_1 = cell[i+1][j-1].bar_Vr;
 			}
 			if (isSet_barE) {
 				result[7].i_1j1 = cell[i-1][j+1].bar_e;	result[7].ij1 = cell[i][j+1].bar_e;	result[7].i1j1 = cell[i+1][j+1].bar_e;
@@ -1527,37 +1527,37 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 
 		case 10:
 			if (isSet_P) {
-				result[0].i_1j1 	= cell[i-1][j].P[0];
-				result[0].ij1 		= cell[i][j].P[0];
-				result[0].i1j1 		= cell[i][j].P[0];
-				result[0].i_1j 		= cell[i-1][j].P[0];
-				result[0].ij 		= cell[i][j].P[0];
-				result[0].i1j 		= cell[i][j].P[0];
-				result[0].i_1j_1 	= cell[i-1][j-1].P[0];
-				result[0].ij_1 		= cell[i][j-1].P[0];
-				result[0].i1j_1 	= cell[i][j-1].P[0];
+				result[0].i_1j1 	= cell[i-1][j].P;
+				result[0].ij1 		= cell[i][j].P;
+				result[0].i1j1 		= cell[i][j].P;
+				result[0].i_1j 		= cell[i-1][j].P;
+				result[0].ij 		= cell[i][j].P;
+				result[0].i1j 		= cell[i][j].P;
+				result[0].i_1j_1 	= cell[i-1][j-1].P;
+				result[0].ij_1 		= cell[i][j-1].P;
+				result[0].i1j_1 	= cell[i][j-1].P;
 			}
 			if (isSet_Vx) {
-				result[1].i_1j1 	= cell[i-1][j].Vx[0];
-				result[1].ij1 		= cell[i][j].Vx[0];
-				result[1].i1j1 		= -cell[i][j].Vx[0];
-				result[1].i_1j 		= cell[i-1][j].Vx[0];
-				result[1].ij 		= cell[i][j].Vx[0];
-				result[1].i1j 		= -cell[i][j].Vx[0];
-				result[1].i_1j_1 	= cell[i-1][j-1].Vx[0];
-				result[1].ij_1 		= cell[i][j-1].Vx[0];
-				result[1].i1j_1 	= -cell[i][j-1].Vx[0];
+				result[1].i_1j1 	= cell[i-1][j].Vx;
+				result[1].ij1 		= cell[i][j].Vx;
+				result[1].i1j1 		= -cell[i][j].Vx;
+				result[1].i_1j 		= cell[i-1][j].Vx;
+				result[1].ij 		= cell[i][j].Vx;
+				result[1].i1j 		= -cell[i][j].Vx;
+				result[1].i_1j_1 	= cell[i-1][j-1].Vx;
+				result[1].ij_1 		= cell[i][j-1].Vx;
+				result[1].i1j_1 	= -cell[i][j-1].Vx;
 			}
 			if (isSet_Vr) {
-				result[2].i_1j1 	= -cell[i-1][j].Vr[0];
-				result[2].ij1 		= -cell[i][j].Vr[0];
-				result[2].i1j1 		= -cell[i][j].Vr[0];
-				result[2].i_1j 		= cell[i-1][j].Vr[0];
-				result[2].ij 		= cell[i][j].Vr[0];
-				result[2].i1j 		= cell[i][j].Vr[0];
-				result[2].i_1j_1 	= cell[i-1][j-1].Vr[0];
-				result[2].ij_1 		= cell[i][j-1].Vr[0];
-				result[2].i1j_1 	= cell[i][j-1].Vr[0];
+				result[2].i_1j1 	= -cell[i-1][j].Vr;
+				result[2].ij1 		= -cell[i][j].Vr;
+				result[2].i1j1 		= -cell[i][j].Vr;
+				result[2].i_1j 		= cell[i-1][j].Vr;
+				result[2].ij 		= cell[i][j].Vr;
+				result[2].i1j 		= cell[i][j].Vr;
+				result[2].i_1j_1 	= cell[i-1][j-1].Vr;
+				result[2].ij_1 		= cell[i][j-1].Vr;
+				result[2].i1j_1 	= cell[i][j-1].Vr;
 			}
 			if (isSet_E) {
 				result[3].i_1j1 = cell[i-1][j].e;
@@ -1582,26 +1582,26 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				result[4].i1j_1 = cell[i][j-1].rho;
 			}
 			if (isSet_barVx) {
-				result[5].i_1j1 	= cell[i-1][j].bar_Vx[0];
-				result[5].ij1 		= cell[i][j].bar_Vx[0];
-				result[5].i1j1 		= -cell[i][j].bar_Vx[0];
-				result[5].i_1j 		= cell[i-1][j].bar_Vx[0];
-				result[5].ij 		= cell[i][j].bar_Vx[0];
-				result[5].i1j 		= -cell[i][j].bar_Vx[0];
-				result[5].i_1j_1 	= cell[i-1][j-1].bar_Vx[0];
-				result[5].ij_1 		= cell[i][j-1].bar_Vx[0];
-				result[5].i1j_1 	= -cell[i][j-1].bar_Vx[0];
+				result[5].i_1j1 	= cell[i-1][j].bar_Vx;
+				result[5].ij1 		= cell[i][j].bar_Vx;
+				result[5].i1j1 		= -cell[i][j].bar_Vx;
+				result[5].i_1j 		= cell[i-1][j].bar_Vx;
+				result[5].ij 		= cell[i][j].bar_Vx;
+				result[5].i1j 		= -cell[i][j].bar_Vx;
+				result[5].i_1j_1 	= cell[i-1][j-1].bar_Vx;
+				result[5].ij_1 		= cell[i][j-1].bar_Vx;
+				result[5].i1j_1 	= -cell[i][j-1].bar_Vx;
 			}
 			if (isSet_barVr) {
-				result[6].i_1j1 	= -cell[i-1][j].bar_Vr[0];
-				result[6].ij1 		= -cell[i][j].bar_Vr[0];
-				result[6].i1j1 		= -cell[i][j].bar_Vr[0];
-				result[6].i_1j 		= cell[i-1][j].bar_Vr[0];
-				result[6].ij 		= cell[i][j].bar_Vr[0];
-				result[6].i1j 		= cell[i][j].bar_Vr[0];
-				result[6].i_1j_1 	= cell[i-1][j-1].bar_Vr[0];
-				result[6].ij_1 		= cell[i][j-1].bar_Vr[0];
-				result[6].i1j_1 	= cell[i][j-1].bar_Vr[0];
+				result[6].i_1j1 	= -cell[i-1][j].bar_Vr;
+				result[6].ij1 		= -cell[i][j].bar_Vr;
+				result[6].i1j1 		= -cell[i][j].bar_Vr;
+				result[6].i_1j 		= cell[i-1][j].bar_Vr;
+				result[6].ij 		= cell[i][j].bar_Vr;
+				result[6].i1j 		= cell[i][j].bar_Vr;
+				result[6].i_1j_1 	= cell[i-1][j-1].bar_Vr;
+				result[6].ij_1 		= cell[i][j-1].bar_Vr;
+				result[6].i1j_1 	= cell[i][j-1].bar_Vr;
 			}
 			if (isSet_barE) {
 				result[7].i_1j1 = cell[i-1][j].bar_e;	result[7].ij1 = cell[i][j].bar_e;	result[7].i1j1 = cell[i][j].bar_e;
@@ -1628,13 +1628,13 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				weightCell.i = cell[i][j].weightVector.x.at(idx).i;
 				weightCell.j = cell[i][j].weightVector.x.at(idx).j;
 				if (isSet_P) {
-					result[0].i1j += weight*cell[weightCell.i][weightCell.j].P[0];
+					result[0].i1j += weight*cell[weightCell.i][weightCell.j].P;
 				}
 				if (isSet_Vx) {
-					result[1].i1j -= weight*cell[weightCell.i][weightCell.j].Vx[0];
+					result[1].i1j -= weight*cell[weightCell.i][weightCell.j].Vx;
 				}
 				if (isSet_Vr) {
-					result[2].i1j -= weight*cell[weightCell.i][weightCell.j].Vr[0];
+					result[2].i1j -= weight*cell[weightCell.i][weightCell.j].Vr;
 				}
 				if (isSet_E) {
 					result[3].i1j += weight*cell[weightCell.i][weightCell.j].e;
@@ -1643,10 +1643,10 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 					result[4].i1j += weight*cell[weightCell.i][weightCell.j].rho;
 				}
 				if (isSet_barVx) {
-					result[5].i1j -= weight*cell[weightCell.i][weightCell.j].bar_Vx[0];
+					result[5].i1j -= weight*cell[weightCell.i][weightCell.j].bar_Vx;
 				}
 				if (isSet_barVr) {
-					result[6].i1j -= weight*cell[weightCell.i][weightCell.j].bar_Vr[0];
+					result[6].i1j -= weight*cell[weightCell.i][weightCell.j].bar_Vr;
 				}
 				if (isSet_barE) {
 					result[7].i1j += weight*cell[weightCell.i][weightCell.j].bar_e;
@@ -1668,13 +1668,13 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				weightCell.i = cell[i][j].weightVector.y.at(idx).i;
 				weightCell.j = cell[i][j].weightVector.y.at(idx).j;
 				if (isSet_P) {
-					result[0].ij1 += weight*cell[weightCell.i][weightCell.j].P[0];
+					result[0].ij1 += weight*cell[weightCell.i][weightCell.j].P;
 				}
 				if (isSet_Vx) {
-					result[1].ij1 -= weight*cell[weightCell.i][weightCell.j].Vx[0];
+					result[1].ij1 -= weight*cell[weightCell.i][weightCell.j].Vx;
 				}
 				if (isSet_Vr) {
-					result[2].ij1 -= weight*cell[weightCell.i][weightCell.j].Vr[0];
+					result[2].ij1 -= weight*cell[weightCell.i][weightCell.j].Vr;
 				}
 				if (isSet_E) {
 					result[3].ij1 += weight*cell[weightCell.i][weightCell.j].e;
@@ -1683,10 +1683,10 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 					result[4].ij1 += weight*cell[weightCell.i][weightCell.j].rho;
 				}
 				if (isSet_barVx) {
-					result[5].ij1 -= weight*cell[weightCell.i][weightCell.j].bar_Vx[0];
+					result[5].ij1 -= weight*cell[weightCell.i][weightCell.j].bar_Vx;
 				}
 				if (isSet_barVr) {
-					result[6].ij1 -= weight*cell[weightCell.i][weightCell.j].bar_Vr[0];
+					result[6].ij1 -= weight*cell[weightCell.i][weightCell.j].bar_Vr;
 				}
 				if (isSet_barE) {
 					result[7].ij1 += weight*cell[weightCell.i][weightCell.j].bar_e;
@@ -1708,13 +1708,13 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				weightCell.i = cell[i][j].weightVector.xy.at(idx).i;
 				weightCell.j = cell[i][j].weightVector.xy.at(idx).j;
 				if (isSet_P) {
-					result[0].i1j1 += weight*cell[weightCell.i][weightCell.j].P[0];
+					result[0].i1j1 += weight*cell[weightCell.i][weightCell.j].P;
 				}
 				if (isSet_Vx) {
-					result[1].i1j1 -= weight*cell[weightCell.i][weightCell.j].Vx[0];
+					result[1].i1j1 -= weight*cell[weightCell.i][weightCell.j].Vx;
 				}
 				if (isSet_Vr) {
-					result[2].i1j1 -= weight*cell[weightCell.i][weightCell.j].Vr[0];
+					result[2].i1j1 -= weight*cell[weightCell.i][weightCell.j].Vr;
 				}
 				if (isSet_E) {
 					result[3].i1j1 += weight*cell[weightCell.i][weightCell.j].e;
@@ -1723,10 +1723,10 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 					result[4].i1j1 += weight*cell[weightCell.i][weightCell.j].rho;
 				}
 				if (isSet_barVx) {
-					result[5].i1j1 -= weight*cell[weightCell.i][weightCell.j].bar_Vx[0];
+					result[5].i1j1 -= weight*cell[weightCell.i][weightCell.j].bar_Vx;
 				}
 				if (isSet_barVr) {
-					result[6].i1j1 -= weight*cell[weightCell.i][weightCell.j].bar_Vr[0];
+					result[6].i1j1 -= weight*cell[weightCell.i][weightCell.j].bar_Vr;
 				}
 				if (isSet_barE) {
 					result[7].i1j1 += weight*cell[weightCell.i][weightCell.j].bar_e;
@@ -1743,37 +1743,37 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 		// Top border closed
 		case 13:
 			if (isSet_P) {
-				result[0].i_1j1 	= cell[i-1][j].P[0];
-				result[0].ij1 		= cell[i][j].P[0];
-				result[0].i1j1 		= cell[i+1][j].P[0];
-				result[0].i_1j 		= cell[i-1][j].P[0];
-				result[0].ij 		= cell[i][j].P[0];
-				result[0].i1j 		= cell[i+1][j].P[0];
-				result[0].i_1j_1 	= cell[i-1][j-1].P[0];
-				result[0].ij_1 		= cell[i][j-1].P[0];
-				result[0].i1j_1 	= cell[i+1][j-1].P[0];
+				result[0].i_1j1 	= cell[i-1][j].P;
+				result[0].ij1 		= cell[i][j].P;
+				result[0].i1j1 		= cell[i+1][j].P;
+				result[0].i_1j 		= cell[i-1][j].P;
+				result[0].ij 		= cell[i][j].P;
+				result[0].i1j 		= cell[i+1][j].P;
+				result[0].i_1j_1 	= cell[i-1][j-1].P;
+				result[0].ij_1 		= cell[i][j-1].P;
+				result[0].i1j_1 	= cell[i+1][j-1].P;
 			}
 			if (isSet_Vx) {
-				result[1].i_1j1 	= cell[i-1][j].Vx[0];
-				result[1].ij1 		= cell[i][j].Vx[0];
-				result[1].i1j1 		= cell[i+1][j].Vx[0];
-				result[1].i_1j 		= cell[i-1][j].Vx[0];
-				result[1].ij 		= cell[i][j].Vx[0];
-				result[1].i1j 		= cell[i+1][j].Vx[0];
-				result[1].i_1j_1 	= cell[i-1][j-1].Vx[0];
-				result[1].ij_1 		= cell[i][j-1].Vx[0];
-				result[1].i1j_1 	= cell[i+1][j-1].Vx[0];
+				result[1].i_1j1 	= cell[i-1][j].Vx;
+				result[1].ij1 		= cell[i][j].Vx;
+				result[1].i1j1 		= cell[i+1][j].Vx;
+				result[1].i_1j 		= cell[i-1][j].Vx;
+				result[1].ij 		= cell[i][j].Vx;
+				result[1].i1j 		= cell[i+1][j].Vx;
+				result[1].i_1j_1 	= cell[i-1][j-1].Vx;
+				result[1].ij_1 		= cell[i][j-1].Vx;
+				result[1].i1j_1 	= cell[i+1][j-1].Vx;
 			}
 			if (isSet_Vr) {
-				result[2].i_1j1 	= -cell[i-1][j].Vr[0];
-				result[2].ij1 		= -cell[i][j].Vr[0];
-				result[2].i1j1 		= -cell[i+1][j].Vr[0];
-				result[2].i_1j 		= cell[i-1][j].Vr[0];
-				result[2].ij 		= cell[i][j].Vr[0];
-				result[2].i1j 		= cell[i+1][j].Vr[0];
-				result[2].i_1j_1 	= cell[i-1][j-1].Vr[0];
-				result[2].ij_1 		= cell[i][j-1].Vr[0];
-				result[2].i1j_1 	= cell[i+1][j-1].Vr[0];
+				result[2].i_1j1 	= -cell[i-1][j].Vr;
+				result[2].ij1 		= -cell[i][j].Vr;
+				result[2].i1j1 		= -cell[i+1][j].Vr;
+				result[2].i_1j 		= cell[i-1][j].Vr;
+				result[2].ij 		= cell[i][j].Vr;
+				result[2].i1j 		= cell[i+1][j].Vr;
+				result[2].i_1j_1 	= cell[i-1][j-1].Vr;
+				result[2].ij_1 		= cell[i][j-1].Vr;
+				result[2].i1j_1 	= cell[i+1][j-1].Vr;
 			}
 			if (isSet_E) {
 				result[3].i_1j1 	= cell[i-1][j].e;
@@ -1798,26 +1798,26 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				result[4].i1j_1 = cell[i+1][j-1].rho;
 			}
 			if (isSet_barVx) {
-				result[5].i_1j1 	= cell[i-1][j].bar_Vx[0];
-				result[5].ij1 		= cell[i][j].bar_Vx[0];
-				result[5].i1j1 		= cell[i+1][j].bar_Vx[0];
-				result[5].i_1j 		= cell[i-1][j].bar_Vx[0];
-				result[5].ij 		= cell[i][j].bar_Vx[0];
-				result[5].i1j 		= cell[i+1][j].bar_Vx[0];
-				result[5].i_1j_1 	= cell[i-1][j-1].bar_Vx[0];
-				result[5].ij_1 		= cell[i][j-1].bar_Vx[0];
-				result[5].i1j_1 	= cell[i+1][j-1].bar_Vx[0];
+				result[5].i_1j1 	= cell[i-1][j].bar_Vx;
+				result[5].ij1 		= cell[i][j].bar_Vx;
+				result[5].i1j1 		= cell[i+1][j].bar_Vx;
+				result[5].i_1j 		= cell[i-1][j].bar_Vx;
+				result[5].ij 		= cell[i][j].bar_Vx;
+				result[5].i1j 		= cell[i+1][j].bar_Vx;
+				result[5].i_1j_1 	= cell[i-1][j-1].bar_Vx;
+				result[5].ij_1 		= cell[i][j-1].bar_Vx;
+				result[5].i1j_1 	= cell[i+1][j-1].bar_Vx;
 			}
 			if (isSet_barVr) {
-				result[6].i_1j1 	= -cell[i-1][j].bar_Vr[0];
-				result[6].ij1 		= -cell[i][j].bar_Vr[0];
-				result[6].i1j1 		= -cell[i+1][j].bar_Vr[0];
-				result[6].i_1j 		= cell[i-1][j].bar_Vr[0];
-				result[6].ij 		= cell[i][j].bar_Vr[0];
-				result[6].i1j 		= cell[i+1][j].bar_Vr[0];
-				result[6].i_1j_1 	= cell[i-1][j-1].bar_Vr[0];
-				result[6].ij_1 		= cell[i][j-1].bar_Vr[0];
-				result[6].i1j_1 	= cell[i+1][j-1].bar_Vr[0];
+				result[6].i_1j1 	= -cell[i-1][j].bar_Vr;
+				result[6].ij1 		= -cell[i][j].bar_Vr;
+				result[6].i1j1 		= -cell[i+1][j].bar_Vr;
+				result[6].i_1j 		= cell[i-1][j].bar_Vr;
+				result[6].ij 		= cell[i][j].bar_Vr;
+				result[6].i1j 		= cell[i+1][j].bar_Vr;
+				result[6].i_1j_1 	= cell[i-1][j-1].bar_Vr;
+				result[6].ij_1 		= cell[i][j-1].bar_Vr;
+				result[6].i1j_1 	= cell[i+1][j-1].bar_Vr;
 			}
 			if (isSet_barE) {
 				result[7].i_1j1 = cell[i-1][j].bar_e;
@@ -1857,37 +1857,37 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 		// Bottom border closed
 		case 14:
 			if (isSet_P) {
-				result[0].i_1j1 	= cell[i-1][j+1].P[0];
-				result[0].ij1 		= cell[i][j+1].P[0];
-				result[0].i1j1 		= cell[i+1][j+1].P[0];
-				result[0].i_1j 		= cell[i-1][j].P[0];
-				result[0].ij 		= cell[i][j].P[0];
-				result[0].i1j 		= cell[i+1][j].P[0];
-				result[0].i_1j_1 	= cell[i-1][j].P[0];
-				result[0].ij_1 		= cell[i][j].P[0];
-				result[0].i1j_1 	= cell[i+1][j].P[0];
+				result[0].i_1j1 	= cell[i-1][j+1].P;
+				result[0].ij1 		= cell[i][j+1].P;
+				result[0].i1j1 		= cell[i+1][j+1].P;
+				result[0].i_1j 		= cell[i-1][j].P;
+				result[0].ij 		= cell[i][j].P;
+				result[0].i1j 		= cell[i+1][j].P;
+				result[0].i_1j_1 	= cell[i-1][j].P;
+				result[0].ij_1 		= cell[i][j].P;
+				result[0].i1j_1 	= cell[i+1][j].P;
 			}
 			if (isSet_Vx) {
-				result[1].i_1j1 	= cell[i-1][j+1].Vx[0];
-				result[1].ij1 		= cell[i][j+1].Vx[0];
-				result[1].i1j1 		= cell[i+1][j+1].Vx[0];
-				result[1].i_1j 		= cell[i-1][j].Vx[0];
-				result[1].ij 		= cell[i][j].Vx[0];
-				result[1].i1j 		= cell[i+1][j].Vx[0];
-				result[1].i_1j_1 	= cell[i-1][j].Vx[0];
-				result[1].ij_1 		= cell[i][j].Vx[0];
-				result[1].i1j_1 	= cell[i+1][j].Vx[0];
+				result[1].i_1j1 	= cell[i-1][j+1].Vx;
+				result[1].ij1 		= cell[i][j+1].Vx;
+				result[1].i1j1 		= cell[i+1][j+1].Vx;
+				result[1].i_1j 		= cell[i-1][j].Vx;
+				result[1].ij 		= cell[i][j].Vx;
+				result[1].i1j 		= cell[i+1][j].Vx;
+				result[1].i_1j_1 	= cell[i-1][j].Vx;
+				result[1].ij_1 		= cell[i][j].Vx;
+				result[1].i1j_1 	= cell[i+1][j].Vx;
 			}
 			if (isSet_Vr) {
-				result[2].i_1j1 	= cell[i-1][j+1].Vr[0];
-				result[2].ij1 		= cell[i][j+1].Vr[0];
-				result[2].i1j1 		= cell[i+1][j+1].Vr[0];
-				result[2].i_1j 		= cell[i-1][j].Vr[0];
-				result[2].ij 		= cell[i][j].Vr[0];
-				result[2].i1j 		= cell[i+1][j].Vr[0];
-				result[2].i_1j_1 	= -cell[i-1][j].Vr[0];
-				result[2].ij_1 		= -cell[i][j].Vr[0];
-				result[2].i1j_1 	= -cell[i+1][j].Vr[0];
+				result[2].i_1j1 	= cell[i-1][j+1].Vr;
+				result[2].ij1 		= cell[i][j+1].Vr;
+				result[2].i1j1 		= cell[i+1][j+1].Vr;
+				result[2].i_1j 		= cell[i-1][j].Vr;
+				result[2].ij 		= cell[i][j].Vr;
+				result[2].i1j 		= cell[i+1][j].Vr;
+				result[2].i_1j_1 	= -cell[i-1][j].Vr;
+				result[2].ij_1 		= -cell[i][j].Vr;
+				result[2].i1j_1 	= -cell[i+1][j].Vr;
 			}
 			if (isSet_E) {
 				result[3].i_1j1 	= cell[i-1][j+1].e;
@@ -1912,26 +1912,26 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				result[4].i1j_1 = cell[i+1][j].rho;
 			}
 			if (isSet_barVx) {
-				result[5].i_1j1 	= cell[i-1][j+1].bar_Vx[0];
-				result[5].ij1 		= cell[i][j+1].bar_Vx[0];
-				result[5].i1j1 		= cell[i+1][j+1].bar_Vx[0];
-				result[5].i_1j 		= cell[i-1][j].bar_Vx[0];
-				result[5].ij 		= cell[i][j].bar_Vx[0];
-				result[5].i1j 		= cell[i+1][j].bar_Vx[0];
-				result[5].i_1j_1 	= cell[i-1][j].bar_Vx[0];
-				result[5].ij_1 		= cell[i][j].bar_Vx[0];
-				result[5].i1j_1 	= cell[i+1][j].bar_Vx[0];
+				result[5].i_1j1 	= cell[i-1][j+1].bar_Vx;
+				result[5].ij1 		= cell[i][j+1].bar_Vx;
+				result[5].i1j1 		= cell[i+1][j+1].bar_Vx;
+				result[5].i_1j 		= cell[i-1][j].bar_Vx;
+				result[5].ij 		= cell[i][j].bar_Vx;
+				result[5].i1j 		= cell[i+1][j].bar_Vx;
+				result[5].i_1j_1 	= cell[i-1][j].bar_Vx;
+				result[5].ij_1 		= cell[i][j].bar_Vx;
+				result[5].i1j_1 	= cell[i+1][j].bar_Vx;
 			}
 			if (isSet_barVr) {
-				result[6].i_1j1 	= cell[i-1][j+1].bar_Vr[0];
-				result[6].ij1 		= cell[i][j+1].bar_Vr[0];
-				result[6].i1j1 		= cell[i+1][j+1].bar_Vr[0];
-				result[6].i_1j 		= cell[i-1][j].bar_Vr[0];
-				result[6].ij 		= cell[i][j].bar_Vr[0];
-				result[6].i1j 		= cell[i+1][j].bar_Vr[0];
-				result[6].i_1j_1 	= -cell[i-1][j].bar_Vr[0];
-				result[6].ij_1 		= -cell[i][j].bar_Vr[0];
-				result[6].i1j_1 	= -cell[i+1][j].bar_Vr[0];
+				result[6].i_1j1 	= cell[i-1][j+1].bar_Vr;
+				result[6].ij1 		= cell[i][j+1].bar_Vr;
+				result[6].i1j1 		= cell[i+1][j+1].bar_Vr;
+				result[6].i_1j 		= cell[i-1][j].bar_Vr;
+				result[6].ij 		= cell[i][j].bar_Vr;
+				result[6].i1j 		= cell[i+1][j].bar_Vr;
+				result[6].i_1j_1 	= -cell[i-1][j].bar_Vr;
+				result[6].ij_1 		= -cell[i][j].bar_Vr;
+				result[6].i1j_1 	= -cell[i+1][j].bar_Vr;
 			}
 			if (isSet_barE) {
 				result[7].i_1j1 = cell[i-1][j+1].bar_e;
@@ -1959,37 +1959,37 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 		// Top and left borders closed
 		case 15:
 			if (isSet_P) {
-				result[0].i_1j1 	= cell[i][j].P[0];
-				result[0].ij1 		= cell[i][j].P[0];
-				result[0].i1j1 		= cell[i+1][j].P[0];
-				result[0].i_1j 		= cell[i][j].P[0];
-				result[0].ij 		= cell[i][j].P[0];
-				result[0].i1j 		= cell[i+1][j].P[0];
-				result[0].i_1j_1 	= cell[i][j-1].P[0];
-				result[0].ij_1 		= cell[i][j-1].P[0];
-				result[0].i1j_1 	= cell[i+1][j-1].P[0];
+				result[0].i_1j1 	= cell[i][j].P;
+				result[0].ij1 		= cell[i][j].P;
+				result[0].i1j1 		= cell[i+1][j].P;
+				result[0].i_1j 		= cell[i][j].P;
+				result[0].ij 		= cell[i][j].P;
+				result[0].i1j 		= cell[i+1][j].P;
+				result[0].i_1j_1 	= cell[i][j-1].P;
+				result[0].ij_1 		= cell[i][j-1].P;
+				result[0].i1j_1 	= cell[i+1][j-1].P;
 			}
 			if (isSet_Vx) {
-				result[1].i_1j1 	= -cell[i][j].Vx[0];
-				result[1].ij1 		= cell[i][j].Vx[0];
-				result[1].i1j1 		= cell[i+1][j].Vx[0];
-				result[1].i_1j 		= -cell[i][j].Vx[0];
-				result[1].ij 		= cell[i][j].Vx[0];
-				result[1].i1j 		= cell[i+1][j].Vx[0];
-				result[1].i_1j_1 	= -cell[i][j-1].Vx[0];
-				result[1].ij_1 		= cell[i][j-1].Vx[0];
-				result[1].i1j_1 	= cell[i+1][j-1].Vx[0];
+				result[1].i_1j1 	= -cell[i][j].Vx;
+				result[1].ij1 		= cell[i][j].Vx;
+				result[1].i1j1 		= cell[i+1][j].Vx;
+				result[1].i_1j 		= -cell[i][j].Vx;
+				result[1].ij 		= cell[i][j].Vx;
+				result[1].i1j 		= cell[i+1][j].Vx;
+				result[1].i_1j_1 	= -cell[i][j-1].Vx;
+				result[1].ij_1 		= cell[i][j-1].Vx;
+				result[1].i1j_1 	= cell[i+1][j-1].Vx;
 			}
 			if (isSet_Vr) {
-				result[2].i_1j1 	= -cell[i][j].Vr[0];
-				result[2].ij1 		= -cell[i][j].Vr[0];
-				result[2].i1j1 		= -cell[i+1][j].Vr[0];
-				result[2].i_1j 		= cell[i][j].Vr[0];
-				result[2].ij 		= cell[i][j].Vr[0];
-				result[2].i1j 		= cell[i+1][j].Vr[0];
-				result[2].i_1j_1 	= cell[i][j-1].Vr[0];
-				result[2].ij_1 		= cell[i][j-1].Vr[0];
-				result[2].i1j_1 	= cell[i+1][j-1].Vr[0];
+				result[2].i_1j1 	= -cell[i][j].Vr;
+				result[2].ij1 		= -cell[i][j].Vr;
+				result[2].i1j1 		= -cell[i+1][j].Vr;
+				result[2].i_1j 		= cell[i][j].Vr;
+				result[2].ij 		= cell[i][j].Vr;
+				result[2].i1j 		= cell[i+1][j].Vr;
+				result[2].i_1j_1 	= cell[i][j-1].Vr;
+				result[2].ij_1 		= cell[i][j-1].Vr;
+				result[2].i1j_1 	= cell[i+1][j-1].Vr;
 			}
 			if (isSet_E) {
 				result[3].i_1j1 = cell[i][j].e;
@@ -2014,26 +2014,26 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				result[4].i1j_1 = cell[i+1][j-1].rho;
 			}
 			if (isSet_barVx) {
-				result[5].i_1j1 	= -cell[i][j].bar_Vx[0];
-				result[5].ij1 		= cell[i][j].bar_Vx[0];
-				result[5].i1j1 		= cell[i+1][j].bar_Vx[0];
-				result[5].i_1j 		= -cell[i][j].bar_Vx[0];
-				result[5].ij 		= cell[i][j].bar_Vx[0];
-				result[5].i1j 		= cell[i+1][j].bar_Vx[0];
-				result[5].i_1j_1 	= -cell[i][j-1].bar_Vx[0];
-				result[5].ij_1 		= cell[i][j-1].bar_Vx[0];
-				result[5].i1j_1 	= cell[i+1][j-1].bar_Vx[0];
+				result[5].i_1j1 	= -cell[i][j].bar_Vx;
+				result[5].ij1 		= cell[i][j].bar_Vx;
+				result[5].i1j1 		= cell[i+1][j].bar_Vx;
+				result[5].i_1j 		= -cell[i][j].bar_Vx;
+				result[5].ij 		= cell[i][j].bar_Vx;
+				result[5].i1j 		= cell[i+1][j].bar_Vx;
+				result[5].i_1j_1 	= -cell[i][j-1].bar_Vx;
+				result[5].ij_1 		= cell[i][j-1].bar_Vx;
+				result[5].i1j_1 	= cell[i+1][j-1].bar_Vx;
 			}
 			if (isSet_barVr) {
-				result[6].i_1j1 	= -cell[i][j].bar_Vr[0];
-				result[6].ij1 		= -cell[i][j].bar_Vr[0];
-				result[6].i1j1 		= -cell[i+1][j].bar_Vr[0];
-				result[6].i_1j 		= cell[i][j].bar_Vr[0];
-				result[6].ij 		= cell[i][j].bar_Vr[0];
-				result[6].i1j 		= cell[i+1][j].bar_Vr[0];
-				result[6].i_1j_1 	= cell[i][j-1].bar_Vr[0];
-				result[6].ij_1 		= cell[i][j-1].bar_Vr[0];
-				result[6].i1j_1 	= cell[i+1][j-1].bar_Vr[0];
+				result[6].i_1j1 	= -cell[i][j].bar_Vr;
+				result[6].ij1 		= -cell[i][j].bar_Vr;
+				result[6].i1j1 		= -cell[i+1][j].bar_Vr;
+				result[6].i_1j 		= cell[i][j].bar_Vr;
+				result[6].ij 		= cell[i][j].bar_Vr;
+				result[6].i1j 		= cell[i+1][j].bar_Vr;
+				result[6].i_1j_1 	= cell[i][j-1].bar_Vr;
+				result[6].ij_1 		= cell[i][j-1].bar_Vr;
+				result[6].i1j_1 	= cell[i+1][j-1].bar_Vr;
 			}
 			if (isSet_barE) {
 				result[7].i_1j1 = cell[i][j].bar_e;	result[7].ij1 = cell[i][j].bar_e;	result[7].i1j1 = cell[i+1][j].bar_e;
@@ -2055,37 +2055,37 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 		// Bottom and left borders closed
 		case 16:
 			if (isSet_P) {
-				result[0].i_1j1 	= cell[i][j+1].P[0];
-				result[0].ij1 		= cell[i][j+1].P[0];
-				result[0].i1j1 		= cell[i+1][j+1].P[0];
-				result[0].i_1j 		= cell[i][j].P[0];
-				result[0].ij 		= cell[i][j].P[0];
-				result[0].i1j 		= cell[i+1][j].P[0];
-				result[0].i_1j_1 	= cell[i][j].P[0];
-				result[0].ij_1 		= cell[i][j].P[0];
-				result[0].i1j_1 	= cell[i+1][j].P[0];
+				result[0].i_1j1 	= cell[i][j+1].P;
+				result[0].ij1 		= cell[i][j+1].P;
+				result[0].i1j1 		= cell[i+1][j+1].P;
+				result[0].i_1j 		= cell[i][j].P;
+				result[0].ij 		= cell[i][j].P;
+				result[0].i1j 		= cell[i+1][j].P;
+				result[0].i_1j_1 	= cell[i][j].P;
+				result[0].ij_1 		= cell[i][j].P;
+				result[0].i1j_1 	= cell[i+1][j].P;
 			}
 			if (isSet_Vx) {
-				result[1].i_1j1 	= -cell[i][j+1].Vx[0];
-				result[1].ij1 		= cell[i][j+1].Vx[0];
-				result[1].i1j1 		= cell[i+1][j+1].Vx[0];
-				result[1].i_1j 		= -cell[i][j].Vx[0];
-				result[1].ij 		= cell[i][j].Vx[0];
-				result[1].i1j 		= cell[i+1][j].Vx[0];
-				result[1].i_1j_1 	= -cell[i][j].Vx[0];
-				result[1].ij_1 		= cell[i][j].Vx[0];
-				result[1].i1j_1 	= cell[i+1][j].Vx[0];
+				result[1].i_1j1 	= -cell[i][j+1].Vx;
+				result[1].ij1 		= cell[i][j+1].Vx;
+				result[1].i1j1 		= cell[i+1][j+1].Vx;
+				result[1].i_1j 		= -cell[i][j].Vx;
+				result[1].ij 		= cell[i][j].Vx;
+				result[1].i1j 		= cell[i+1][j].Vx;
+				result[1].i_1j_1 	= -cell[i][j].Vx;
+				result[1].ij_1 		= cell[i][j].Vx;
+				result[1].i1j_1 	= cell[i+1][j].Vx;
 			}
 			if (isSet_Vr) {
-				result[2].i_1j1 	= cell[i][j+1].Vr[0];
-				result[2].ij1 		= cell[i][j+1].Vr[0];
-				result[2].i1j1 		= cell[i+1][j+1].Vr[0];
-				result[2].i_1j 		= cell[i][j].Vr[0];
-				result[2].ij 		= cell[i][j].Vr[0];
-				result[2].i1j 		= cell[i+1][j].Vr[0];
-				result[2].i_1j_1 	= -cell[i][j].Vr[0];
-				result[2].ij_1 		= -cell[i][j].Vr[0];
-				result[2].i1j_1 	= -cell[i+1][j].Vr[0];
+				result[2].i_1j1 	= cell[i][j+1].Vr;
+				result[2].ij1 		= cell[i][j+1].Vr;
+				result[2].i1j1 		= cell[i+1][j+1].Vr;
+				result[2].i_1j 		= cell[i][j].Vr;
+				result[2].ij 		= cell[i][j].Vr;
+				result[2].i1j 		= cell[i+1][j].Vr;
+				result[2].i_1j_1 	= -cell[i][j].Vr;
+				result[2].ij_1 		= -cell[i][j].Vr;
+				result[2].i1j_1 	= -cell[i+1][j].Vr;
 			}
 			if (isSet_E) {
 				result[3].i_1j1 = cell[i][j+1].e;
@@ -2110,26 +2110,26 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				result[4].i1j_1 = cell[i+1][j].rho;
 			}
 			if (isSet_barVx) {
-				result[5].i_1j1 	= -cell[i][j+1].bar_Vx[0];
-				result[5].ij1 		= cell[i][j+1].bar_Vx[0];
-				result[5].i1j1 		= cell[i+1][j+1].bar_Vx[0];
-				result[5].i_1j 		= -cell[i][j].bar_Vx[0];
-				result[5].ij 		= cell[i][j].bar_Vx[0];
-				result[5].i1j 		= cell[i+1][j].bar_Vx[0];
-				result[5].i_1j_1 	= -cell[i][j].bar_Vx[0];
-				result[5].ij_1 		= cell[i][j].bar_Vx[0];
-				result[5].i1j_1 	= cell[i+1][j].bar_Vx[0];
+				result[5].i_1j1 	= -cell[i][j+1].bar_Vx;
+				result[5].ij1 		= cell[i][j+1].bar_Vx;
+				result[5].i1j1 		= cell[i+1][j+1].bar_Vx;
+				result[5].i_1j 		= -cell[i][j].bar_Vx;
+				result[5].ij 		= cell[i][j].bar_Vx;
+				result[5].i1j 		= cell[i+1][j].bar_Vx;
+				result[5].i_1j_1 	= -cell[i][j].bar_Vx;
+				result[5].ij_1 		= cell[i][j].bar_Vx;
+				result[5].i1j_1 	= cell[i+1][j].bar_Vx;
 			}
 			if (isSet_barVr) {
-				result[6].i_1j1 	= cell[i][j+1].bar_Vr[0];
-				result[6].ij1 		= cell[i][j+1].bar_Vr[0];
-				result[6].i1j1 		= cell[i+1][j+1].bar_Vr[0];
-				result[6].i_1j 		= cell[i][j].bar_Vr[0];
-				result[6].ij 		= cell[i][j].bar_Vr[0];
-				result[6].i1j 		= cell[i+1][j].bar_Vr[0];
-				result[6].i_1j_1 	= -cell[i][j].bar_Vr[0];
-				result[6].ij_1 		= -cell[i][j].bar_Vr[0];
-				result[6].i1j_1 	= -cell[i+1][j].bar_Vr[0];
+				result[6].i_1j1 	= cell[i][j+1].bar_Vr;
+				result[6].ij1 		= cell[i][j+1].bar_Vr;
+				result[6].i1j1 		= cell[i+1][j+1].bar_Vr;
+				result[6].i_1j 		= cell[i][j].bar_Vr;
+				result[6].ij 		= cell[i][j].bar_Vr;
+				result[6].i1j 		= cell[i+1][j].bar_Vr;
+				result[6].i_1j_1 	= -cell[i][j].bar_Vr;
+				result[6].ij_1 		= -cell[i][j].bar_Vr;
+				result[6].i1j_1 	= -cell[i+1][j].bar_Vr;
 			}
 			if (isSet_barE) {
 				result[7].i_1j1 = cell[i][j+1].bar_e;	result[7].ij1 = cell[i][j+1].bar_e;	result[7].i1j1 = cell[i+1][j+1].bar_e;
@@ -2151,37 +2151,37 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 		// Left border closed
 		case 17:
 			if (isSet_P) {
-				result[0].i_1j1 	= cell[i][j+1].P[0];
-				result[0].ij1 		= cell[i][j+1].P[0];
-				result[0].i1j1 		= cell[i+1][j+1].P[0];
-				result[0].i_1j 		= cell[i][j].P[0];
-				result[0].ij 		= cell[i][j].P[0];
-				result[0].i1j 		= cell[i+1][j].P[0];
-				result[0].i_1j_1 	= cell[i][j-1].P[0];
-				result[0].ij_1 		= cell[i][j-1].P[0];
-				result[0].i1j_1 	= cell[i+1][j-1].P[0];
+				result[0].i_1j1 	= cell[i][j+1].P;
+				result[0].ij1 		= cell[i][j+1].P;
+				result[0].i1j1 		= cell[i+1][j+1].P;
+				result[0].i_1j 		= cell[i][j].P;
+				result[0].ij 		= cell[i][j].P;
+				result[0].i1j 		= cell[i+1][j].P;
+				result[0].i_1j_1 	= cell[i][j-1].P;
+				result[0].ij_1 		= cell[i][j-1].P;
+				result[0].i1j_1 	= cell[i+1][j-1].P;
 			}
 			if (isSet_Vx) {
-				result[1].i_1j1 	= -cell[i][j+1].Vx[0];
-				result[1].ij1 		= cell[i][j+1].Vx[0];
-				result[1].i1j1 		= cell[i+1][j+1].Vx[0];
-				result[1].i_1j 		= -cell[i][j].Vx[0];
-				result[1].ij 		= cell[i][j].Vx[0];
-				result[1].i1j 		= cell[i+1][j].Vx[0];
-				result[1].i_1j_1 	= -cell[i][j-1].Vx[0];
-				result[1].ij_1 		= cell[i][j-1].Vx[0];
-				result[1].i1j_1 	= cell[i+1][j-1].Vx[0];
+				result[1].i_1j1 	= -cell[i][j+1].Vx;
+				result[1].ij1 		= cell[i][j+1].Vx;
+				result[1].i1j1 		= cell[i+1][j+1].Vx;
+				result[1].i_1j 		= -cell[i][j].Vx;
+				result[1].ij 		= cell[i][j].Vx;
+				result[1].i1j 		= cell[i+1][j].Vx;
+				result[1].i_1j_1 	= -cell[i][j-1].Vx;
+				result[1].ij_1 		= cell[i][j-1].Vx;
+				result[1].i1j_1 	= cell[i+1][j-1].Vx;
 			}
 			if (isSet_Vr) {
-				result[2].i_1j1 	= cell[i][j+1].Vr[0];
-				result[2].ij1 		= cell[i][j+1].Vr[0];
-				result[2].i1j1 		= cell[i+1][j+1].Vr[0];
-				result[2].i_1j 		= cell[i][j].Vr[0];
-				result[2].ij 		= cell[i][j].Vr[0];
-				result[2].i1j 		= cell[i+1][j].Vr[0];
-				result[2].i_1j_1 	= cell[i][j-1].Vr[0];
-				result[2].ij_1 		= cell[i][j-1].Vr[0];
-				result[2].i1j_1 	= cell[i+1][j-1].Vr[0];
+				result[2].i_1j1 	= cell[i][j+1].Vr;
+				result[2].ij1 		= cell[i][j+1].Vr;
+				result[2].i1j1 		= cell[i+1][j+1].Vr;
+				result[2].i_1j 		= cell[i][j].Vr;
+				result[2].ij 		= cell[i][j].Vr;
+				result[2].i1j 		= cell[i+1][j].Vr;
+				result[2].i_1j_1 	= cell[i][j-1].Vr;
+				result[2].ij_1 		= cell[i][j-1].Vr;
+				result[2].i1j_1 	= cell[i+1][j-1].Vr;
 			}
 			if (isSet_E) {
 				result[3].i_1j1 = cell[i][j+1].e;
@@ -2206,26 +2206,26 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				result[4].i1j_1 = cell[i+1][j-1].rho;
 			}
 			if (isSet_barVx) {
-				result[5].i_1j1 	= -cell[i][j+1].bar_Vx[0];
-				result[5].ij1 		= cell[i][j+1].bar_Vx[0];
-				result[5].i1j1 		= cell[i+1][j+1].bar_Vx[0];
-				result[5].i_1j 		= -cell[i][j].bar_Vx[0];
-				result[5].ij 		= cell[i][j].bar_Vx[0];
-				result[5].i1j 		= cell[i+1][j].bar_Vx[0];
-				result[5].i_1j_1 	= -cell[i][j-1].bar_Vx[0];
-				result[5].ij_1 		= cell[i][j-1].bar_Vx[0];
-				result[5].i1j_1 	= cell[i+1][j-1].bar_Vx[0];
+				result[5].i_1j1 	= -cell[i][j+1].bar_Vx;
+				result[5].ij1 		= cell[i][j+1].bar_Vx;
+				result[5].i1j1 		= cell[i+1][j+1].bar_Vx;
+				result[5].i_1j 		= -cell[i][j].bar_Vx;
+				result[5].ij 		= cell[i][j].bar_Vx;
+				result[5].i1j 		= cell[i+1][j].bar_Vx;
+				result[5].i_1j_1 	= -cell[i][j-1].bar_Vx;
+				result[5].ij_1 		= cell[i][j-1].bar_Vx;
+				result[5].i1j_1 	= cell[i+1][j-1].bar_Vx;
 			}
 			if (isSet_barVr) {
-				result[6].i_1j1 = cell[i][j+1].bar_Vr[0];
-				result[6].ij1 = cell[i][j+1].bar_Vr[0];
-				result[6].i1j1 = cell[i+1][j+1].bar_Vr[0];
-				result[6].i_1j = cell[i][j].bar_Vr[0];
-				result[6].ij = cell[i][j].bar_Vr[0];
-				result[6].i1j = cell[i+1][j].bar_Vr[0];
-				result[6].i_1j_1 = cell[i][j-1].bar_Vr[0];
-				result[6].ij_1 = cell[i][j-1].bar_Vr[0];
-				result[6].i1j_1 = cell[i+1][j-1].bar_Vr[0];
+				result[6].i_1j1 = cell[i][j+1].bar_Vr;
+				result[6].ij1 = cell[i][j+1].bar_Vr;
+				result[6].i1j1 = cell[i+1][j+1].bar_Vr;
+				result[6].i_1j = cell[i][j].bar_Vr;
+				result[6].ij = cell[i][j].bar_Vr;
+				result[6].i1j = cell[i+1][j].bar_Vr;
+				result[6].i_1j_1 = cell[i][j-1].bar_Vr;
+				result[6].ij_1 = cell[i][j-1].bar_Vr;
+				result[6].i1j_1 = cell[i+1][j-1].bar_Vr;
 			}
 			if (isSet_barE) {
 				result[7].i_1j1 = cell[i][j+1].bar_e;
@@ -2253,37 +2253,37 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 		// Right border closed
 		case 19:
 			if (isSet_P) {
-				result[0].i_1j1 = cell[i-1][j+1].P[0];
-				result[0].ij1 = cell[i][j+1].P[0];
-				result[0].i1j1 = cell[i][j+1].P[0];
-				result[0].i_1j = cell[i-1][j].P[0];
-				result[0].ij = cell[i][j].P[0];
-				result[0].i1j = cell[i][j].P[0];
-				result[0].i_1j_1 = cell[i-1][j-1].P[0];
-				result[0].ij_1 = cell[i][j-1].P[0];
-				result[0].i1j_1 = cell[i][j-1].P[0];
+				result[0].i_1j1 = cell[i-1][j+1].P;
+				result[0].ij1 = cell[i][j+1].P;
+				result[0].i1j1 = cell[i][j+1].P;
+				result[0].i_1j = cell[i-1][j].P;
+				result[0].ij = cell[i][j].P;
+				result[0].i1j = cell[i][j].P;
+				result[0].i_1j_1 = cell[i-1][j-1].P;
+				result[0].ij_1 = cell[i][j-1].P;
+				result[0].i1j_1 = cell[i][j-1].P;
 			}
 			if (isSet_Vx) {
-				result[1].i_1j1 	= cell[i-1][j+1].Vx[0];
-				result[1].ij1 		= cell[i][j+1].Vx[0];
-				result[1].i1j1 		= -cell[i][j+1].Vx[0];
-				result[1].i_1j 		= cell[i-1][j].Vx[0];
-				result[1].ij 		= cell[i][j].Vx[0];
-				result[1].i1j 		= -cell[i][j].Vx[0];
-				result[1].i_1j_1 	= cell[i-1][j-1].Vx[0];
-				result[1].ij_1 		= cell[i][j-1].Vx[0];
-				result[1].i1j_1 	= -cell[i][j-1].Vx[0];
+				result[1].i_1j1 	= cell[i-1][j+1].Vx;
+				result[1].ij1 		= cell[i][j+1].Vx;
+				result[1].i1j1 		= -cell[i][j+1].Vx;
+				result[1].i_1j 		= cell[i-1][j].Vx;
+				result[1].ij 		= cell[i][j].Vx;
+				result[1].i1j 		= -cell[i][j].Vx;
+				result[1].i_1j_1 	= cell[i-1][j-1].Vx;
+				result[1].ij_1 		= cell[i][j-1].Vx;
+				result[1].i1j_1 	= -cell[i][j-1].Vx;
 			}
 			if (isSet_Vr) {
-				result[2].i_1j1 	= cell[i-1][j+1].Vr[0];
-				result[2].ij1 		= cell[i][j+1].Vr[0];
-				result[2].i1j1 		= cell[i][j+1].Vr[0];
-				result[2].i_1j 		= cell[i-1][j].Vr[0];
-				result[2].ij 		= cell[i][j].Vr[0];
-				result[2].i1j 		= cell[i][j].Vr[0];
-				result[2].i_1j_1 	= cell[i-1][j-1].Vr[0];
-				result[2].ij_1 		= cell[i][j-1].Vr[0];
-				result[2].i1j_1 	= cell[i][j-1].Vr[0];
+				result[2].i_1j1 	= cell[i-1][j+1].Vr;
+				result[2].ij1 		= cell[i][j+1].Vr;
+				result[2].i1j1 		= cell[i][j+1].Vr;
+				result[2].i_1j 		= cell[i-1][j].Vr;
+				result[2].ij 		= cell[i][j].Vr;
+				result[2].i1j 		= cell[i][j].Vr;
+				result[2].i_1j_1 	= cell[i-1][j-1].Vr;
+				result[2].ij_1 		= cell[i][j-1].Vr;
+				result[2].i1j_1 	= cell[i][j-1].Vr;
 			}
 			if (isSet_E) {
 				result[3].i_1j1 = cell[i-1][j+1].e;
@@ -2308,26 +2308,26 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				result[4].i1j_1 = cell[i][j-1].rho;
 			}
 			if (isSet_barVx) {
-				result[5].i_1j1 	= cell[i-1][j+1].bar_Vx[0];
-				result[5].ij1 		= cell[i][j+1].bar_Vx[0];
-				result[5].i1j1 		= -cell[i][j+1].bar_Vx[0];
-				result[5].i_1j 		= cell[i-1][j].bar_Vx[0];
-				result[5].ij 		= cell[i][j].bar_Vx[0];
-				result[5].i1j 		= -cell[i][j].bar_Vx[0];
-				result[5].i_1j_1 	= cell[i-1][j-1].bar_Vx[0];
-				result[5].ij_1 		= cell[i][j-1].bar_Vx[0];
-				result[5].i1j_1 	= -cell[i][j-1].bar_Vx[0];
+				result[5].i_1j1 	= cell[i-1][j+1].bar_Vx;
+				result[5].ij1 		= cell[i][j+1].bar_Vx;
+				result[5].i1j1 		= -cell[i][j+1].bar_Vx;
+				result[5].i_1j 		= cell[i-1][j].bar_Vx;
+				result[5].ij 		= cell[i][j].bar_Vx;
+				result[5].i1j 		= -cell[i][j].bar_Vx;
+				result[5].i_1j_1 	= cell[i-1][j-1].bar_Vx;
+				result[5].ij_1 		= cell[i][j-1].bar_Vx;
+				result[5].i1j_1 	= -cell[i][j-1].bar_Vx;
 			}
 			if (isSet_barVr) {
-				result[6].i_1j1 	= cell[i-1][j+1].bar_Vr[0];
-				result[6].ij1 		= cell[i][j+1].bar_Vr[0];
-				result[6].i1j1 		= cell[i][j+1].bar_Vr[0];
-				result[6].i_1j 		= cell[i-1][j].bar_Vr[0];
-				result[6].ij 		= cell[i][j].bar_Vr[0];
-				result[6].i1j 		= cell[i][j].bar_Vr[0];
-				result[6].i_1j_1 	= cell[i-1][j-1].bar_Vr[0];
-				result[6].ij_1 		= cell[i][j-1].bar_Vr[0];
-				result[6].i1j_1 	= cell[i][j-1].bar_Vr[0];
+				result[6].i_1j1 	= cell[i-1][j+1].bar_Vr;
+				result[6].ij1 		= cell[i][j+1].bar_Vr;
+				result[6].i1j1 		= cell[i][j+1].bar_Vr;
+				result[6].i_1j 		= cell[i-1][j].bar_Vr;
+				result[6].ij 		= cell[i][j].bar_Vr;
+				result[6].i1j 		= cell[i][j].bar_Vr;
+				result[6].i_1j_1 	= cell[i-1][j-1].bar_Vr;
+				result[6].ij_1 		= cell[i][j-1].bar_Vr;
+				result[6].i1j_1 	= cell[i][j-1].bar_Vr;
 			}
 			if (isSet_barE) {
 				result[7].i_1j1 = cell[i-1][j+1].bar_e;	result[7].ij1 = cell[i][j+1].bar_e;	result[7].i1j1 = cell[i][j+1].bar_e;
@@ -2349,37 +2349,37 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 		// Top and right borders closed
 		case 20:
 			if (isSet_P) {
-				result[0].i_1j1 	= cell[i-1][j].P[0];
-				result[0].ij1 		= cell[i][j].P[0];
-				result[0].i1j1 		= cell[i][j].P[0];
-				result[0].i_1j 		= cell[i-1][j].P[0];
-				result[0].ij 		= cell[i][j].P[0];
-				result[0].i1j 		= cell[i][j].P[0];
-				result[0].i_1j_1 	= cell[i-1][j-1].P[0];
-				result[0].ij_1 		= cell[i][j-1].P[0];
-				result[0].i1j_1 	= cell[i][j-1].P[0];
+				result[0].i_1j1 	= cell[i-1][j].P;
+				result[0].ij1 		= cell[i][j].P;
+				result[0].i1j1 		= cell[i][j].P;
+				result[0].i_1j 		= cell[i-1][j].P;
+				result[0].ij 		= cell[i][j].P;
+				result[0].i1j 		= cell[i][j].P;
+				result[0].i_1j_1 	= cell[i-1][j-1].P;
+				result[0].ij_1 		= cell[i][j-1].P;
+				result[0].i1j_1 	= cell[i][j-1].P;
 			}
 			if (isSet_Vx) {
-				result[1].i_1j1 	= cell[i-1][j].Vx[0];
-				result[1].ij1 		= cell[i][j].Vx[0];
-				result[1].i1j1 		= -cell[i][j].Vx[0];
-				result[1].i_1j 		= cell[i-1][j].Vx[0];
-				result[1].ij 		= cell[i][j].Vx[0];
-				result[1].i1j 		= -cell[i][j].Vx[0];
-				result[1].i_1j_1 	= cell[i-1][j-1].Vx[0];
-				result[1].ij_1 		= cell[i][j-1].Vx[0];
-				result[1].i1j_1 	= -cell[i][j-1].Vx[0];
+				result[1].i_1j1 	= cell[i-1][j].Vx;
+				result[1].ij1 		= cell[i][j].Vx;
+				result[1].i1j1 		= -cell[i][j].Vx;
+				result[1].i_1j 		= cell[i-1][j].Vx;
+				result[1].ij 		= cell[i][j].Vx;
+				result[1].i1j 		= -cell[i][j].Vx;
+				result[1].i_1j_1 	= cell[i-1][j-1].Vx;
+				result[1].ij_1 		= cell[i][j-1].Vx;
+				result[1].i1j_1 	= -cell[i][j-1].Vx;
 			}
 			if (isSet_Vr) {
-				result[2].i_1j1 	= -cell[i-1][j].Vr[0];
-				result[2].ij1 		= -cell[i][j].Vr[0];
-				result[2].i1j1 		= -cell[i][j].Vr[0];
-				result[2].i_1j 		= cell[i-1][j].Vr[0];
-				result[2].ij 		= cell[i][j].Vr[0];
-				result[2].i1j 		= cell[i][j].Vr[0];
-				result[2].i_1j_1 	= cell[i-1][j-1].Vr[0];
-				result[2].ij_1 		= cell[i][j-1].Vr[0];
-				result[2].i1j_1 	= cell[i][j-1].Vr[0];
+				result[2].i_1j1 	= -cell[i-1][j].Vr;
+				result[2].ij1 		= -cell[i][j].Vr;
+				result[2].i1j1 		= -cell[i][j].Vr;
+				result[2].i_1j 		= cell[i-1][j].Vr;
+				result[2].ij 		= cell[i][j].Vr;
+				result[2].i1j 		= cell[i][j].Vr;
+				result[2].i_1j_1 	= cell[i-1][j-1].Vr;
+				result[2].ij_1 		= cell[i][j-1].Vr;
+				result[2].i1j_1 	= cell[i][j-1].Vr;
 			}
 			if (isSet_E) {
 				result[3].i_1j1 = cell[i-1][j].e;
@@ -2404,26 +2404,26 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				result[4].i1j_1 = cell[i][j-1].rho;
 			}
 			if (isSet_barVx) {
-				result[5].i_1j1 	= cell[i-1][j].bar_Vx[0];
-				result[5].ij1 		= cell[i][j].bar_Vx[0];
-				result[5].i1j1 		= -cell[i][j].bar_Vx[0];
-				result[5].i_1j 		= cell[i-1][j].bar_Vx[0];
-				result[5].ij 		= cell[i][j].bar_Vx[0];
-				result[5].i1j 		= -cell[i][j].bar_Vx[0];
-				result[5].i_1j_1 	= cell[i-1][j-1].bar_Vx[0];
-				result[5].ij_1 		= cell[i][j-1].bar_Vx[0];
-				result[5].i1j_1 	= -cell[i][j-1].bar_Vx[0];
+				result[5].i_1j1 	= cell[i-1][j].bar_Vx;
+				result[5].ij1 		= cell[i][j].bar_Vx;
+				result[5].i1j1 		= -cell[i][j].bar_Vx;
+				result[5].i_1j 		= cell[i-1][j].bar_Vx;
+				result[5].ij 		= cell[i][j].bar_Vx;
+				result[5].i1j 		= -cell[i][j].bar_Vx;
+				result[5].i_1j_1 	= cell[i-1][j-1].bar_Vx;
+				result[5].ij_1 		= cell[i][j-1].bar_Vx;
+				result[5].i1j_1 	= -cell[i][j-1].bar_Vx;
 			}
 			if (isSet_barVr) {
-				result[6].i_1j1 	= -cell[i-1][j].bar_Vr[0];
-				result[6].ij1 		= -cell[i][j].bar_Vr[0];
-				result[6].i1j1 		= -cell[i][j].bar_Vr[0];
-				result[6].i_1j 		= cell[i-1][j].bar_Vr[0];
-				result[6].ij 		= cell[i][j].bar_Vr[0];
-				result[6].i1j 		= cell[i][j].bar_Vr[0];
-				result[6].i_1j_1 	= cell[i-1][j-1].bar_Vr[0];
-				result[6].ij_1 		= cell[i][j-1].bar_Vr[0];
-				result[6].i1j_1 	= cell[i][j-1].bar_Vr[0];
+				result[6].i_1j1 	= -cell[i-1][j].bar_Vr;
+				result[6].ij1 		= -cell[i][j].bar_Vr;
+				result[6].i1j1 		= -cell[i][j].bar_Vr;
+				result[6].i_1j 		= cell[i-1][j].bar_Vr;
+				result[6].ij 		= cell[i][j].bar_Vr;
+				result[6].i1j 		= cell[i][j].bar_Vr;
+				result[6].i_1j_1 	= cell[i-1][j-1].bar_Vr;
+				result[6].ij_1 		= cell[i][j-1].bar_Vr;
+				result[6].i1j_1 	= cell[i][j-1].bar_Vr;
 			}
 			if (isSet_barE) {
 				result[7].i_1j1 = cell[i-1][j].bar_e;
@@ -2451,37 +2451,37 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 		// Bottom and right borders closed
 		case 21:
 			if (isSet_P) {
-				result[0].i_1j1 	= cell[i-1][j+1].P[0];
-				result[0].ij1 		= cell[i][j+1].P[0];
-				result[0].i1j1 		= cell[i][j+1].P[0];
-				result[0].i_1j 		= cell[i-1][j].P[0];
-				result[0].ij 		= cell[i][j].P[0];
-				result[0].i1j 		= cell[i][j].P[0];
-				result[0].i_1j_1 	= cell[i-1][j].P[0];
-				result[0].ij_1 		= cell[i][j].P[0];
-				result[0].i1j_1 	= cell[i][j].P[0];
+				result[0].i_1j1 	= cell[i-1][j+1].P;
+				result[0].ij1 		= cell[i][j+1].P;
+				result[0].i1j1 		= cell[i][j+1].P;
+				result[0].i_1j 		= cell[i-1][j].P;
+				result[0].ij 		= cell[i][j].P;
+				result[0].i1j 		= cell[i][j].P;
+				result[0].i_1j_1 	= cell[i-1][j].P;
+				result[0].ij_1 		= cell[i][j].P;
+				result[0].i1j_1 	= cell[i][j].P;
 			}
 			if (isSet_Vx) {
-				result[1].i_1j1 	= cell[i-1][j+1].Vx[0];
-				result[1].ij1 		= cell[i][j+1].Vx[0];
-				result[1].i1j1 		= -cell[i][j+1].Vx[0];
-				result[1].i_1j 		= cell[i-1][j].Vx[0];
-				result[1].ij 		= cell[i][j].Vx[0];
-				result[1].i1j 		= -cell[i][j].Vx[0];
-				result[1].i_1j_1 	= cell[i-1][j].Vx[0];
-				result[1].ij_1 		= cell[i][j].Vx[0];
-				result[1].i1j_1 	= -cell[i][j].Vx[0];
+				result[1].i_1j1 	= cell[i-1][j+1].Vx;
+				result[1].ij1 		= cell[i][j+1].Vx;
+				result[1].i1j1 		= -cell[i][j+1].Vx;
+				result[1].i_1j 		= cell[i-1][j].Vx;
+				result[1].ij 		= cell[i][j].Vx;
+				result[1].i1j 		= -cell[i][j].Vx;
+				result[1].i_1j_1 	= cell[i-1][j].Vx;
+				result[1].ij_1 		= cell[i][j].Vx;
+				result[1].i1j_1 	= -cell[i][j].Vx;
 			}
 			if (isSet_Vr) {
-				result[2].i_1j1 	= cell[i-1][j+1].Vr[0];
-				result[2].ij1 		= cell[i][j+1].Vr[0];
-				result[2].i1j1 		= cell[i][j+1].Vr[0];
-				result[2].i_1j 		= cell[i-1][j].Vr[0];
-				result[2].ij 		= cell[i][j].Vr[0];
-				result[2].i1j 		= cell[i][j].Vr[0];
-				result[2].i_1j_1 	= -cell[i-1][j].Vr[0];
-				result[2].ij_1 		= -cell[i][j].Vr[0];
-				result[2].i1j_1 	= -cell[i][j].Vr[0];
+				result[2].i_1j1 	= cell[i-1][j+1].Vr;
+				result[2].ij1 		= cell[i][j+1].Vr;
+				result[2].i1j1 		= cell[i][j+1].Vr;
+				result[2].i_1j 		= cell[i-1][j].Vr;
+				result[2].ij 		= cell[i][j].Vr;
+				result[2].i1j 		= cell[i][j].Vr;
+				result[2].i_1j_1 	= -cell[i-1][j].Vr;
+				result[2].ij_1 		= -cell[i][j].Vr;
+				result[2].i1j_1 	= -cell[i][j].Vr;
 			}
 			if (isSet_E) {
 				result[3].i_1j1 	= cell[i-1][j+1].e;
@@ -2506,26 +2506,26 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				result[4].i1j_1 	= cell[i][j].rho;
 			}
 			if (isSet_barVx) {
-				result[5].i_1j1 	= cell[i-1][j+1].bar_Vx[0];
-				result[5].ij1 		= cell[i][j+1].bar_Vx[0];
-				result[5].i1j1 		= -cell[i][j+1].bar_Vx[0];
-				result[5].i_1j 		= cell[i-1][j].bar_Vx[0];
-				result[5].ij 		= cell[i][j].bar_Vx[0];
-				result[5].i1j 		= -cell[i][j].bar_Vx[0];
-				result[5].i_1j_1 	= cell[i-1][j].bar_Vx[0];
-				result[5].ij_1 		= cell[i][j].bar_Vx[0];
-				result[5].i1j_1 	= -cell[i][j].bar_Vx[0];
+				result[5].i_1j1 	= cell[i-1][j+1].bar_Vx;
+				result[5].ij1 		= cell[i][j+1].bar_Vx;
+				result[5].i1j1 		= -cell[i][j+1].bar_Vx;
+				result[5].i_1j 		= cell[i-1][j].bar_Vx;
+				result[5].ij 		= cell[i][j].bar_Vx;
+				result[5].i1j 		= -cell[i][j].bar_Vx;
+				result[5].i_1j_1 	= cell[i-1][j].bar_Vx;
+				result[5].ij_1 		= cell[i][j].bar_Vx;
+				result[5].i1j_1 	= -cell[i][j].bar_Vx;
 			}
 			if (isSet_barVr) {
-				result[6].i_1j1 	= cell[i-1][j+1].bar_Vr[0];
-				result[6].ij1 		= cell[i][j+1].bar_Vr[0];
-				result[6].i1j1		= cell[i][j+1].bar_Vr[0];
-				result[6].i_1j		= cell[i-1][j].bar_Vr[0];
-				result[6].ij 		= cell[i][j].bar_Vr[0];
-				result[6].i1j 		= cell[i][j].bar_Vr[0];
-				result[6].i_1j_1 	= -cell[i-1][j].bar_Vr[0];
-				result[6].ij_1 		= -cell[i][j].bar_Vr[0];
-				result[6].i1j_1 	= -cell[i][j].bar_Vr[0];
+				result[6].i_1j1 	= cell[i-1][j+1].bar_Vr;
+				result[6].ij1 		= cell[i][j+1].bar_Vr;
+				result[6].i1j1		= cell[i][j+1].bar_Vr;
+				result[6].i_1j		= cell[i-1][j].bar_Vr;
+				result[6].ij 		= cell[i][j].bar_Vr;
+				result[6].i1j 		= cell[i][j].bar_Vr;
+				result[6].i_1j_1 	= -cell[i-1][j].bar_Vr;
+				result[6].ij_1 		= -cell[i][j].bar_Vr;
+				result[6].i1j_1 	= -cell[i][j].bar_Vr;
 			}
 			if (isSet_barE) {
 				result[7].i_1j1 	= cell[i-1][j+1].bar_e;
@@ -2552,37 +2552,37 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 
 		case 22:
 			if (isSet_P) {
-				result[0].i_1j1 	= cell[i-1][j+1].P[0];
-				result[0].ij1 		= cell[i][j+1].P[0];
-				result[0].i1j1 		= cell[i][j].P[0];
-				result[0].i_1j 		= cell[i-1][j].P[0];
-				result[0].ij 		= cell[i][j].P[0];
-				result[0].i1j 		= cell[i][j].P[0];
-				result[0].i_1j_1 	= cell[i-1][j-1].P[0];
-				result[0].ij_1 		= cell[i][j-1].P[0];
-				result[0].i1j_1 	= cell[i][j-1].P[0];
+				result[0].i_1j1 	= cell[i-1][j+1].P;
+				result[0].ij1 		= cell[i][j+1].P;
+				result[0].i1j1 		= cell[i][j].P;
+				result[0].i_1j 		= cell[i-1][j].P;
+				result[0].ij 		= cell[i][j].P;
+				result[0].i1j 		= cell[i][j].P;
+				result[0].i_1j_1 	= cell[i-1][j-1].P;
+				result[0].ij_1 		= cell[i][j-1].P;
+				result[0].i1j_1 	= cell[i][j-1].P;
 			}
 			if (isSet_Vx) {
-				result[1].i_1j1 	= cell[i-1][j+1].Vx[0];
-				result[1].ij1 		= cell[i][j+1].Vx[0];
-				result[1].i1j1 		= -cell[i][j].Vx[0];
-				result[1].i_1j 		= cell[i-1][j].Vx[0];
-				result[1].ij 		= cell[i][j].Vx[0];
-				result[1].i1j 		= -cell[i][j].Vx[0];
-				result[1].i_1j_1 	= cell[i-1][j-1].Vx[0];
-				result[1].ij_1 		= cell[i][j-1].Vx[0];
-				result[1].i1j_1 	= -cell[i][j-1].Vx[0];
+				result[1].i_1j1 	= cell[i-1][j+1].Vx;
+				result[1].ij1 		= cell[i][j+1].Vx;
+				result[1].i1j1 		= -cell[i][j].Vx;
+				result[1].i_1j 		= cell[i-1][j].Vx;
+				result[1].ij 		= cell[i][j].Vx;
+				result[1].i1j 		= -cell[i][j].Vx;
+				result[1].i_1j_1 	= cell[i-1][j-1].Vx;
+				result[1].ij_1 		= cell[i][j-1].Vx;
+				result[1].i1j_1 	= -cell[i][j-1].Vx;
 			}
 			if (isSet_Vr) {
-				result[2].i_1j1 	= -cell[i-1][j].Vr[0];
-				result[2].ij1 		= -cell[i][j].Vr[0];
-				result[2].i1j1 		= -cell[i][j].Vr[0];
-				result[2].i_1j 		= cell[i-1][j].Vr[0];
-				result[2].ij 		= cell[i][j].Vr[0];
-				result[2].i1j 		= cell[i][j].Vr[0];
-				result[2].i_1j_1 	= cell[i-1][j-1].Vr[0];
-				result[2].ij_1 		= cell[i][j-1].Vr[0];
-				result[2].i1j_1 	= cell[i][j-1].Vr[0];
+				result[2].i_1j1 	= -cell[i-1][j].Vr;
+				result[2].ij1 		= -cell[i][j].Vr;
+				result[2].i1j1 		= -cell[i][j].Vr;
+				result[2].i_1j 		= cell[i-1][j].Vr;
+				result[2].ij 		= cell[i][j].Vr;
+				result[2].i1j 		= cell[i][j].Vr;
+				result[2].i_1j_1 	= cell[i-1][j-1].Vr;
+				result[2].ij_1 		= cell[i][j-1].Vr;
+				result[2].i1j_1 	= cell[i][j-1].Vr;
 			}
 			if (isSet_E) {
 				result[3].i_1j1 	= cell[i-1][j+1].e;
@@ -2607,26 +2607,26 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				result[4].i1j_1 	= cell[i][j-1].rho;
 			}
 			if (isSet_barVx) {
-				result[5].i_1j1 	= cell[i-1][j+1].bar_Vx[0];
-				result[5].ij1 		= cell[i][j+1].bar_Vx[0];
-				result[5].i1j1 		= -cell[i][j].bar_Vx[0];
-				result[5].i_1j 		= cell[i-1][j].bar_Vx[0];
-				result[5].ij 		= cell[i][j].bar_Vx[0];
-				result[5].i1j 		= -cell[i][j].bar_Vx[0];
-				result[5].i_1j_1 	= cell[i-1][j-1].bar_Vx[0];
-				result[5].ij_1 		= cell[i][j-1].bar_Vx[0];
-				result[5].i1j_1 	= -cell[i][j-1].bar_Vx[0];
+				result[5].i_1j1 	= cell[i-1][j+1].bar_Vx;
+				result[5].ij1 		= cell[i][j+1].bar_Vx;
+				result[5].i1j1 		= -cell[i][j].bar_Vx;
+				result[5].i_1j 		= cell[i-1][j].bar_Vx;
+				result[5].ij 		= cell[i][j].bar_Vx;
+				result[5].i1j 		= -cell[i][j].bar_Vx;
+				result[5].i_1j_1 	= cell[i-1][j-1].bar_Vx;
+				result[5].ij_1 		= cell[i][j-1].bar_Vx;
+				result[5].i1j_1 	= -cell[i][j-1].bar_Vx;
 			}
 			if (isSet_barVr) {
-				result[6].i_1j1 	= -cell[i-1][j].bar_Vr[0];
-				result[6].ij1 		= -cell[i][j].bar_Vr[0];
-				result[6].i1j1 		= -cell[i][j].bar_Vr[0];
-				result[6].i_1j 		= cell[i-1][j].bar_Vr[0];
-				result[6].ij 		= cell[i][j].bar_Vr[0];
-				result[6].i1j 		= cell[i][j].bar_Vr[0];
-				result[6].i_1j_1 	= cell[i-1][j-1].bar_Vr[0];
-				result[6].ij_1 		= cell[i][j-1].bar_Vr[0];
-				result[6].i1j_1 	= cell[i][j-1].bar_Vr[0];
+				result[6].i_1j1 	= -cell[i-1][j].bar_Vr;
+				result[6].ij1 		= -cell[i][j].bar_Vr;
+				result[6].i1j1 		= -cell[i][j].bar_Vr;
+				result[6].i_1j 		= cell[i-1][j].bar_Vr;
+				result[6].ij 		= cell[i][j].bar_Vr;
+				result[6].i1j 		= cell[i][j].bar_Vr;
+				result[6].i_1j_1 	= cell[i-1][j-1].bar_Vr;
+				result[6].ij_1 		= cell[i][j-1].bar_Vr;
+				result[6].i1j_1 	= cell[i][j-1].bar_Vr;
 			}
 			if (isSet_barE) {
 				result[7].i_1j1 = cell[i-1][j+1].bar_e;	result[7].ij1 = cell[i][j+1].bar_e;	result[7].i1j1 = cell[i][j+1].bar_e;
@@ -2653,13 +2653,13 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				weightCell.i = cell[i][j].weightVector.x.at(idx).i;
 				weightCell.j = cell[i][j].weightVector.x.at(idx).j;
 				if (isSet_P) {
-					result[0].i1j += weight*cell[weightCell.i][weightCell.j].P[0];
+					result[0].i1j += weight*cell[weightCell.i][weightCell.j].P;
 				}
 				if (isSet_Vx) {
-					result[1].i1j -= weight*cell[weightCell.i][weightCell.j].Vx[0];
+					result[1].i1j -= weight*cell[weightCell.i][weightCell.j].Vx;
 				}
 				if (isSet_Vr) {
-					result[2].i1j -= weight*cell[weightCell.i][weightCell.j].Vr[0];
+					result[2].i1j -= weight*cell[weightCell.i][weightCell.j].Vr;
 				}
 				if (isSet_E) {
 					result[3].i1j += weight*cell[weightCell.i][weightCell.j].e;
@@ -2668,10 +2668,10 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 					result[4].i1j += weight*cell[weightCell.i][weightCell.j].rho;
 				}
 				if (isSet_barVx) {
-					result[5].i1j -= weight*cell[weightCell.i][weightCell.j].bar_Vx[0];
+					result[5].i1j -= weight*cell[weightCell.i][weightCell.j].bar_Vx;
 				}
 				if (isSet_barVr) {
-					result[6].i1j -= weight*cell[weightCell.i][weightCell.j].bar_Vr[0];
+					result[6].i1j -= weight*cell[weightCell.i][weightCell.j].bar_Vr;
 				}
 				if (isSet_barE) {
 					result[7].i1j += weight*cell[weightCell.i][weightCell.j].bar_e;
@@ -2693,13 +2693,13 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				weightCell.i = cell[i][j].weightVector.y.at(idx).i;
 				weightCell.j = cell[i][j].weightVector.y.at(idx).j;
 				if (isSet_P) {
-					result[0].ij1 += weight*cell[weightCell.i][weightCell.j].P[0];
+					result[0].ij1 += weight*cell[weightCell.i][weightCell.j].P;
 				}
 				if (isSet_Vx) {
-					result[1].ij1 -= weight*cell[weightCell.i][weightCell.j].Vx[0];
+					result[1].ij1 -= weight*cell[weightCell.i][weightCell.j].Vx;
 				}
 				if (isSet_Vr) {
-					result[2].ij1 -= weight*cell[weightCell.i][weightCell.j].Vr[0];
+					result[2].ij1 -= weight*cell[weightCell.i][weightCell.j].Vr;
 				}
 				if (isSet_E) {
 					result[3].ij1 += weight*cell[weightCell.i][weightCell.j].e;
@@ -2708,10 +2708,10 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 					result[4].ij1 += weight*cell[weightCell.i][weightCell.j].rho;
 				}
 				if (isSet_barVx) {
-					result[5].ij1 -= weight*cell[weightCell.i][weightCell.j].bar_Vx[0];
+					result[5].ij1 -= weight*cell[weightCell.i][weightCell.j].bar_Vx;
 				}
 				if (isSet_barVr) {
-					result[6].ij1 -= weight*cell[weightCell.i][weightCell.j].bar_Vr[0];
+					result[6].ij1 -= weight*cell[weightCell.i][weightCell.j].bar_Vr;
 				}
 				if (isSet_barE) {
 					result[7].ij1 += weight*cell[weightCell.i][weightCell.j].bar_e;
@@ -2733,13 +2733,13 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 				weightCell.i = cell[i][j].weightVector.xy.at(idx).i;
 				weightCell.j = cell[i][j].weightVector.xy.at(idx).j;
 				if (isSet_P) {
-					result[0].i1j1 += weight*cell[weightCell.i][weightCell.j].P[0];
+					result[0].i1j1 += weight*cell[weightCell.i][weightCell.j].P;
 				}
 				if (isSet_Vx) {
-					result[1].i1j1 -= weight*cell[weightCell.i][weightCell.j].Vx[0];
+					result[1].i1j1 -= weight*cell[weightCell.i][weightCell.j].Vx;
 				}
 				if (isSet_Vr) {
-					result[2].i1j1 -= weight*cell[weightCell.i][weightCell.j].Vr[0];
+					result[2].i1j1 -= weight*cell[weightCell.i][weightCell.j].Vr;
 				}
 				if (isSet_E) {
 					result[3].i1j1 += weight*cell[weightCell.i][weightCell.j].e;
@@ -2748,10 +2748,10 @@ void calculateBorder(int n, const cell2dStatic & cell, unsigned long ctrl,
 					result[4].i1j1 += weight*cell[weightCell.i][weightCell.j].rho;
 				}
 				if (isSet_barVx) {
-					result[5].i1j1 -= weight*cell[weightCell.i][weightCell.j].bar_Vx[0];
+					result[5].i1j1 -= weight*cell[weightCell.i][weightCell.j].bar_Vx;
 				}
 				if (isSet_barVr) {
-					result[6].i1j1 -= weight*cell[weightCell.i][weightCell.j].bar_Vr[0];
+					result[6].i1j1 -= weight*cell[weightCell.i][weightCell.j].bar_Vr;
 				}
 				if (isSet_barE) {
 					result[7].i1j1 += weight*cell[weightCell.i][weightCell.j].bar_e;

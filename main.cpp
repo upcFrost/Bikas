@@ -188,8 +188,8 @@ int main(int argc, char** argv) {
 
 						curCell->bar_z = euler_z(&cell, &cell[n][i][j], n, i, j);
 						curCell->bar_psi = euler_psi(cell[n][i][j], n, i, j);
-						curCell->bar_Vx[0] = euler_bar_Vx(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
-						curCell->bar_Vr[0] = euler_bar_Vr(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
+						curCell->bar_Vx = euler_bar_Vx(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
+						curCell->bar_Vr = euler_bar_Vr(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
 						curCell->bar_e = euler_bar_e(cell,n,i,j,dt,dx,dr,FIRST_ORDER);
 					}
 				}
@@ -236,20 +236,20 @@ int main(int argc, char** argv) {
 
 						gasCell * nextTCell = &cell[n+1][i][j];
 						
-						nextTCell->Vx[0] = final_calc_Vx(cell,i,j,n,dx,dr,dt);
-						nextTCell->Vr[0] = final_calc_Vr(cell,i,j,n,dx,dr,dt);
+						nextTCell->Vx = final_calc_Vx(cell,i,j,n,dx,dr,dt);
+						nextTCell->Vr = final_calc_Vr(cell,i,j,n,dx,dr,dt);
 						nextTCell->e = final_calc_e(cell,i,j,n,dx,dr,dt);
 						nextTCell->final_z = new_final_z(cell,i,j,n,dx,dr,dt);
 						nextTCell->final_psi = new_final_psi(cell,i,j,n,dx,dr,dt);
 						
 						// Post-final stage
 						if (i < i_pist || !havePiston) {
-							nextTCell->P[0] = final_calc_p(&cell[n][i][j], &cell[n+1][i][j],
+							nextTCell->P = final_calc_p(&cell[n][i][j], &cell[n+1][i][j],
 								gasVar, i);
 						} else if (i >= i_pist && i <= i_sn && havePiston) {
-//							nextTCell->P[0] = final_calc_p(&cell[n][i][j], &cell[n+1][i][j],
+//							nextTCell->P = final_calc_p(&cell[n][i][j], &cell[n+1][i][j],
 //								PISTON, i);
-							nextTCell->P[0] = final_calc_p(&cell[n][i][j], &cell[n+1][i][j],
+							nextTCell->P = final_calc_p(&cell[n][i][j], &cell[n+1][i][j],
 								IDEAL_GAS, i);
 						}
 					}
@@ -265,16 +265,16 @@ int main(int argc, char** argv) {
 			t.push_back(t.back() + dt);
 			vector <double> array;
 			vector <double> minimum;
-			for (int i = 0; i < max_i; i++) {
+			for (int i = 0; i < i_sn; i++) {
 				array.resize(max_j);
 				for (int j = 0; j < max_j; j++) {
 					if (cell[n][i][j].A[0] != 0) {
 						gasCell * curCell = &cell[n+1][i][j];
 						array[j] = fmin(dx,dr) /
 							(
-								sqrt( k * curCell->P[0] / curCell->rho )
+								soundSpeed(curCell->P, curCell->rho, curCell->final_psi, gasVar)
 								+
-								sqrt(pow(curCell->Vx[0],2) + pow(curCell->Vr[0],2))
+								sqrt(pow(curCell->Vx,2) + pow(curCell->Vr,2))
 							);
 					} else {
 						array[j] = 1;
@@ -310,12 +310,12 @@ int main(int argc, char** argv) {
 			
 			
 			/* Output to file */
-			if (iteration % 25 == 0) {
-//			if (fabs(t.back() - timestep) > pow(10.0,-5)/scaleT) {
+//			if (iteration % 25 == 0) {
+			if (fabs(t.back() - timestep) > pow(10.0,-5)/scaleT) {
 				timestep = t.back();
 				
 				/* Dynamics - to csv */
-				outputDynCSV(outputDyn, t.back(), i_sn, x_sn.back(), U_sn.back(), cell.at(n+1).at(1).at(4).P[0], cell.at(n+1).at(i_sn-1).at(4).P[0]);
+				outputDynCSV(outputDyn, t.back(), i_sn, x_sn.back(), U_sn.back(), cell.at(n+1).at(1).at(4).P, cell.at(n+1).at(i_sn-1).at(4).P);
 				
 				/* Gas dynamics - verbose to csv and non-verbose to pvd/vtp */
 				if (verbose) {
