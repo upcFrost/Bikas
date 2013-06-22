@@ -162,16 +162,16 @@ void outputCSV(cell2d & cell, std::ofstream & outputGas) {
 				<< t.at(n) << "," 
 				<< i << "," 
 				<< j << "," 
-				<< cell.at(n+1).at(i).at(j).P << ","
-				<< cell.at(n+1).at(i).at(j).rho << "," 
-				<< cell.at(n+1).at(i).at(j).e << ","
-				<< cell.at(n+1).at(i).at(j).Vx << ","
-				<< cell.at(n+1).at(i).at(j).Vr << ","
+				<< cell.at(nextN).at(i).at(j).P << ","
+				<< cell.at(nextN).at(i).at(j).rho << ","
+				<< cell.at(nextN).at(i).at(j).e << ","
+				<< cell.at(nextN).at(i).at(j).Vx << ","
+				<< cell.at(nextN).at(i).at(j).Vr << ","
 				<< cell.at(n).at(i).at(j).bar_Vx << ","
 				<< cell.at(n).at(i).at(j).bar_Vr << ","
 				<< cell.at(n).at(i).at(j).bar_e << ","
-				<< cell.at(n+1).at(i).at(j).final_z << ","
-				<< cell.at(n+1).at(i).at(j).final_psi << ","
+				<< cell.at(nextN).at(i).at(j).final_z << ","
+				<< cell.at(nextN).at(i).at(j).final_psi << ","
 				<< cell.at(n).at(i).at(j).dM[1] << ","
 				<< cell.at(n).at(i).at(j).dM[2] << ","
 				<< cell.at(n).at(i).at(j).dM[3] << ","
@@ -181,7 +181,7 @@ void outputCSV(cell2d & cell, std::ofstream & outputGas) {
 				<< cell.at(n).at(i).at(j).A[2] << ","
 				<< cell.at(n).at(i).at(j).A[3] << ","
 				<< cell.at(n).at(i).at(j).A[4] << ","
-				<< cell.at(n+1).at(i).at(j).e - (pow(cell.at(n+1).at(i).at(j).Vx,2)+pow(cell.at(n+1).at(i).at(j).Vr,2))/2 << std::endl;
+				<< cell.at(nextN).at(i).at(j).e - (pow(cell.at(nextN).at(i).at(j).Vx,2)+pow(cell.at(nextN).at(i).at(j).Vr,2))/2 << std::endl;
 		}
 	}
 }

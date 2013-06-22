@@ -166,26 +166,26 @@ void projParCalc(cell2d & cell, int borderI_prev, int borderI, int var,
 				if (debug) {
 					if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
 					if (j == 2) printf("Prev A[0] = %16.16f\n",
-							cell.at(n-1).at(borderI-1).at(j).A[0]);
+							cell.at(prevN).at(borderI-1).at(j).A[0]);
 				}
 				barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
-				Qi = (cell.at(n-1).at(borderI-1).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+				Qi = (cell.at(prevN).at(borderI-1).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 			} else if (borderI > borderI_prev) {
 				if (debug) {
 					if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
 					if (j == 2) printf("Prev A[0] = %16.16f\n",
-							cell.at(n-1).at(borderI-2).at(j).A[0]);
+							cell.at(prevN).at(borderI-2).at(j).A[0]);
 				}
 				barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
-				Qi = (cell.at(n-1).at(borderI-2).at(j).A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+				Qi = (cell.at(prevN).at(borderI-2).at(j).A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 			} else {
 				if (debug) {
 					if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
 					if (j == 2) printf("Prev A[0] = %16.16f\n",
-							cell.at(n-1).at(borderI-2).at(j).A[0]);
+							cell.at(prevN).at(borderI-2).at(j).A[0]);
 				}
 				barQi = (curCell->A[0]-1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
-				Qi = (cell.at(n-1).at(borderI-2).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+				Qi = (cell.at(prevN).at(borderI-2).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 			}
 
 			// Local speed of sound
@@ -257,7 +257,7 @@ void projCalc(cell2d & cell, int var, int borderI,
 	int borderI_prev = borderI;
 	projPCalc(cell.at(n), P_sn, top_j, bottom_j, borderI);
 	projSpeedPositionCalc(cell.at(n), P_sn, top_j, bottom_j, PROJECTILE, borderI);
-	projCheckIfChanged(cell.at(n), cell.at(n+1), borderI_prev, borderI);
+	projCheckIfChanged(cell.at(n), cell.at(nextN), borderI_prev, borderI);
 	projBorderMove(cell.at(n), borderI, PROJECTILE);
 	projParCalc(cell, borderI_prev, borderI, var, PROJECTILE, debug);
 }
@@ -301,7 +301,7 @@ void pistonCalc(cell2d & cell, int borderI_prev, int borderI,
 
 //			if (borderI == i_pist) {
 //				gasCell * empty = &cell.at(borderI).at(j);
-//				gasCell * nextTEmpty = cell.at(n+1).at(borderI).at(j);
+//				gasCell * nextTEmpty = cell.at(nextN).at(borderI).at(j);
 //				empty->P = 0;
 //				empty->P[1] = 0;
 //				empty->P[2] = 0;
@@ -366,13 +366,13 @@ void pistonCalc(cell2d & cell, int borderI_prev, int borderI,
 			if (debug) {
 				if (j == 2) printf("A[0] = %16.16f\n", curCell->A[0]);
 				if (j == 2) printf("Prev A[0] = %16.16f\n",
-						cell.at(n-1).at(borderI+1).at(j).A[0]);
+						cell.at(prevN).at(borderI+1).at(j).A[0]);
 			}
 			barQi = (curCell->A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2); // Right side is the full cell volume, so we'll get absolute value
-			Qi = (cell.at(n-1).at(borderI+1).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+			Qi = (cell.at(prevN).at(borderI+1).at(j).A[0]) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 
-			if (barQi - Qi > 0.1*Qi) Qi = (cell.at(n-1).at(borderI+1).at(j).A[0]+1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
-			if (Qi - barQi > 0.1*Qi) barQi = (cell.at(n-1).at(borderI+1).at(j).A[0]+1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+			if (barQi - Qi > 0.1*Qi) Qi = (cell.at(prevN).at(borderI+1).at(j).A[0]+1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
+			if (Qi - barQi > 0.1*Qi) barQi = (cell.at(prevN).at(borderI+1).at(j).A[0]+1) * M_PI*(2*(j-axis_j)+1)*dx*pow(dr,2);
 
 			// Local speed of sound
 			double ai = sqrt(k * curCell->P / curCell->rho);

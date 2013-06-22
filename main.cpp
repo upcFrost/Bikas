@@ -132,7 +132,10 @@ int main(int argc, char** argv) {
 		
 		/* Add one more position as as ending */
 		cell2dStatic currentCell = cell.back();
-		cell.push_back(currentCell);
+		cell.insert(cell.end(), maxN, currentCell);
+
+		/* Healthy initial n value */
+		n = 3;
 
 		finishInit(cell.at(n).at(5).at(5).e);
 		
@@ -162,9 +165,13 @@ int main(int argc, char** argv) {
 				start = clock();
 			}
 
-			cell2dStatic currentCell = cell.back();
-			cell.push_back(currentCell);
-			n = cell.size() - 2;
+//			cell2dStatic currentCell = cell.back();
+//			cell.push_back(currentCell);
+
+			/* Array position */
+			n = n != maxN - 1 ? n+1 : 0;
+			prevN = n != 0 ? n-1 : maxN - 1;
+			nextN = n != maxN - 1 ? n+1 : 0;
 			
 			/* Projectile-related calculation */
 			if (havePiston) {
@@ -204,7 +211,7 @@ int main(int argc, char** argv) {
 							continue;
 
 						gasCell * curCell = &cell[n][i][j];
-						gasCell * nextTCell = &cell[n+1][i][j];
+						gasCell * nextTCell = &cell[nextN][i][j];
 
 						double array[21] = {0};
 						lagrange_mass(array, cell, i, j, n, dx, dr, dt);
@@ -215,7 +222,7 @@ int main(int argc, char** argv) {
 							curCell->D[iter] = array[4+iter];
 						}
 						nextTCell->rho = lagrange_rho(&cell[n][i][j],
-								&cell[n-1][i][j],i,j,dt,dx,dr);
+								&cell[prevN][i][j],i,j,dt,dx,dr);
 
 						if (i == i_pist-1 && j == 10) {
 							printf("dM = %10.10f, %10.10f, %10.10f, %10.10f, rho = %10.10f",
@@ -234,7 +241,7 @@ int main(int argc, char** argv) {
 						if (havePiston && i == i_pist)
 							continue;
 
-						gasCell * nextTCell = &cell[n+1][i][j];
+						gasCell * nextTCell = &cell[nextN][i][j];
 						
 						nextTCell->Vx = final_calc_Vx(cell,i,j,n,dx,dr,dt);
 						nextTCell->Vr = final_calc_Vr(cell,i,j,n,dx,dr,dt);
@@ -244,12 +251,12 @@ int main(int argc, char** argv) {
 						
 						// Post-final stage
 						if (i < i_pist || !havePiston) {
-							nextTCell->P = final_calc_p(&cell[n][i][j], &cell[n+1][i][j],
+							nextTCell->P = final_calc_p(&cell[n][i][j], &cell[nextN][i][j],
 								gasVar, i);
 						} else if (i >= i_pist && i <= i_sn && havePiston) {
-//							nextTCell->P = final_calc_p(&cell[n][i][j], &cell[n+1][i][j],
+//							nextTCell->P = final_calc_p(&cell[n][i][j], &cell[nextN][i][j],
 //								PISTON, i);
-							nextTCell->P = final_calc_p(&cell[n][i][j], &cell[n+1][i][j],
+							nextTCell->P = final_calc_p(&cell[n][i][j], &cell[nextN][i][j],
 								IDEAL_GAS, i);
 						}
 					}
@@ -269,7 +276,7 @@ int main(int argc, char** argv) {
 				array.resize(max_j);
 				for (int j = 0; j < max_j; j++) {
 					if (cell[n][i][j].A[0] != 0) {
-						gasCell * curCell = &cell[n+1][i][j];
+						gasCell * curCell = &cell[nextN][i][j];
 						array[j] = fmin(dx,dr) /
 							(
 								soundSpeed(curCell->P, curCell->rho, curCell->final_psi, gasVar)
@@ -305,7 +312,7 @@ int main(int argc, char** argv) {
 			}
 			
 			if (dt > Ku*pow(10.0,-6)/scaleT) dt = Ku*pow(10.0,-6)/scaleT;
-			cout << "\r Num: " << iteration << ", dt: " << dt << ", speed: " << speed << " sec / 1000 iter, x_sn: " << x_sn.at(x_sn.size()-1) << ", Ak: " << cell.at(n-1).at(i_sn-1).at(4).A[0]/cell.at(n).at(i_sn-1).at(4).A[0];
+			cout << "\r Num: " << iteration << ", dt: " << dt << ", speed: " << speed << " sec / 1000 iter, x_sn: " << x_sn.at(x_sn.size()-1) << ", Ak: " << cell.at(prevN).at(i_sn-1).at(4).A[0]/cell.at(n).at(i_sn-1).at(4).A[0];
 			
 			
 			
@@ -315,7 +322,7 @@ int main(int argc, char** argv) {
 				timestep = t.back();
 				
 				/* Dynamics - to csv */
-				outputDynCSV(outputDyn, t.back(), i_sn, x_sn.back(), U_sn.back(), cell.at(n+1).at(1).at(4).P, cell.at(n+1).at(i_sn-1).at(4).P);
+				outputDynCSV(outputDyn, t.back(), i_sn, x_sn.back(), U_sn.back(), cell.at(nextN).at(1).at(4).P, cell.at(nextN).at(i_sn-1).at(4).P);
 				
 				/* Gas dynamics - verbose to csv and non-verbose to pvd/vtp */
 				if (verbose) {
@@ -336,10 +343,10 @@ int main(int argc, char** argv) {
 			}
 			
 			/* Memory cleaning */
-			if (t.size() > 5) {
-				cell.erase(cell.begin());
-				t.erase(t.begin());
-			}
+//			if (t.size() > 5) {
+//				cell.erase(cell.begin());
+//				t.erase(t.begin());
+//			}
 			iteration++;
 		}
 		
