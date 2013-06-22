@@ -1,5 +1,5 @@
 CPP=g++
-CFLAGS=-c -Wall -Wno-deprecated -march=native -O3 -fno-omit-frame-pointer -g
+CFLAGS=-c -Wall -Wno-deprecated -march=native -O3
 LDLIBS=-L. -L./lib -L/usr/lib -lvtkCommon -lvtkGraphics \
 	-lvtkIO -lvtkFiltering -lvtkRendering -lvtkImaging
 
@@ -24,11 +24,11 @@ OBJECTS=main.o init.o functions.o globals.o interp.o border.o \
 all : $(TARGET)
 
 $(TARGET) : $(OBJECTS)
-	$(CPP) -o bin/$(TARGET) $(OBJECTS) $(LDLIBS)
+	$(CPP) -o bin/$(TARGET) $(OBJECTS) $(OPENMP) $(LDLIBS)
 
 
 main.o : main.cpp globals.cpp
-	$(CPP) $(CFLAGS) $(INCLUDES) main.cpp
+	$(CPP) $(CFLAGS) $(INCLUDES) $(OPENMP) main.cpp
 
 functions.o : functions.cpp
 	$(CPP) $(CFLAGS) $(INCLUDES) functions.cpp
