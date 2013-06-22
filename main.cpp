@@ -267,7 +267,11 @@ int main(int argc, char** argv) {
 			t.push_back(t.at(t.size()-1) + dt);
 			vector <double> array;
 			vector <double> minimum;
-			for (int i = 0; i < max_i; i++) {
+
+			// Numerator
+			float num = fminf(dx, dr);
+
+			for (int i = 0; i < i_sn; i++) {
 				array.resize(max_j);
 				for (int j = 0; j < max_j; j++) {
 					if (cell.at(n).at(i).at(j).A[0] != 0) {
