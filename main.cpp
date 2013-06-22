@@ -165,9 +165,6 @@ int main(int argc, char** argv) {
 				start = clock();
 			}
 
-//			cell2dStatic currentCell = cell.back();
-//			cell.push_back(currentCell);
-
 			/* Array position */
 			n = n != maxN - 1 ? n+1 : 0;
 			prevN = n != 0 ? n-1 : maxN - 1;
