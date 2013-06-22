@@ -499,10 +499,12 @@ double euler_bar_e(cell2d & cell, int n, int i, int j,
 		cout << "bar_e is NaN" << endl
 			<< "i = " << i << endl
 			<< "j = " << j << endl
-			<< "Vr = " << cell[n][i][j].Vr << endl
-			<< "P = " << cell[n][i][j].P << endl
-			<< "(fabs(j-axis_j-0.5))*dr = " << (fabs(j-axis_j-0.5))*dr << endl
-			<< "fmax(cell[n][i][j].A[3],cell[n][i][j].A[4]) = " << fmax(cell[n][i][j].A[3],cell[n][i][j].A[4]) << endl << endl;
+			<< "Vx_i12 = " << Vx_i12 << endl
+			<< "Vx_i_12 = " << Vx_i_12 << endl
+			<< "Vr_j12 = " << Vr_j12 << endl
+			<< "Vr_j_12 = " << Vr_j_12 << endl
+			<< "P_i12 = " << P_i12 << endl
+			<< "P_j12 = " << P_j12 << endl << endl;
 		getchar();
 		return 0;
 	}

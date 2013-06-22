@@ -1,5 +1,5 @@
 CPP=g++
-CFLAGS=-c -Wall -Wno-deprecated -march=native -O3
+CFLAGS=-c -Wall -Wno-deprecated -march=native -mtune=native -O3
 LDLIBS=-L. -L./lib -L/usr/lib -lvtkCommon -lvtkGraphics \
 	-lvtkIO -lvtkFiltering -lvtkRendering -lvtkImaging
 
@@ -46,7 +46,7 @@ border.o : border.cpp
 	$(CPP) $(CFLAGS) $(INCLUDES) border.cpp
 
 output.o : output.cpp
-	$(CPP) $(CFLAGS) $(INCLUDES) output.cpp
+	$(CPP) $(CFLAGS) $(INCLUDES) $(OPENMP) output.cpp
 
 init.o : init.cpp
 	$(CPP) $(CFLAGS) $(INCLUDES) init.cpp

@@ -16,7 +16,40 @@
 #include <vtkDoubleArray.h>
 #include <vtkFloatArray.h>
 
-void OutputPVD(cell2d & cell, std::string & filename);
+typedef struct linkID {
+	vtkIdType id[5];
+	int i;
+	int j;
+} linkID;
+
+class OutPVD {
+public:
+	OutPVD(cell2dStatic & cell);
+
+	void MakeOutput(cell2d & cell, std::string & filename);
+
+private:
+	// Points array
+	vtkSmartPointer<vtkPoints> points;
+	// Vertices array
+	vtkSmartPointer<vtkCellArray> verts;
+	// Cells array
+	vtkSmartPointer<vtkCellArray> strips;
+	// General data array
+	vtkSmartPointer<vtkPolyData> polydata;
+	// Data arrays
+	vtkSmartPointer<vtkDoubleArray> outputP;
+	vtkSmartPointer<vtkDoubleArray> outputE;
+	vtkSmartPointer<vtkDoubleArray> outputZ;
+	vtkSmartPointer<vtkDoubleArray> outputRho;
+	vtkSmartPointer<vtkDoubleArray> outputV;
+	// ID-point conversion vector
+	std::vector<linkID> idVector;
+
+	void initArrays(cell2dStatic & cell);
+};
+
+//void OutputPVD(cell2d & cell, std::string & filename);
 void outputCSV(cell2d & cell, std::ofstream & outputGas);
 void prepOutputDynCSV(std::ofstream & outputDyn);
 void prepOutputGasCSV(std::ofstream & outputGas, bool verbose);

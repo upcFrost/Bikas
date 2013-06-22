@@ -69,29 +69,27 @@ void projSpeedPositionCalc(cell2dStatic & cell, double P_sn,
 	}
 }
 
-void projCheckIfChanged(cell2dStatic & cell, cell2dStatic & nextTCell,
+void projCheckIfChanged(cell2d & fullCell,
+		cell2dStatic & cell, cell2dStatic & nextTCell,
 		int borderI_prev, int borderI) {
 	if (borderI_prev != borderI && borderI > borderI_prev) {
+//		/* Return cell to its original shape */
+//		for (int j = 0; j < max_j; j++) {
+//			double tempArray[5];
+//			pre_cell_geometry(tempArray, cell.at(borderI_prev-1).at(j), borderI_prev-1, j);
+//			for (int n = 0; n < maxN; n++) {
+//				fullCell[n][borderI_prev-1][j].A[0] = tempArray[0];
+//				fullCell[n][borderI_prev-1][j].A[1] = tempArray[1];
+//				fullCell[n][borderI_prev-1][j].A[2] = tempArray[2];
+//				fullCell[n][borderI_prev-1][j].A[3] = tempArray[3];
+//				fullCell[n][borderI_prev-1][j].A[4] = tempArray[4];
+//			}
+//		}
 		for (int j = 0; j < max_j; j++) {
-			/* Return cell to its original shape */
-			// For n
-			double tempArray[5];
-			pre_cell_geometry(tempArray, cell.at(borderI_prev-1).at(j), borderI_prev-1, j);
 			gasCell * oldCell = &cell.at(borderI_prev-1).at(j);
-			gasCell * oldTCell = &nextTCell.at(borderI_prev-1).at(j);
 			gasCell * newCell = &cell.at(borderI-1).at(j);
 
-			oldCell->A[0] = tempArray[0];
-			oldCell->A[1] = tempArray[1];
-			oldCell->A[2] = tempArray[2];
-			oldCell->A[3] = tempArray[3];
-			oldCell->A[4] = tempArray[4];
-			oldTCell->A[0] = tempArray[0];
-			oldTCell->A[1] = tempArray[1];
-			oldTCell->A[2] = tempArray[2];
-			oldTCell->A[3] = tempArray[3];
-			oldTCell->A[4] = tempArray[4];
-
+			// Copy values to the new cell
 			newCell->P = oldCell->P;
 			newCell->rho = oldCell->rho;
 			newCell->e = oldCell->e;
@@ -239,7 +237,7 @@ void projParCalc(cell2d & cell, int borderI_prev, int borderI, int var,
 						newVx, newE, newP, curCell->final_psi, x_sn.back());
 			}
 
-			if (j == 10 && (newP > 35 || newP != newP || newE != newE || newVx != newVx)) {
+			if (j == 10 && (newP != newP || newE != newE || newVx != newVx)) {
 				printf("123");
 			}
 
@@ -251,15 +249,35 @@ void projParCalc(cell2d & cell, int borderI_prev, int borderI, int var,
 	}
 }
 
+void projReturnSizeIfChanged(cell2d & fullCell,
+		cell2dStatic & cell, cell2dStatic & nextTCell,
+		int borderI_prev, int borderI) {
+	if (borderI_prev != borderI && borderI > borderI_prev) {
+	/* Return cell to its original shape */
+		for (int j = 0; j < max_j; j++) {
+			double tempArray[5];
+			pre_cell_geometry(tempArray, cell.at(borderI_prev-1).at(j), borderI_prev-1, j);
+			for (int n = 0; n < maxN; n++) {
+				fullCell[n][borderI_prev-1][j].A[0] = tempArray[0];
+				fullCell[n][borderI_prev-1][j].A[1] = tempArray[1];
+				fullCell[n][borderI_prev-1][j].A[2] = tempArray[2];
+				fullCell[n][borderI_prev-1][j].A[3] = tempArray[3];
+				fullCell[n][borderI_prev-1][j].A[4] = tempArray[4];
+			}
+		}
+	}
+}
+
 void projCalc(cell2d & cell, int var, int borderI,
 		bool PROJECTILE, bool debug) {
 	double P_sn = 0; int top_j = 0; int bottom_j = 0;
 	int borderI_prev = borderI;
 	projPCalc(cell.at(n), P_sn, top_j, bottom_j, borderI);
 	projSpeedPositionCalc(cell.at(n), P_sn, top_j, bottom_j, PROJECTILE, borderI);
-	projCheckIfChanged(cell.at(n), cell.at(nextN), borderI_prev, borderI);
+	projCheckIfChanged(cell, cell.at(n), cell.at(nextN), borderI_prev, borderI);
 	projBorderMove(cell.at(n), borderI, PROJECTILE);
 	projParCalc(cell, borderI_prev, borderI, var, PROJECTILE, debug);
+	projReturnSizeIfChanged(cell, cell.at(n), cell.at(nextN), borderI_prev, borderI);
 }
 
 void pistonCalc(cell2d & cell, int borderI_prev, int borderI,

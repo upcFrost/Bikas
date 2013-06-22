@@ -124,6 +124,8 @@ int main(int argc, char** argv) {
 
 				
 		/* Prepare output files */
+    	OutPVD outputPVD(cell.at(n));
+
 		prepOutputDynCSV(outputDyn);
 		prepOutputGasCSV(outputGas,  verbose);
 		
@@ -166,8 +168,8 @@ int main(int argc, char** argv) {
 			}
 
 			/* Array position */
+			prevN = n;
 			n = n != maxN - 1 ? n+1 : 0;
-			prevN = n != 0 ? n-1 : maxN - 1;
 			nextN = n != maxN - 1 ? n+1 : 0;
 			
 			/* Projectile-related calculation */
@@ -259,11 +261,6 @@ int main(int argc, char** argv) {
 					}
 				}
 			}
-					
-			/*****************
-			 * DEBUG: Vx and E test *
-			 *****************/
-			//~ debug_equality_Vx_e(i_sn, max_j, n, cell);
 
 			/* Next dt calculation */
 			t.push_back(t.back() + dt);
@@ -335,7 +332,8 @@ int main(int argc, char** argv) {
 						<< filename 
 						<< "\"/>" << endl;
 					
-					OutputPVD(cell, filename);
+//					OutputPVD(cell, filename);
+					outputPVD.MakeOutput(cell, filename);
 				}
 			}
 			
