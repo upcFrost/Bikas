@@ -22,11 +22,14 @@ typedef struct linkID {
 	int j;
 } linkID;
 
-class OutPVD {
+class Output {
 public:
-	OutPVD(cell2dStatic & cell);
+	Output(cell2dStatic & cell);
 
-	void MakeOutput(cell2d & cell, std::string & filename);
+	void MakePVDOutput(cell2d & cell, std::string & filename);
+	void MakeCSVOutput(cell2d & cell, std::ofstream & outputGas);
+	void MakeDynOutput(std::ofstream & outputDyn, double t, int i_sn,
+			double x_sn, double U_sn, double boltP, double projP);
 
 private:
 	// Points array
@@ -46,7 +49,7 @@ private:
 	// ID-point conversion vector
 	std::vector<linkID> idVector;
 
-	void initArrays(cell2dStatic & cell);
+	void initPVDArrays(cell2dStatic & cell);
 };
 
 //void OutputPVD(cell2d & cell, std::string & filename);

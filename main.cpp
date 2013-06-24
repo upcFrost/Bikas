@@ -124,7 +124,7 @@ int main(int argc, char** argv) {
 
 				
 		/* Prepare output files */
-    	OutPVD outputPVD(cell.at(n));
+    	Output output(cell.at(n));
 
 		prepOutputDynCSV(outputDyn);
 		prepOutputGasCSV(outputGas,  verbose);
@@ -316,11 +316,14 @@ int main(int argc, char** argv) {
 				timestep = t.back();
 				
 				/* Dynamics - to csv */
-				outputDynCSV(outputDyn, t.back(), i_sn, x_sn.back(), U_sn.back(), cell.at(nextN).at(1).at(4).P, cell.at(nextN).at(i_sn-1).at(4).P);
+				output.MakeDynOutput(outputDyn, t.back(), i_sn,
+						x_sn.back(), U_sn.back(),
+						cell.at(nextN).at(1).at(4).P,
+						cell.at(nextN).at(i_sn-1).at(4).P);
 				
 				/* Gas dynamics - verbose to csv and non-verbose to pvd/vtp */
 				if (verbose) {
-					outputCSV(cell, outputGas);
+					output.MakeCSVOutput(cell, outputGas);
 				} else {
 					ostringstream os;
 					os << "./result/outputGas_" << iteration << ".vtp";
@@ -332,8 +335,7 @@ int main(int argc, char** argv) {
 						<< filename 
 						<< "\"/>" << endl;
 					
-//					OutputPVD(cell, filename);
-					outputPVD.MakeOutput(cell, filename);
+					output.MakePVDOutput(cell, filename);
 				}
 			}
 			

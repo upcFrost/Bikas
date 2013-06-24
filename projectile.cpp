@@ -7,6 +7,14 @@
 
 #include "projectile.h"
 
+Projectile::Projectile(double x_0, double U_0,
+		int i_0, double m_0) {
+	x.push_back(x_0);
+	i.push_back(i_0);
+	U.push_back(U_0);
+	m = m_0;
+}
+
 void projPCalc(cell2dStatic & cell, double & P_sn,
 		int & top_j, int & bottom_j, int borderI) {
 	double count = 0;
@@ -73,18 +81,6 @@ void projCheckIfChanged(cell2d & fullCell,
 		cell2dStatic & cell, cell2dStatic & nextTCell,
 		int borderI_prev, int borderI) {
 	if (borderI_prev != borderI && borderI > borderI_prev) {
-//		/* Return cell to its original shape */
-//		for (int j = 0; j < max_j; j++) {
-//			double tempArray[5];
-//			pre_cell_geometry(tempArray, cell.at(borderI_prev-1).at(j), borderI_prev-1, j);
-//			for (int n = 0; n < maxN; n++) {
-//				fullCell[n][borderI_prev-1][j].A[0] = tempArray[0];
-//				fullCell[n][borderI_prev-1][j].A[1] = tempArray[1];
-//				fullCell[n][borderI_prev-1][j].A[2] = tempArray[2];
-//				fullCell[n][borderI_prev-1][j].A[3] = tempArray[3];
-//				fullCell[n][borderI_prev-1][j].A[4] = tempArray[4];
-//			}
-//		}
 		for (int j = 0; j < max_j; j++) {
 			gasCell * oldCell = &cell.at(borderI_prev-1).at(j);
 			gasCell * newCell = &cell.at(borderI-1).at(j);
@@ -316,61 +312,6 @@ void pistonCalc(cell2d & cell, int borderI_prev, int borderI,
 			newCell->Vr = oldCell->Vr;
 			newCell->final_z = oldCell->final_z;
 			newCell->final_psi = oldCell->final_psi;
-
-//			if (borderI == i_pist) {
-//				gasCell * empty = &cell.at(borderI).at(j);
-//				gasCell * nextTEmpty = cell.at(nextN).at(borderI).at(j);
-//				empty->P = 0;
-//				empty->P[1] = 0;
-//				empty->P[2] = 0;
-//				empty->P[3] = 0;
-//				empty->P[4] = 0;
-//				empty->rho = 0;
-//				empty->e = 0;
-//				empty->bar_Vx = 0;
-//				empty->bar_Vx[1] = 0;
-//				empty->bar_Vx[2] = 0;
-//				empty->bar_Vx[3] = 0;
-//				empty->bar_Vx[4] = 0;
-//				empty->bar_Vr = 0;
-//				empty->bar_Vr[1] = 0;
-//				empty->bar_Vr[2] = 0;
-//				empty->bar_Vr[3] = 0;
-//				empty->bar_Vr[4] = 0;
-//				empty->Vx = 0;
-//				empty->Vx[1] = 0;
-//				empty->Vx[2] = 0;
-//				empty->Vx[3] = 0;
-//				empty->Vx[4] = 0;
-//				empty->Vr = 0;
-//				empty->Vr[1] = 0;
-//				empty->Vr[2] = 0;
-//				empty->Vr[3] = 0;
-//				empty->Vr[4] = 0;
-//				empty->final_z = 0;
-//				empty->final_psi = 0;
-//				nextTEmpty->P = 0;
-//				nextTEmpty->P[1] = 0;
-//				nextTEmpty->P[2] = 0;
-//				nextTEmpty->P[3] = 0;
-//				nextTEmpty->P[4] = 0;
-//				nextTEmpty->rho = 0;
-//				nextTEmpty->e = 0;
-//				nextTEmpty->bar_Vx = 0;
-//				nextTEmpty->bar_Vr = 0;
-//				nextTEmpty->Vx = 0;
-//				nextTEmpty->Vx[1] = 0;
-//				nextTEmpty->Vx[2] = 0;
-//				nextTEmpty->Vx[3] = 0;
-//				nextTEmpty->Vx[4] = 0;
-//				nextTEmpty->Vr = 0;
-//				nextTEmpty->Vr[1] = 0;
-//				nextTEmpty->Vr[2] = 0;
-//				nextTEmpty->Vr[3] = 0;
-//				nextTEmpty->Vr[4] = 0;
-//				nextTEmpty->final_z = 0;
-//				nextTEmpty->final_psi = 0;
-//			}
 		}
 	}
 
