@@ -2,20 +2,7 @@
 #define	TYPES_H
 
 #include <vector>
-
-typedef struct Line2D { 
-	double xbegin; 
-	double xend; 
-	double ybegin; 
-	double yend;  
-} Line2D;
-
-typedef struct LineAngle2D { 
-	double sin_a; 
-	double cos_a; 
-	double sin_2a; 
-	double cos_2a;  
-} LineAngle2D;
+#include "Line2D.hpp"
 
 typedef struct WeightPart { double weight; int i; int j; } WeightPart;
 
@@ -60,7 +47,7 @@ struct gasCell {
     double alpha;
     
     WeightVector weightVector;
-    LineAngle2D angle;
+    Line2D line;
     
     double bar_z;
     double bar_psi;

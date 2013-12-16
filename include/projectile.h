@@ -11,7 +11,7 @@
 #include <cmath>
 #include "globals.h"
 #include "border.h"
-#include "functions.h"
+#include "math_functions.h"
 #include "debug.h"
 
 class Projectile {

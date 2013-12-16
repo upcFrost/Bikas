@@ -1,4 +1,4 @@
-#include "functions.h"
+#include "math_functions.h"
 
 using namespace std;
 
@@ -330,21 +330,21 @@ double euler_bar_Vr(cell2d & cell, int n, int i, int j,
 	return result;
 }
 
-void rotateVectors(double& Vx, double& Vr, LineAngle2D angle) {
+void rotateVectors(double& Vx, double& Vr, Line2D line) {
 	double V = sqrt(pow(Vx,2)+pow(Vr,2));
-	Vx = V*angle.cos_a;
-	Vr = V*angle.sin_a;
+	Vx = V * line.cos_a;
+	Vr = V * line.sin_a;
 }
 
-double * smoothSpeed(double * Vx, double * Vr, LineAngle2D angle) {
+double * smoothSpeed(double * Vx, double * Vr, Line2D line) {
 	double V[3];
 	double * result = new double[2];
 
 	for (int i = 0; i < 3; i++)
 		V[i] = sqrt(pow(Vx[i],2)+pow(Vr[i],2));
 	V[1] = 0.1*V[0] + 0.8*V[1] + 0.1*V[2];
-	result[0] = V[1]*angle.cos_a;
-	result[1] = V[1]*angle.sin_a;
+	result[0] = V[1] * line.cos_a;
+	result[1] = V[1] * line.sin_a;
 
 	return result;
 }

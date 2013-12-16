@@ -46,7 +46,7 @@ void finishInit(double e_0) {
 	int numThreads = 0;
 #pragma omp parallel
 	{
-//		numThreads = omp_get_num_threads();
+		numThreads = omp_get_num_threads();
 	}
 	printf("OpenMP loaded, number of threads: %d\n", numThreads);
 }
@@ -70,6 +70,7 @@ int main(int argc, char** argv) {
     string inputFileName;
     cout << "Type input file name and path\n";
     cin >> inputFileName;
+
     /* Open input file and create output files */
     ifstream inputFile (inputFileName.c_str());
     ofstream outputGas ("outputGas.csv");
@@ -86,15 +87,10 @@ int main(int argc, char** argv) {
 	system("mkdir ./result");
 #endif
 
-    if (inputFile.is_open() && outputDyn.is_open() && outputGas.is_open())
-    {
+    if (inputFile.is_open() && outputDyn.is_open() && outputGas.is_open()) {
     	printf("Which gas model is used?\n"
     			"0 - Ideal gas, 2 - Powder\n");
     	cin >> gasVar;
-//    	while (gasVar != IDEAL_GAS && gasVar != POWDER_EQ) {
-//    		printf("\nInvalid input, please try again\n");
-//    		scanf("%d", &gasVar);
-//    	}
 
     	int ifPiston = 0;
     	printf("Is plastic piston present?\n"
@@ -253,8 +249,6 @@ int main(int argc, char** argv) {
 							nextTCell->P = final_calc_p(&cell[n][i][j], &cell[nextN][i][j],
 								gasVar, i);
 						} else if (i >= i_pist && i <= i_sn && havePiston) {
-//							nextTCell->P = final_calc_p(&cell[n][i][j], &cell[nextN][i][j],
-//								PISTON, i);
 							nextTCell->P = final_calc_p(&cell[n][i][j], &cell[nextN][i][j],
 								IDEAL_GAS, i);
 						}
@@ -285,17 +279,7 @@ int main(int argc, char** argv) {
 			}
 			
 			if (debug) {
-				int debug_I = 87, debug_J = 15;
-				if (true && debug_I != 0 && debug_J != 0) {
-					int nArray = 3; int *iArray = new int[nArray]; int *jArray = new int[nArray];
-					iArray[0] = debug_I; jArray[0] = debug_J;
-					iArray[1] = debug_I+1; jArray[1] = debug_J;
-					iArray[2] = debug_I+2; jArray[2] = debug_J;
-					debug_Vx_Vr_P_A_barVx_output(n, nArray, iArray, jArray, cell);
-					debug_dM_rho_output(n, nArray, iArray, jArray, cell);
-					debug_p_output(n, nArray, iArray, jArray, cell);
-					debug_final_output(n, nArray, iArray, jArray, cell);
-				}
+				final_debug(cell,87,15);
 			}
 
 			double next = Ku * *min_element(minimum.begin(), minimum.end());
@@ -338,12 +322,6 @@ int main(int argc, char** argv) {
 					output.MakePVDOutput(cell, filename);
 				}
 			}
-			
-			/* Memory cleaning */
-//			if (t.size() > 5) {
-//				cell.erase(cell.begin());
-//				t.erase(t.begin());
-//			}
 			iteration++;
 		}
 		
@@ -355,6 +333,12 @@ int main(int argc, char** argv) {
     return 0;
 }
 
+
+
+
+
+
+/** Truncate double to N digits **/
 double truncNdigit(double value, int N) {
 	return floor((value*pow(10.0,N))+0.5)/pow(10.0, N);
 }
@@ -367,20 +351,18 @@ double Bj(int m, int j, double y) {
 	return factorial(m) / (factorial(j)*factorial(m-j)) * pow(y, j) * pow(1-y, m-j);
 }
 
+/** Spline interpolation **/
 double splineEval(double x, double y, int n, int m, double ** k) {
 	double result = 0;
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
 			result += Bi(n,i,x) * Bj(m,j,y) * k[i][j];
-			//~ cout << "Bi = " << Bi(n,i,x) << endl;
-			//~ cout << "Bj = " << Bj(m,j,y) << endl;
-			//~ cout << "k  = " << k[i][j] << endl;
 		}
 	}
 	return result;
 }
 
-/* Yep, using static table */
+/** Using static table for factorial calc **/
 unsigned int factorial(unsigned int n) {
   static const unsigned int table[] = {1, 1, 2, 6, 24, 120, 720,
     5040, 40320, 362880, 3628800, 39916800, 479001600};
@@ -389,7 +371,7 @@ unsigned int factorial(unsigned int n) {
   return table[n];
 }
 
-
+/** Base64 encoding function **/
 std::string base64_encode(unsigned char const* bytes_to_encode, unsigned int in_len) {
   std::string ret;
   int i = 0;
@@ -431,4 +413,20 @@ std::string base64_encode(unsigned char const* bytes_to_encode, unsigned int in_
 
   return ret;
 
+}
+
+
+
+/** Final stage debug **/
+void final_debug(cell2d cell, int i, int j) {
+	if (true && i != 0 && j != 0) {
+		int nArray = 3; int *iArray = new int[nArray]; int *jArray = new int[nArray];
+		iArray[0] = i; jArray[0] = j;
+		iArray[1] = i+1; jArray[1] = j;
+		iArray[2] = i+2; jArray[2] = j;
+		debug_Vx_Vr_P_A_barVx_output(n, nArray, iArray, jArray, cell);
+		debug_dM_rho_output(n, nArray, iArray, jArray, cell);
+		debug_p_output(n, nArray, iArray, jArray, cell);
+		debug_final_output(n, nArray, iArray, jArray, cell);
+	}
 }

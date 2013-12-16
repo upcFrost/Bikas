@@ -18,8 +18,9 @@ endif
 
 OPENMP=-fopenmp
 
-OBJECTS=main.o init.o functions.o globals.o interp.o border.o \
-		debug.o output.o projectile.o triangulate.o
+OBJECTS=main.o init.o math_functions.o globals.o interp.o border.o \
+		debug.o output.o projectile.o triangulate.o \
+		Line2D.o
 		
 all : $(TARGET)
 
@@ -30,8 +31,8 @@ $(TARGET) : $(OBJECTS)
 main.o : main.cpp globals.cpp
 	$(CPP) $(CFLAGS) $(INCLUDES) $(OPENMP) main.cpp
 
-functions.o : functions.cpp
-	$(CPP) $(CFLAGS) $(INCLUDES) functions.cpp
+math_functions.o : math_functions.cpp
+	$(CPP) $(CFLAGS) $(INCLUDES) math_functions.cpp
 
 globals.o : globals.cpp
 	$(CPP) $(CFLAGS) $(INCLUDES) globals.cpp
@@ -56,6 +57,9 @@ projectile.o : projectile.cpp
 	
 triangulate.o : triangulate.cpp
 	$(CPP) $(CFLAGS) $(INCLUDES) triangulate.cpp
+	
+Line2D.o : Line2D.cpp
+	$(CPP) $(CFLAGS) $(INCLUDES) Line2D.cpp
 
 clean:
 	rm -rf *o $(TARGET)

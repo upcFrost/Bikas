@@ -10,7 +10,8 @@
 
 #include "globals.h"
 #include "border.h"
-#include "functions.h"
+#include "math_functions.h"
+#include "Line2D.hpp"
 
 void init(std::ifstream & inputFile, cell2d & cell, int var,
 		bool havePiston, bool debug);

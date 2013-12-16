@@ -241,69 +241,42 @@ return area*.5; }
 
 
 
-void getLineAngle(cell2d cell, int i, int j, int n, Line2D& line,
-	LineAngle2D& angle, bool debug) {
+Line2D setLine(cell2d cell, int i, int j, int n, bool debug) {
 	
-	line.ybegin = j+1;
-	line.yend = j;
-	line.xbegin = i;
-	line.xend = i+1;
-	
+	gasCell & c = cell.at(n).at(i).at(j);
+
 	/* TODO: here i assume we have angle from left top to right bottom */
-	switch (cell.at(n).at(i).at(j).type) {
-		case 1:
-		line.xbegin = i*dx;
-		line.xend = (i+1)*dx;
-		line.ybegin = j*dr + cell.at(n).at(i).at(j).r_1*dr;
-		line.yend = j*dr + cell.at(n).at(i).at(j).r_2*dr;
-		break;
-		
-		case 3:
-		line.xbegin = i*dx + cell.at(n).at(i).at(j).x_2*dx;
-		line.xend = i*dx + cell.at(n).at(i).at(j).x_1*dx;
-		line.ybegin = (j+1)*dr;
-		line.yend = j*dr;
-		break;
-		
-		case 8:
-		line.xbegin = i*dx + cell.at(n).at(i).at(j).x_2*dx;
-		line.xend = (i+1)*dx;
-		line.ybegin = (j+1)*dr;
-		line.yend = j*dr + cell.at(n).at(i).at(j).r_2*dr;
-		break;
-		
-		case 10:
-		line.xbegin = i*dx;
-		line.xend = i*dx + cell.at(n).at(i).at(j).x_1*dx;
-		line.ybegin = j*dr + cell.at(n).at(i).at(j).r_1*dr;
-		line.yend = j*dr;
-		break;
-		
-		case 22:
-		line.xbegin = i*dx;
-		line.xend = (i+1)*dx;
-		line.ybegin = j*dr + cell.at(n).at(i).at(j).r_1*dr;
-		line.yend = j*dr + cell.at(n).at(i).at(j).r_2*dr;
+	switch (c.type) {
+	case 0:
+		return Line2D(i*dx, (i+1)*dx, (j+1)*dr, (j+1)*dr);
 		break;
 
-		default:
+	case 1:
+		return Line2D(i*dx, (i+1)*dx, j*dr + c.r_1*dr, j*dr + c.r_2*dr);
+		break;
+		
+	case 3:
+		return Line2D(i*dx + c.x_2*dx, i*dx + c.x_1*dx, (j+1)*dr, j*dr);
+		break;
+		
+	case 8:
+		return Line2D(i*dx + c.x_2*dx, (i+1)*dx, (j+1)*dr, j*dr + c.r_2*dr);
+		break;
+		
+	case 10:
+		return Line2D(i*dx, i*dx + c.x_1*dx, j*dr + c.r_1*dr, j*dr);
+		break;
+		
+	case 22:
+		return Line2D(i*dx, (i+1)*dx, j*dr + c.r_1*dr, j*dr + c.r_2*dr);
+		break;
+
+	default:
+		std::cout << "Wrong value in r_1 or r_2" << std::endl;
+		std::exit(1);
 		break;
 	}
-	angle.cos_a = (line.xend - line.xbegin) / sqrt(pow(line.yend-line.ybegin,2)+pow(line.xend-line.xbegin,2));
-	angle.sin_a = (line.yend - line.ybegin) / sqrt(pow(line.yend-line.ybegin,2)+pow(line.xend-line.xbegin,2));
-	angle.cos_2a = pow(angle.cos_a,2) - pow(angle.sin_a,2);
-	angle.sin_2a = 2*angle.cos_a*angle.sin_a;
-	
-	if (debug) {
-		printf("x_1 = %4.4f, r_1 = %4.4f, x_2 = %4.4f, r_2 = %4.4f\n",
-			cell.at(n).at(i).at(j).x_1,cell.at(n).at(i).at(j).r_1,
-			cell.at(n).at(i).at(j).x_2,cell.at(n).at(i).at(j).r_2);
-		printf("Line begin = %4.4f:%4.4f, line end = %4.4f:%4.4f, line angle = %4.4f\n",
-			line.xbegin,line.ybegin,  line.xend,line.yend,  
-			asin(angle.sin_a)*180/M_PI);
-		
-		getchar();
-	}
+	return Line2D(i*dx, (i+1)*dx, (j+1)*dr, (j+1)*dr);
 }
 
 
@@ -341,20 +314,30 @@ void setVertices(int weightCell, Point2D vertices[4], bool debug, int i, int j) 
 	}
 }
 
-void getMirrorVerts(Point2D vertices[4], Int2D vertices_ij[4], 
-	Line2D line, LineAngle2D angle, bool debug, int i, int j) {
+void debugLine(gasCell & c, Line2D & l) {
+	printf("x_1 = %4.4f, r_1 = %4.4f, x_2 = %4.4f, r_2 = %4.4f\n",
+		c.x_1, c.r_1,
+		c.x_2, c.r_2);
+	printf("Line begin = %4.4f:%4.4f, line end = %4.4f:%4.4f, line angle = %4.4f\n",
+		l.xbegin, l.ybegin,  l.xend, l.yend,
+		asin(l.sin_a)*180/M_PI);
+
+	getchar();
+}
+
+void getMirrorVerts(Point2D vert[4], Int2D vert_ij[4], Line2D l, bool debug, int i, int j) {
 		
 	for (unsigned int idx = 0; idx < 4; idx++) {
 		double dist = (
-			(line.xend - line.xbegin) * (line.ybegin - vertices[idx].y) - 
-			(line.xbegin - vertices[idx].x) * (line.yend - line.ybegin)
-		    ) / sqrt(pow(line.xend-line.xbegin,2)+pow(line.yend-line.ybegin,2));
-		double diffX = 2 * dist * angle.sin_a;
-		double diffY = 2 * dist * angle.cos_a;
-		vertices[idx].x -= diffX;
-		vertices[idx].y += diffY;
-		vertices_ij[idx].i = floor(vertices[idx].x/dx); 
-		vertices_ij[idx].j = floor(vertices[idx].y/dr);
+			(l.xend - l.xbegin) * (l.ybegin - vert[idx].y) - 
+			(l.xbegin - vert[idx].x) * (l.yend - l.ybegin)
+		    ) / sqrt(pow(l.xend-l.xbegin,2)+pow(l.yend-l.ybegin,2));
+		double diffX = 2 * dist * l.sin_a;
+		double diffY = 2 * dist * l.cos_a;
+		vert[idx].x -= diffX;
+		vert[idx].y += diffY;
+		vert_ij[idx].i = floor(vert[idx].x/dx); 
+		vert_ij[idx].j = floor(vert[idx].y/dr);
 		
 		if (debug) {
 			printf("Point %u, distance total: %4.4f, x: %4.4f, y: %4.4f\n", idx,dist,diffX,diffY);
@@ -364,11 +347,11 @@ void getMirrorVerts(Point2D vertices[4], Int2D vertices_ij[4],
 	if (debug) {
 		printf("Vertices at i = %d, j = %d\n", i,j);
 			for (unsigned int idx2 = 0; idx2 < 4; idx2++) 
-				printf("%d: %4.4f:%4.4f\n", idx2, vertices[idx2].x, vertices[idx2].y);
+				printf("%d: %4.4f:%4.4f\n", idx2, vert[idx2].x, vert[idx2].y);
 		
 		printf("Vertices_ij at i = %d, j = %d\n", i,j);
 			for (unsigned int idx2 = 0; idx2 < 4; idx2++) 
-				printf("%d: %d:%d\n", idx2, vertices_ij[idx2].i, vertices_ij[idx2].j);
+				printf("%d: %d:%d\n", idx2, vert_ij[idx2].i, vert_ij[idx2].j);
 				
 		getchar();
 	}
@@ -883,8 +866,6 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 	
 	Point2D vertices[4];
 	Int2D vertices_ij[4];
-	Line2D line;
-	LineAngle2D angle;
 	WeightVector result;
 	std::vector <TPoint2D> points;
 	unsigned int max_i_point[2] = {0};
@@ -898,11 +879,10 @@ WeightVector wightVectorsCalc(cell2d& cell, int i, int j, int n, bool debug) {
 		setVertices(weightCell, vertices, debug, i, j);
 		
 		// Determining line begin-end points and angle
-		getLineAngle(cell, i, j, n, line, angle, debug);
-		cell.at(n).at(i).at(j).angle = angle;
+		Line2D line = setLine(cell, i, j, n, debug);
 		
 		// Getting mirrored over line vertices array
-		getMirrorVerts(vertices, vertices_ij, line, angle, debug, i, j);
+		getMirrorVerts(vertices, vertices_ij, line, debug, i, j);
 		
 		// Getting all points of intersection between mirrored cell and grid
 		points = getExtPoints(vertices, vertices_ij, debug);

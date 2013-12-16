@@ -29,9 +29,9 @@ double euler_bar_Vr(cell2d & cell,
 		int n, int i, int j, double dt, double dx,
 		double dr, int var);
 
-void rotateVectors(double& Vx, double& Vr, LineAngle2D angle);
+void rotateVectors(double& Vx, double& Vr, Line2D line);
 
-double * smoothSpeed(double * Vx, double * Vr, LineAngle2D angle);
+double * smoothSpeed(double * Vx, double * Vr, Line2D line);
 
 double euler_bar_e(cell2d & cell,
 		int n, int i, int j, double dt, double dx,

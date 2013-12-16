@@ -1,11 +1,13 @@
 #ifndef BORDER_H
 #define	BORDER_H
 
+#include <vector>
+#include <stdbool.h>
+
 #include "types.h"
 #include "globals.h"
 #include "triangulate.h"
-#include <vector>
-#include <stdbool.h>
+#include "Line2D.hpp"
 
 typedef struct TPoint2D { double x; double y; int type; } TPoint2D;
 

@@ -6,7 +6,7 @@
 #include "interp.h"
 #include "globals.h"
 #include "debug.h"
-#include "functions.h"
+#include "math_functions.h"
 #include "output.h"
 #include "border.h"
 #include "init.h"
@@ -41,6 +41,8 @@ double Bj(unsigned int m, int j, double y);
 double splineEval(double x, double y, int n, int m, double ** k);
 unsigned int factorial(unsigned int n);
 std::string base64_encode(unsigned char const* , unsigned int len);
+
+void final_debug(cell2d cell, int i, int j);
 
 
 #endif	/* MAIN_H */
